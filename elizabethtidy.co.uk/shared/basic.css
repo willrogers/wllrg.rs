@@ -1,0 +1,188 @@
+/* IE6 PNG fix */
+img {behavior: url(iepngfix.htc)}
+
+body {
+	font-family: arial, helvetica, sans-serif;
+	background: #546293;
+	color: #ffffff;
+	padding: 0;
+	margin: 0;
+}
+
+a:link {
+	color: #a8bbff;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #ddbcff;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+#page {
+	width: 90%;
+	max-width: 60em;
+	margin: auto;
+	height: auto;
+}
+
+#sidebar {
+	float: left;
+	font-size: 1.5em;
+	width: 4em;
+	text-align: right;
+	padding: 80px 0.5em;
+}
+
+#sidebar a {
+	display: block;
+	margin: 0.2em 0;
+}
+
+#sidebar a:link {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+#sidebar a:visited {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+#sidebar a:hover {
+	text-decoration: underline;
+}
+
+#sidebar a:active {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+#content {
+	min-width: 800px;
+	margin-left: 7.5em;
+	padding: 15px;
+	background: #7883aa;
+}
+
+#footer {
+	margin-left: 7.5em;
+	text-align: center;
+	font-size: 0.7em;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	color: #e5965c;
+}
+
+h1 {
+	margin-top: 0;
+}
+
+#header {
+	margin-left: 8.5em;
+}
+
+#header h1 {
+	position: relative;
+	margin: 0;
+	top: 14px;
+}
+
+div#clear {
+	clear: both;
+}
+
+hr {
+	display: none;
+}
+
+img {
+	border: 0 none;
+}
+
+img.floatleft {
+	float: left;
+	padding-right: 1em;
+}
+
+h2.caption {
+	font-size: 1em;
+	font-weight: normal;
+	color: #ffffff;
+	font-style: italic;
+	margin-top: 0.1em;
+}
+
+/*image gallery stuff*/
+#pics {
+	display: table-cell;
+	margin: auto;
+}
+
+#pics a:link,#pics a:visited {
+	display: table-cell;
+	text-align: left;
+	vertical-align: bottom;
+	
+	width: 190px;
+	height: 190px;
+	margin: 10px;
+	padding: 5px;
+	float: left;
+	border: 1px solid white;
+	
+	color: #ffffff;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+/*contact page stuff*/
+th {
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+}
+
+input, textarea {
+	display: block;
+	font-family: arial, helvetica, sans-serif;
+	color: #7883aa;
+	width: 15em;
+	margin-left: 10.5em;
+	margin-bottom: 0.5em;
+}
+
+input[type="text"] {
+	background: #333333;
+	border: 2px inset #999999;
+}
+
+input[type="submit"] {
+	width: 5em;
+	background: #666666;
+	color: white;
+	font-weight: bold;
+	border: 2px outset #666666;
+}
+
+textarea {
+	overflow: auto;
+	width: 25em;
+	height: 5em;
+	background: #333333;
+	border: 2px inset #999999;
+}
+
+label {
+	font-weight: bold;
+	display: block;
+	float: left;
+	width: 10em;
+	text-align: right;
+	margin-bottom: 0.5em;
+}

@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    padding: 0;
+
+	background: #546293;
+	color: #7883aa;
+    
+    font-family: arial, helvetica, sans-serif;
+}
+
+img {
+    border: none;
+}
+
+a:link,a:visited {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+
+/**************** TOP BIT ***************/
+
+#top {
+    width: 100%;
+    padding: 5em 0 0 0;
+	margin: 0;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+/**************** MENU ***************/
+#menu {
+	font-size: 1.5em;
+	text-align: left;
+	margin: auto;
+	min-width: 1%;
+	list-style: none;
+	font-weight: bold;
+	text-align: center;
+}
+
+#menu a:link, a:visited {
+	margin: 0.5em;
+	font-weight: normal;
+}
+
+/**************** BOTTOM  ***************/
+#bottom {
+   clear: both;
+   
+   text-align: center;
+   color: #e5965c;
+   font-size: 0.7em;
+   margin-top: 1em;
+}
