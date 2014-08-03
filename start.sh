@@ -6,5 +6,5 @@ if [[ ! -z $(git status --porcelain) ]] ; then
 else
 	git pull origin master
 
-	firefox $TW && ./save.sh
+	firefox $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$TW
 fi
