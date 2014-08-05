@@ -1557,42 +1557,42 @@ Mar £68 food while Liz was away
 
 !!Components
 There are four basic components in an Android app:
-* an {{{Activity}}} represents a single screen with a user interface
+* an `Activity` represents a single screen with a user interface
 ** an app typically has several activities, and other apps could open any one
-* a {{{Service}}} runs in the background to perform some task
+* a `Service` runs in the background to perform some task
 ** an activity could start a service - for example, playing music in the background
 * a {{{ContentProvider}}} manages a set of application data
 ** the data (files, SQLite database) could be private or shared
-* a {{{BroadcastReceiver}}} listens for various broadcasts
+* a `BroadcastReceiver` listens for various broadcasts
 ** broadcasts could come from the system or other apps
 
-* Activities, services, and broadcast receivers can be activated by an asynchronous message called an {{{Intent}}}
+* Activities, services, and broadcast receivers can be activated by an asynchronous message called an `Inten`t
 
 * You can make a hierarchy of activities within an app, which allows automatic navigation
-* Every {{{Activity}}} is invoked by an {{{Intent}}}, available via {{{getIntent()}}}.
+* Every `Activity` is invoked by an `Intent`, available via `getIntent()`.
 
 !!Context
-The {{{Context}}} provides global information about the app environment.  You can retrieve it with:
-* {{{getContext()}}}
-* {{{getApplicationContext()}}}
-* {{{getBaseContext()}}}
+The `Context` provides global information about the app environment.  You can retrieve it with:
+* `getContext()`
+* `getApplicationContext()`
+* `getBaseContext()`
 
-{{{Activity}}} is an indirect subclass of Context, so it can be used to provide a context.  This question is a good explanation: http://stackoverflow.com/questions/3572463/what-is-context-in-android</pre>
+`Activity` is an indirect subclass of Context, so it can be used to provide a context.  This question is a good explanation: http://stackoverflow.com/questions/3572463/what-is-context-in-android</pre>
 </div>
 <div _hash="6d53610f241892ce96037f790c1850c5bef2cd92" created="20131026144409000" creator="willrogers" modified="20131026150358000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/AndroidAppFiles/1484110:5f7b4dc69ec9dd07644156b3bdf8388c609cb145&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1484110" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="AndroidAppFiles" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="AndroidAppFiles" type="text/x-tiddlywiki">
 <pre>An Android project in eclipse has the following files:
-* {{{src/}}} - Java code
-* {{{gen/}}} - generated Java code
-* {{{Android 4.3}}} - jar file
-* {{{Android Private Libraries}}} - jar file
-* {{{assets/}}}
-* {{{bin/}}}
-* {{{libs/}}}
-* {{{res/}}} - resources, including images and layout XML
+* `src/` - Java code
+* `gen/` - generated Java code
+* `Android 4.3` - jar file
+* `Android Private Libraries` - jar file
+* `assets/`
+* `bin/`
+* `libs/`
+* `res/` - resources, including images and layout XML
 * AndroidManifest
-* {{{ic_launcher-web.png}}}
-* {{{proguard-project.txt}}}
-* {{{project.properties}}}Type the text for 'AndroidAppFiles'</pre>
+* `ic_launcher-web.png`
+* `proguard-project.txt`
+* `project.properties`</pre>
 </div>
 <div _hash="b346c45bbe999d5070a660fca38104ca235106e2" created="20131110203215000" creator="willrogers" modified="20131110203322000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/AndroidDesign/1519412:b1d23e3914eba94b7ac519b5c7a4e25aece70d70&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1519412" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="AndroidDesign" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="AndroidDesign" type="text/x-tiddlywiki">
 <pre>[[Design|http://developer.android.com/design/index.html]] is the first part of the Android documentation.  It has the following sections:
