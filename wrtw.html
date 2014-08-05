@@ -557,6 +557,8 @@ Error message and password prompt
 
 <li>GitSvn</li>
 
+<li>GitTag</li>
+
 <li>GnuDebugger</li>
 
 <li>GnuMake</li>
@@ -12206,9 +12208,10 @@ You can undo a commit in a few ways:
 * {{{git reset --hard HEAD~1}}} removes the last commit and also sets all the files to how they were at the time of that commit
 * {{{git commit --amend}}} changes the latest commit so that it now reflects the changes you've made since that commit.  Don't do this if you have pushed the commit somewhere.</pre>
 </div>
-<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140805124821821" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/vnd.tiddlywiki">
+<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140805131103811" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/vnd.tiddlywiki">
 <pre>* GitCommit
 * GitBranch
+* GitTag
 * GitSvn
 * GitShow
 * GitRemote
@@ -12227,6 +12230,9 @@ Here's a good style guide for using git: https://wiki.openstack.org/wiki/GitComm
 
 
 !!General idea
+
+Git works in terms of commits.  A GitBranch is effectively a pointer to a particular commit, and the pointer will move if you commit to that branch.  A GitTag is a pointer to a particular commit, but it doesn't move.  Each commit has a unique SHA1 hash which doesn't change.
+
 You get a local repository, to which you need to commit before you can 'push' any changes.
 
 To commit anything, you need to add your changes with `git add`.  You can then commit to the local repository with `git commit -m &quot;message&quot;`.  
@@ -12235,9 +12241,9 @@ You can revert changes to a file with `git checkout -- &lt;file&gt;`.  This just
 
 To push changes to a remote repository, use `git push &lt;remote&gt; &lt;branch&gt;` - often `git push origin master`.
 
-To pull changes from a remote repository, use {{{git pull &lt;remote&gt; &lt;branch&gt;}}}.  You can pull everything using {{{git pull &lt;remote&gt;}}}
+To pull changes from a remote repository, use `git pull &lt;remote&gt; &lt;branch&gt;`.  You can pull everything using `git pull &lt;remote&gt;`
 
-{{{git log}}} shows all the commits in a repository.  {{{git log &lt;file&gt;}}} shows the commits which affect that file.
+`git log` shows all the commits in a repository.  `git log &lt;file&gt;` shows the commits which affect that file.
 
 
 !!Merging and rebasing
@@ -12245,29 +12251,24 @@ There are two ways to combine two branches which have diverged.
 !!!Merging 
 This takes the two (or more) commits which will become the parents of the new commit, combines them and creates a new commit.  Since git happily handles the history, this works well
 !!!Rebasing
-This rewinds the repo to the point of divergence, applies one set of changes then applies the next set.  The advantage of this is that it creates a simple linear history, which is easily understood by (for example) {{{git svn}}}.
+This rewinds the repo to the point of divergence, applies one set of changes then applies the next set.  The advantage of this is that it creates a simple linear history, which is easily understood by (for example) `git svn`.
 
 Sometimes, a branch points to a place which is directly in the history of another branch.  This means that it is easy to move the first branch into line with the second.  This is known as a 'fast-forward', and no merging or rebasing is required.
 
-!!Tags
-To create an annotated tag:
-* {{{git tag -a &lt;name&gt; -m &quot;Commit message.&quot;}}}
-* {{{git push --tags origin}}}
-To delete a remote tag, see: http://nathanhoad.net/how-to-delete-a-remote-git-tag
 
 !!Ignoring files
-I wanted to ignore all {{{.pyc}}} files.  I added a file called {{{.gitignore}}} to the root of the repo, and added one line: {{{*.pyc}}}.
-You can also ignore files local to one repository - I used it for eclipse {{{.project}}} files which won't necessarily be in other people's copies of the repo.  To do this, edit the {{{.git/info/exclude}}} file.
+I wanted to ignore all `.pyc` files.  I added a file called `.gitignore` to the root of the repo, and added one line: `*.pyc`.
+You can also ignore files local to one repository - I used it for eclipse `.project` files which won't necessarily be in other people's copies of the repo.  To do this, edit the `.git/info/exclude` file.
 
 
 !!Other commands
-* {{{git cherry}}} - show commits ahead of or behind between two branches
-* {{{git cherry-pick}}} - choose a specific commit to pull from another branch
-* {{{git request-pull}}} - provide some text to email to another person to allow them to pull your changes
-* {{{git whatchanged}}} - like git log, but shows the files which were changed
+* `git cherry` - show commits ahead of or behind between two branches
+* `git cherry-pick` - choose a specific commit to pull from another branch
+* `git request-pull` - provide some text to email to another person to allow them to pull your changes
+* `git whatchanged` - like git log, but shows the files which were changed
 
 !!Cygwin
-You need to install {{{git}}} and dependencies, but also {{{ca-certificates}}} if you're using https.
+You need to install `git` and dependencies, but also `ca-certificates` if you're using https.
 
 !!Windows client
 I needed to follow these instructions to get through the proxy: http://manku.thimma.org/2012/09/github-for-windows-through-proxies/
@@ -12317,6 +12318,20 @@ You can then checkout that commit with
 * {{{git checkout &lt;sha1&gt;}}} (or unambiguous part thereof)
 This will leave you with a 'detached HEAD' - you're not on a branch, you've just checked out one revision.  To go back, switch back to a branch:
 * {{{git checkout master}}}</pre>
+</div>
+<div created="20140805131112029" creator="WillRogers" modified="20140805131240099" modifier="WillRogers" title="GitTag">
+<pre>Tags are effectively just labels for existing commits, which make them easier to find again.  Tags won't get lost even if they're not on a branch, which can be useful.
+
+
+!!Tags
+To create an annotated tag:
+
+* `git tag -a &lt;name&gt; -m &quot;Commit message.&quot;`
+* `git push --tags origin`
+
+To delete a remote tag, see: http://nathanhoad.net/how-to-delete-a-remote-git-tag
+
+You can tag stashes if you want to.</pre>
 </div>
 <div _hash="dbcf4450f5d11e30398f325027ecd2806e93201c" created="20130704100745000" creator="willrogers" modified="20130704155118000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GnuDebugger/1295444:0c3d29c740beecc0bd7caea17a47e6a6e834629f&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1295444" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GnuDebugger" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="c linux" title="GnuDebugger" type="text/x-tiddlywiki">
 <pre>The GNU Debugger (or {{{gdb}}}) is a command-line debugger.  It is most often used with C and C++.
@@ -13102,7 +13117,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="GitNotes" modified="20140805124821822" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="GitTag" modified="20140805131240100" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -13715,6 +13730,103 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 286.16668701171875,
+            &quot;left&quot;: 777,
+            &quot;width&quot;: 55,
+            &quot;right&quot;: 832,
+            &quot;bottom&quot;: 304.16668701171875,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 143.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 43,
+            &quot;right&quot;: 168,
+            &quot;bottom&quot;: 161.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitTag'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitTag&quot;
     }
 ]</pre>
 </div>
@@ -20539,7 +20651,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="Home ComputingNotes GitNotes" title="$:/StoryList">
+<div list="GitNotes GitTag Home" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
