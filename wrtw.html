@@ -12206,7 +12206,7 @@ You can undo a commit in a few ways:
 * {{{git reset --hard HEAD~1}}} removes the last commit and also sets all the files to how they were at the time of that commit
 * {{{git commit --amend}}} changes the latest commit so that it now reflects the changes you've made since that commit.  Don't do this if you have pushed the commit somewhere.</pre>
 </div>
-<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140311154748000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/x-tiddlywiki">
+<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140805124821821" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/vnd.tiddlywiki">
 <pre>* GitCommit
 * GitBranch
 * GitSvn
@@ -12217,9 +12217,11 @@ You can undo a commit in a few ways:
 
 Git seems pretty easy to set up.  I followed the instructions on this page: https://help.github.com/articles/create-a-repo
 
-In order to connect from behind a proxy, I had to set: {{{export https_proxy=wwwcache.rl.ac.uk:8080}}}.  
+In order to connect from behind a proxy, I had to set:
+ 
+`export https_proxy=wwwcache.rl.ac.uk:8080`.
 
-{{{gitk}}} is useful to visualise the progress of a repo; in particular {{{gitk --all}}}
+`gitk` is useful to visualise the progress of a repo; in particular `gitk --all`.
 
 Here's a good style guide for using git: https://wiki.openstack.org/wiki/GitCommitMessages#Information_in_commit_messages
 
@@ -12227,11 +12229,11 @@ Here's a good style guide for using git: https://wiki.openstack.org/wiki/GitComm
 !!General idea
 You get a local repository, to which you need to commit before you can 'push' any changes.
 
-To commit anything, you need to add your changes with {{{git add}}}.  You can then commit to the local repositry with {{{git commit -m &quot;message&quot;}}}.  You can't use 'ci' as an abbreviation.
+To commit anything, you need to add your changes with `git add`.  You can then commit to the local repository with `git commit -m &quot;message&quot;`.  
 
-You can revert changes to a file with {{{git checkout -- &lt;file&gt;}}}.  This just checks out whatever was last checked out on top of the changes you've made.  To selectively undo within a file, use {{{git checkout -p}}}.
+You can revert changes to a file with `git checkout -- &lt;file&gt;`.  This just checks out whatever was last checked out on top of the changes you've made.  To selectively undo within a file, use `git checkout -p`.
 
-To push changes to a remote repository, use {{{git push &lt;remote&gt; &lt;branch&gt;}}} - often {{{git push origin master}}}.
+To push changes to a remote repository, use `git push &lt;remote&gt; &lt;branch&gt;` - often `git push origin master`.
 
 To pull changes from a remote repository, use {{{git pull &lt;remote&gt; &lt;branch&gt;}}}.  You can pull everything using {{{git pull &lt;remote&gt;}}}
 
@@ -13100,7 +13102,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="FindLocate" modified="20140804084744781" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="GitNotes" modified="20140805124821822" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -13643,6 +13645,76 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;FindLocate&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ComputingNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 199.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 106,
+            &quot;right&quot;: 231,
+            &quot;bottom&quot;: 217.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 335.933349609375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 55,
+            &quot;right&quot;: 180,
+            &quot;bottom&quot;: 353.933349609375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
     }
 ]</pre>
 </div>
@@ -20467,7 +20539,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="Home ComputingNotes LinuxCommands FindLocate" title="$:/StoryList">
+<div list="Home ComputingNotes GitNotes" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
