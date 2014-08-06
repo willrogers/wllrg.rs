@@ -11540,11 +11540,12 @@ Is the pretty carnival girl.
                                 
 }}}</pre>
 </div>
-<div _hash="df337cb34136cc9c0fd8c8c5b9b58ecccab56887" created="20140106090739000" creator="willrogers" modified="20140709105058000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/FastArchiver/1822025:1e22b44f18db7447dfc38f80a5fe7eeaf0b9c0b8&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1822025" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="FastArchiver" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="FastArchiver" type="text/x-tiddlywiki">
+<div _hash="df337cb34136cc9c0fd8c8c5b9b58ecccab56887" created="20140106090739000" creator="willrogers" modified="20140806103400412" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/FastArchiver/1822025:1e22b44f18db7447dfc38f80a5fe7eeaf0b9c0b8&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1822025" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="FastArchiver" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="FastArchiver" type="text/vnd.tiddlywiki">
 <pre>The '''fast acquisition archiver''' archives data from the FOFB network, which is in general much faster than the EpicsArchiver can handle.
 
 !!Data
 The fast archiver stores data from:
+
 * the EBPMs
 * the XBPMs (or PBPMs)
 * PMCs - these are the cards used for the FOFB network calculation, but I don't know what's showing here
@@ -11555,19 +11556,20 @@ The fast archiver stores data from:
 
 !!Programs
 There are five installed programs:
-* {{{fa-archiver}}} - the archiver itself
-* {{{fa-audio}}} - play fa data as an audiio file (?)
-* {{{fa-capture}}} - retrieve data from the archiver
-* {{{fa-prepare}}} - something to do with data files
-* {{{fa-viewer}}}, which shows live data
-* {{{fa_zoomer}}} - a matlab script used for showing the archived data
+
+* `fa-archiver` - the archiver itself
+* `fa-audio` - play fa data as an audiio file (?)
+* `fa-capture` - retrieve data from the archiver
+* `fa-prepare` - something to do with data files
+* `fa-viewer`, which shows live data
+* `fa_zoomer` - a matlab script used for showing the archived data
 
 Each program has a man page.
 
-There is a library {{{falib}}} for Python.
+There is a library `falib` for Python.
 
 !!Protocol
-See the {{{fa-archiver}}} man page, section {{{SOCKET SERVER}}} for details of the protocol.
+See the `fa-archiver` man page, section `SOCKET SERVER` for details of the protocol.
 
 You send an ASCII command to the the server, which returns the requested data or an error message.  The commands fall into four categories:
 * C - interrogate parameters about the data
@@ -11578,7 +11580,7 @@ You send an ASCII command to the the server, which returns the requested data or
 You simply open a socket, send the command, receive the data then close the socket.    A second request requires a second socket.
 
 !!Code
-I believe all the archiver code is in the Python repo {{{fa-archiver}}}.  I don't know why Python, since Python is only a part of it.
+I believe all the archiver code is in the Python repo `fa-archiver`.  I don't know why Python, since Python is only a part of it.
 </pre>
 </div>
 <div _hash="40b6f5522afdbf71083a5ec839a7c3fa0a495edf" created="20130708154238000" creator="willrogers" modified="20140112133040000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/FastFeedback/1623045:3cd7f5b0b33e16cb7f9ba39a5fa2aaac4f4cd0b3&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1623045" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="FastFeedback" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="FastFeedback" type="text/x-tiddlywiki">
@@ -13117,7 +13119,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="GitTag" modified="20140805131240100" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="FastArchiver" modified="20140806103400413" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -13827,6 +13829,69 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;GitTag&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ComputingNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 199.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 106,
+            &quot;right&quot;: 231,
+            &quot;bottom&quot;: 217.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;DiamondNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 219.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 94,
+            &quot;right&quot;: 219,
+            &quot;bottom&quot;: 237.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;FastArchiver&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 177.39999389648438,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 80,
+            &quot;right&quot;: 205,
+            &quot;bottom&quot;: 195.39999389648438,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FastArchiver&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FastArchiver&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FastArchiver'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FastArchiver&quot;
     }
 ]</pre>
 </div>
@@ -20651,7 +20716,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="GitNotes GitTag Home" title="$:/StoryList">
+<div list="Home DiamondNotes FastArchiver ComputingNotes" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
