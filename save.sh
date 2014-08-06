@@ -1,8 +1,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TW_NAME=wrtw.html
 cd $DIR
-git add $TW_NAME
-git commit -m "Standard update to TiddlyWiki."
-git push origin master
+x=$(git add $TW_NAME 2>&1)
+y=$(git commit -m "Standard update to TiddlyWiki." 2>&1)
+z=$(git push origin master 2>&1)
+echo "$x$y$z"
+zenity --info --text="$x$y$z"
 cd -
 

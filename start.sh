@@ -4,7 +4,7 @@ TW=wrtw.html
 cd $DIR
 
 if [[ ! -z $(git status --porcelain) ]] ; then
-	echo "Local changes; can't start."
+	zenity --warning --text="Local changes; can't start."
 else
 	git pull origin master
 
