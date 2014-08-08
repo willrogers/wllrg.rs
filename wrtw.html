@@ -4256,18 +4256,19 @@ The first (trial) lot I got from Specsavers seemed a bit too strong.
 
 I've got blue and silver tops: £25 for 30 pairs.  Black tops were less high quality.  You can get higher-quality ones at £30 for 30 pairs.</pre>
 </div>
-<div _hash="43ad3d57752be00e7480ea488f15284d8466ff62" created="20130726100708000" creator="willrogers" modified="20140106103400000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/ControlsAde/1617024:a82ec183ab18bbda009b86c4a4fb7352fa985cfe&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1617024" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="ControlsAde" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="ControlsAde" type="text/x-tiddlywiki">
+<div _hash="43ad3d57752be00e7480ea488f15284d8466ff62" created="20130726100708000" creator="willrogers" modified="20140808140046514" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/ControlsAde/1617024:a82ec183ab18bbda009b86c4a4fb7352fa985cfe&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1617024" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="ControlsAde" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="ControlsAde" type="text/vnd.tiddlywiki">
 <pre>The 'Application Development Environment' is the way that Controls have agreed to manage software development.  Nominally, it is used for EPICS software, but I think other applications use this system as well.
 
 See also ConfigureScripts
 
 It is described in [[this document|http://diamdocs/sites/default/TECHNICAL%20DIVISION%20(TEC)/Controls%20and%20Interlocks%20CTRL/Reports%20(REP)/CTRL-XX-rpt-032%20Diamond%20EPICS%20Application%20Development%20Environment/TDI-CTRL-REP-032.doc]] hidden deep in sharepoint:  
 
-* On page 14 there is a diagram of the {{{/dls_sw}}} filesystem 
+* On page 14 there is a diagram of the `/dls_sw` filesystem 
 * On page 50 there is a diagram of the subversion repository
 
 !!Types of project
 Different types of project are defined for the purposes of Diamond software development:
+
 * IOC application (the definitions for an IOC to run, e.g. ~BL02I-CS-IOC-02)
 ** this is all the code loaded into an IOC
 * support module (fast feedback and topup)
@@ -4276,31 +4277,35 @@ Different types of project are defined for the purposes of Diamond software deve
 * vendor software (apparently, the unchanged EPICS and extensions code)
 
 !!Python tools
-On the {{{/dls_sw}}} filesystem there are a bunch of python libraries.  Several are prepended {{{dls_}}} and refer to tools written here; others like {{{matplotlib}}} and {{{numpy}}} are external tools.  Each tool is stored as an egg, which means that it is possible to define dependencies on specific versions of other tools.  More than one version of each tool may be stored.
+On the `/dls_sw` filesystem there are a bunch of python libraries.  Several are prepended `dls_` and refer to tools written here; others like `matplotlib` and `numpy` are external tools.  Each tool is stored as an egg, which means that it is possible to define dependencies on specific versions of other tools.  More than one version of each tool may be stored.
 
-{{{configure-tool}}} (below) points to specific versions of these tools. 
+`configure-tool` (below) points to specific versions of these tools. 
 
 See DiamondScripts for the internal tools used to manage SVN, building and releasing.
 
 
 !!!External tools
-These include {{{matplotlib}}} and {{{numpy}}}.  
+These include `matplotlib` and `numpy`.  
 
-* In the Red Hat 6 versions, external python tools have been moved to {{{/dls_sw/prod/tools/RHEL6-x86_64/}}}, along with non-python tools.
+* In the Red Hat 6 versions, external python tools have been moved to `/dls_sw/prod/tools/RHEL6-x86_64/`, along with non-python tools.
 
 !!!Importing
 In order to import a library which is in an egg, you have to use the following lines:
-{{{
+`
 from pkg_resources import require
 require('numpy')
 import numpy
-}}}
-Eggs allow you to specify requirements - either for libraries to depend on each other, or for you to specify when requiring.  However, this is a bit of a faff to type when you're just having a go at a terminal.  We'd like a simple import (such as {{{import dlsdefaults}}}) that would make default versions of all these libraries available.
+`
+Eggs allow you to specify requirements - either for libraries to depend on each other, or for you to specify when requiring.  
+
+You can `import dls_packages` if you want all eggs available, at your own risk.
 
 !!Releases
-Diamond software is released to the {{{/dls_sw}}} filesystem, which is read-only to everyone except the build servers.  These are dedicated machines used to check out and build code from SVN.  There is one build server per major operating release, and only administrators can log in.
+Diamond software is released to the `dls_sw` filesystem, which is read-only to everyone except the build servers.  These are dedicated machines used to check out and build code from SVN.  There is one build server per major operating release, and only administrators can log in.
 
-{{{/dls_sw/work}}} is writable by everyone in the {{{dcs}}} group.  In particular, you can write jobs to the build server's queue in {{{/dls_sw/work/etc/build/queue}}}.  It also appears that the build servers will automatically check out and build any software it finds newly added to the {{{prod}}} part of SVN (?).  Finally, you can release and build new versions of code using the {{{dls-release.py}}} script.
+`dls_sw/work` is writable by everyone in the `dcs` group.  In particular, you can write jobs to the build server's queue in `/dls_sw/work/etc/build/queue`.  It also appears that the build servers will automatically check out and build any software it finds newly added to the `prod` part of SVN (?).  Finally, you can release and build new versions of code using the `dls-release.py` script.
+
+
 
 
 
@@ -9374,22 +9379,19 @@ for file in *; do echo &quot;$file:&quot;; git log &quot;$file&quot; | grep 'Aut
 }}}
 </pre>
 </div>
-<div _hash="b077152c0d46502aa8331e7d14f386c7a096557a" created="20130626142719000" creator="willrogers" modified="20130627081447000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/DiamondPython/1284054:24c7be7caf4db8f8b5c86a2fa0ce8348c9dbc891&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1284054" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="DiamondPython" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="diamond python" title="DiamondPython" type="text/x-tiddlywiki">
+<div _hash="b077152c0d46502aa8331e7d14f386c7a096557a" created="20130626142719000" creator="willrogers" modified="20140808140222659" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/DiamondPython/1284054:24c7be7caf4db8f8b5c86a2fa0ce8348c9dbc891&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1284054" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="DiamondPython" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="diamond python" title="DiamondPython" type="text/vnd.tiddlywiki">
 <pre>Links from the wiki:
+
 * http://www.cs.diamond.ac.uk/cgi-bin/wiki.cgi/Updating_python_modules_to_RHEL6_and_python2.7
 
-Diamond has a pretty complex setup for its Python installations.  One of the DiamondModules is ~RHEL6-RHEL5, which simply puts the ~RHEL5 path before others.  This is the reason why the Python eggs in the ~RHEL5 locations are found before those in ~RHEL6 ones.
+Diamond has a pretty complex setup for its Python installations.  One of the DiamondModules is ~RHEL6-RHEL5, which simply puts the RHEL5 path before others.  This is the reason why the Python eggs in the RHEL5 locations are found before those in ~RHEL6 ones.
 
 There is a program called python-config, which seems to tell you something about the python program used.  It uses the {{{distutils.sysconfig}}} module to query python itself.
 
 !!Eggs
 Diamond libraries are generally provided as Python eggs.  This allows management of versions.  Only if no egg is found are the regular python libraries used.
 
-!!Questions
-* Where are the default eggs available?
-* In order to use a python egg, do you have to use {{{require}}}?
-* Where is the default PYTHONPATH defined?
-* What is the difference between {{{python}}} and {{{dls-python}}}?</pre>
+</pre>
 </div>
 <div _hash="6db9e57274a56625f07b1ddaa5d7e71ec7c182d3" created="20130819091844000" creator="willrogers" modified="20131125141852000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/DiamondRedirector/1560422:3612e991ef4f2844e02743ad6fa03699c45018b3&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1560422" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="DiamondRedirector" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="DiamondRedirector" type="text/x-tiddlywiki">
 <pre>The Diamond redirector is a tool used to allow a simple way to map an IOC's name to its startup script.
@@ -13119,7 +13121,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="FastArchiver" modified="20140806103400413" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="DiamondPython" modified="20140808140222660" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -13892,6 +13894,105 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;FastArchiver&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;DiamondNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 219.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 94,
+            &quot;right&quot;: 219,
+            &quot;bottom&quot;: 237.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 522.2666625976562,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 78,
+            &quot;right&quot;: 203,
+            &quot;bottom&quot;: 540.2666625976562,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'ControlsAde'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ControlsAde&quot;
+    },
+    {
+        &quot;title&quot;: &quot;DiamondPython&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 298.6499938964844,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 101,
+            &quot;right&quot;: 226,
+            &quot;bottom&quot;: 316.6499938964844,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'DiamondPython'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'DiamondPython'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;DiamondPython&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'DiamondPython'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'DiamondPython'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;DiamondPython&quot;
     }
 ]</pre>
 </div>
@@ -20716,7 +20817,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="Home DiamondNotes FastArchiver ComputingNotes" title="$:/StoryList">
+<div list="Home DiamondNotes DiamondPython ControlsAde" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
