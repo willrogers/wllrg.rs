@@ -8749,21 +8749,24 @@ This contains the definition of the extension points:
 ** {{{WorkbenchExtensionPoint}}} - only one allowed
 ** several other extension points, extending the first</pre>
 </div>
-<div _hash="8fb809d2fb7e35d9ee0f946df89088aab6132259" created="20140115095016000" creator="willrogers" modified="20140714093958000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/CsStudio/1828213:111ae558fb0c21c5982e96a9fda5eb72f78ff7d0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828213" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="CsStudio" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="CsStudio" type="text/x-tiddlywiki">
+<div _hash="8fb809d2fb7e35d9ee0f946df89088aab6132259" created="20140115095016000" creator="willrogers" modified="20140811152648593" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/CsStudio/1828213:111ae558fb0c21c5982e96a9fda5eb72f78ff7d0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828213" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="CsStudio" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="CsStudio" type="text/vnd.tiddlywiki">
 <pre>See also EclipsePlatform.
-BuildingCss
-CssProblems
-CssStartup
-CssWorkspaces
-EpicsDiirt
+
+* BuildingCss
+* CssProblems
+* CssStartup
+* CssWorkspaces
+* EpicsDiirt
 
 The developer manual is here: http://cs-studio.sourceforge.net/docbook/.  CSS, along with DAWN and GDA, is a member of the [[Eclipse Science Working Group|http://wiki.eclipse.org/Science_IWG]].
 
 !!Components
+
 * CssCore
 * CssBoy
 * EdmConverter
 I seem to be focused on BOY: best OPI yet.  This is only one of the core CSS components.  Others include:
+
 * BEAUTY - the archive toolkit, developed as a replacement for the Channel Archiver.  It uses a relational database to store the data.
 ** The CSS DataBrowser can read from Channel Archiver's XML-RPC interface, or BEAUTY's relational database.
 * BEAST - the alarm system toolkit, developed as a replacement for the alarm handler ALH.
@@ -10981,31 +10984,39 @@ The original ~ChannelArchiver is no longer actively developed, but it has a page
 
 I can't simply build the source.</pre>
 </div>
-<div _hash="d0166a43e97a868c9d9b22c82bb78b0c8e80c887" created="20140714094033000" creator="willrogers" modified="20140714095836000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EpicsDiirt/1828245:267a7f24042a399ea6c5a82563727977ae0551fa&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828245" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EpicsDiirt" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EpicsDiirt" type="text/x-tiddlywiki">
+<div _hash="d0166a43e97a868c9d9b22c82bb78b0c8e80c887" created="20140714094033000" creator="willrogers" modified="20140811153108862" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EpicsDiirt/1828245:267a7f24042a399ea6c5a82563727977ae0551fa&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828245" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EpicsDiirt" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EpicsDiirt" type="text/vnd.tiddlywiki">
 <pre>'diirt' (data integration in real time) is the Java source for pvmanager, among other things.  It's hosted on github at https://github.com/diirt.
 
 It does not depend on eclipse, just Java.  JavaMaven is used to build pvmanager.
 
 !!pvmanager
-pvmanager is the library used for managing ~PVs in CSS.  It includes:
-* {{{VTypes}}}
-* {{{pvmanager-}}}
-** {{{core}}}
-** {{{exec}}}
-** {{{extra}}}
-** {{{file}}}
-** {{{graphene}}}
-** {{{integration}}}
-** {{{jca}}}
-** {{{jdbc}}}
-** {{{loc}}} - local ~PVs, which I'm interested in 
-** {{{pva}}}
-** {{{sample}}}
-** {{{sim}}}
-** {{{sys}}}
-** {{{test}}}
-** {{{timecache}}}
-** {{{vtype}}}
+pvmanager is the library used for managing PVs in CSS.  It includes:
+
+* `VTypes`
+* `pvmanager-`
+** `core`
+** `exec`
+** `extra`
+** `file`
+** `graphene`
+** `integration`
+** `jca`
+** `jdbc`
+** `loc `- local PVs, which I'm interested in 
+** `pva` - epics v4
+** `sample`
+** `sim` - simulation PVs
+** `sys`
+** `test`
+** `timecache`
+** `vtype`
+
+It's managed by Gabriele Carcassi.  He wrote some blog posts on this:
+
+* https://weblogs.java.net/blog/carcassi/archive/2012/02/15/dealing-real-time-data-uis-and-others
+* https://weblogs.java.net/blog/carcassi/archive/2012/08/03/pvmanager-framework-deal-real-time-data-part-1
+* https://weblogs.java.net/blog/carcassi/archive/2012/08/17/pvmanager-framework-deal-live-data-part-2
+
 </pre>
 </div>
 <div _hash="16de48e121b3da190e1c5af3c0cf001cb206eae7" created="20130703163540000" creator="willrogers" modified="20140422151353000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EpicsEdm/1728258:69ffe18b264f968367438d5f206d99d0232f428f&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1728258" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EpicsEdm" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EpicsEdm" type="text/x-tiddlywiki">
@@ -13121,7 +13132,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="DiamondPython" modified="20140808140222660" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="EpicsDiirt" modified="20140811153108863" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -13993,6 +14004,87 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;DiamondPython&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;DiamondNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 219.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 94,
+            &quot;right&quot;: 219,
+            &quot;bottom&quot;: 237.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;CsStudio&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 317.3999938964844,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 57,
+            &quot;right&quot;: 182,
+            &quot;bottom&quot;: 335.3999938964844,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'CsStudio'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'CsStudio'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;CsStudio&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'CsStudio'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'CsStudio'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;CsStudio&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 218.48333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 59,
+            &quot;right&quot;: 184,
+            &quot;bottom&quot;: 236.48333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;
     }
 ]</pre>
 </div>
@@ -20817,7 +20909,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="Home DiamondNotes DiamondPython ControlsAde" title="$:/StoryList">
+<div list="Home DiamondNotes CsStudio EpicsDiirt" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
