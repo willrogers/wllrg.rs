@@ -631,6 +631,8 @@ Error message and password prompt
 
 <li>JavaClasspath</li>
 
+<li>JavaGenerics</li>
+
 <li>JavaKeywords</li>
 
 <li>JavaMaven</li>
@@ -10252,21 +10254,22 @@ Retains mappings between:
 * {{{OpiWriter.writeXML()}}} writes the XML document to a file.
 </pre>
 </div>
-<div _hash="a5579610ae5d36495d549faa0519ab0c8f9a0a92" created="20140317201006000" creator="willrogers" modified="20140708093050000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EffectiveJava/1820279:b99ace6567c3772275d00eeb57b71ead0742f1c3&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1820279" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EffectiveJava" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EffectiveJava" type="text/x-tiddlywiki">
+<div _hash="a5579610ae5d36495d549faa0519ab0c8f9a0a92" created="20140317201006000" creator="willrogers" modified="20140812164916833" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EffectiveJava/1820279:b99ace6567c3772275d00eeb57b71ead0742f1c3&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1820279" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EffectiveJava" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EffectiveJava" type="text/vnd.tiddlywiki">
 <pre>!!!Creating and Destroying Objects
-1 - //Consider static factory methods instead of constructors//
-2 - //Enforce the singleton property//
-* update: use an {{{enum}}} with one {{{INSTANCE}}} field
-3 - //Enforce noninstantiability with a private constructor//
-4 - //Avoid creating duplicate objects//
-5 - //Eliminate obsolete object references//
-* you can create subtle memory leaks
-6 - //Avoid finalizers//
+#  //Consider static factory methods instead of constructors//
+#  //Enforce the singleton property//
+#* update: use an `enum` with one `INSTANCE` field
+#  //Enforce noninstantiability with a private constructor//
+#  //Avoid creating duplicate objects//
+#  //Eliminate obsolete object references//
+#* you can create subtle memory leaks
+#  //Avoid finalizers//
 
 !!!Methods common to all objects
+
 7 - //Obey the general contract when overriding {{{equals}}}//
 * be careful of subclasses
-8 - //always override {{{hashCode}}} when overriding {{{equals}}}//
+# - //always override {{{hashCode}}} when overriding {{{equals}}}//
 * there is a simple recipe
 9 - //always override {{{toString}}}//
 10 - //override {{{clone}}} judiciously//
@@ -10984,13 +10987,15 @@ The original ~ChannelArchiver is no longer actively developed, but it has a page
 
 I can't simply build the source.</pre>
 </div>
-<div _hash="d0166a43e97a868c9d9b22c82bb78b0c8e80c887" created="20140714094033000" creator="willrogers" modified="20140811153108862" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EpicsDiirt/1828245:267a7f24042a399ea6c5a82563727977ae0551fa&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828245" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EpicsDiirt" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EpicsDiirt" type="text/vnd.tiddlywiki">
+<div _hash="d0166a43e97a868c9d9b22c82bb78b0c8e80c887" created="20140714094033000" creator="willrogers" modified="20140812131312518" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/EpicsDiirt/1828245:267a7f24042a399ea6c5a82563727977ae0551fa&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828245" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="EpicsDiirt" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="EpicsDiirt" type="text/vnd.tiddlywiki">
 <pre>'diirt' (data integration in real time) is the Java source for pvmanager, among other things.  It's hosted on github at https://github.com/diirt.
 
 It does not depend on eclipse, just Java.  JavaMaven is used to build pvmanager.
 
 !!pvmanager
-pvmanager is the library used for managing PVs in CSS.  It includes:
+pvmanager is the library used for managing PVs in CSS. It's somewhat complicated, with a fairly large infrastructure designed to sensibly handle different data sources.
+
+It includes:
 
 * `VTypes`
 * `pvmanager-`
@@ -11010,6 +11015,15 @@ pvmanager is the library used for managing PVs in CSS.  It includes:
 ** `test`
 ** `timecache`
 ** `vtype`
+
+A new datatype in PVManager might be as simple as two classes: 
+
+* `*DataSource.java`
+** extending `DataSource.java`
+** This will create the `ChannelHandler`s that may be required
+* `*ChannelHandler.java`  
+** Generally extending `MultiplexedChannelHandler.java`
+
 
 It's managed by Gabriele Carcassi.  He wrote some blog posts on this:
 
@@ -13132,7 +13146,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="HaskellTypes" modified="20140812080246442" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="EffectiveJava" modified="20140812164916834" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -14130,6 +14144,273 @@ Prelude&gt; 5 :: Int
             &quot;bottom&quot;: 660.1666870117188,
             &quot;height&quot;: 18
         }
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 326.16668701171875,
+            &quot;left&quot;: 777,
+            &quot;width&quot;: 59,
+            &quot;right&quot;: 836,
+            &quot;bottom&quot;: 344.16668701171875,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EpicsDiirt'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EpicsDiirt&quot;
+    },
+    {
+        &quot;title&quot;: &quot;ComputingNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 199.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 106,
+            &quot;right&quot;: 231,
+            &quot;bottom&quot;: 217.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;JavaNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 285.0333251953125,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 67,
+            &quot;right&quot;: 192,
+            &quot;bottom&quot;: 303.0333251953125,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaGenerics&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 730,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 87,
+            &quot;right&quot;: 212,
+            &quot;bottom&quot;: 748,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaGenerics&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaGenerics&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 372.51666259765625,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 92,
+            &quot;right&quot;: 217,
+            &quot;bottom&quot;: 390.51666259765625,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaGenerics'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaGenerics&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'JavaKeywords'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;JavaKeywords&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 312.01666259765625,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 84,
+            &quot;right&quot;: 209,
+            &quot;bottom&quot;: 330.01666259765625,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'EffectiveJava'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;EffectiveJava&quot;
     }
 ]</pre>
 </div>
@@ -14902,84 +15183,104 @@ For this to work, you have to have specified a main class.
 ''Note:'' {{{java -jar -cp ...}}} doesn't work!  It just ignores the classpath.  You can just put the jar file you want to run on the classpath and specify the main class instead.
 </pre>
 </div>
-<div _hash="18168a5f1a1005c7ee672206730dcc943e5d4580" created="20140317221926000" creator="willrogers" modified="20140712215253000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/JavaKeywords/1826530:1c6c8931e71933049d43cff44fdc066b2bb7dc79&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1826530" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="JavaKeywords" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="JavaKeywords" type="text/x-tiddlywiki">
-<pre>{{{true}}}, {{{false}}} and {{{null}}} are literals rather than keywords.
+<div created="20140812150312486" creator="WillRogers" modified="20140812152048884" modifier="WillRogers" title="JavaGenerics">
+<pre>Java uses generics in order to make classes with varying types without having to have multiple implementations.  The classic example is `List&lt;T&gt;` - you can have a list of whatever type you like, but the behaviour is the same.
+
+Some notation:
+
+* `Class&lt;? extends T&gt;` - T or any descendant of T
+* `Class&lt;? super T&gt;` - T or any ancestor of T
+* `Class&lt;?&gt;` - an unspecified class.  This is useful for when you want to accept a generic in a function, but you can't specify the type.</pre>
+</div>
+<div _hash="18168a5f1a1005c7ee672206730dcc943e5d4580" created="20140317221926000" creator="willrogers" modified="20140812164525227" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/JavaKeywords/1826530:1c6c8931e71933049d43cff44fdc066b2bb7dc79&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1826530" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="JavaKeywords" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="JavaKeywords" type="text/vnd.tiddlywiki">
+<pre>`true`, `false` and `null` are literals rather than keywords.
+
+`...` is Java's version of varargs.  You may have one instance of varargs in a method call, and it must come at the end:
+
+```
+    public static &lt;T&gt; List&lt;T&gt; asList(T... a) {
+        return new ArrayList&lt;&gt;(a);
+    }
+```
 
 !!!!?
-{{{transient}}}
-{{{volatile}}} 
-{{{synchronised}}}
-{{{native}}} - shows that a method is implemented using the JNI
-{{{strictfp}}} - guarantees the same floating point result on all platforms.  Likely to be slower or less accurate than otherwise
+`transient`
+`volatile` 
+`synchronised`
+
+* `native` - shows that a method is implemented using the JNI
+* `strictfp` - guarantees the same floating point result on all platforms.  Likely to be slower or less accurate than otherwise
 
 !!!!Types
-{{{boolean}}}
-{{{short}}}
-{{{int}}}
-{{{long}}}
-{{{float}}}
-{{{double}}}
-{{{char}}}
-{{{byte}}}
-{{{void}}}
+`boolean`
+`short`
+`int`
+`long`
+`float`
+`double`
+`char`
+`byte`
+`void`
 
 !!!!Object orientation
-{{{class}}}
-{{{interface}}}
-{{{enum}}}
-{{{extends}}}
-{{{implements}}}
-{{{abstract}}}
-{{{package}}}
-{{{import}}}
-{{{instanceof}}}
-{{{new}}}
-{{{super}}}
-{{{static}}}
-{{{this}}}
-{{{return}}}
+`class`
+`interface`
+`enum`
+`extends`
+`implements`
+`abstract`
+`package`
+`import`
+`instanceof`
+`new`
+`super`
+`static`
+`this`
+`return`
 
 !!!!Flow control
-{{{for}}}
-{{{do}}}
-{{{if}}}
-{{{else}}}
-{{{while}}}
-{{{break}}}
-{{{continue}}}
-{{{switch}}}
-{{{case}}}
-{{{default}}}
+`for`
+`do`
+`if`
+`else`
+`while`
+`break`
+`continue`
+`switch`
+`case`
+`default`
 
 !!!!Exceptions
-{{{try}}}
-{{{catch}}}
-{{{finally}}}
-{{{throw}}}
-{{{throws}}}
+`try`
+`catch`
+`finally`
+`throw`
+`throws`
 
 !!!!Access control
-{{{public}}}
-{{{protected}}} - package plus subclasses
-{{{private}}}
-{{{final}}}:
-* a class can't be subclassed
-* a method can't be overridden
-* a variable reference can't be changed (though the object in the reference can be changed)
+
+* `public`
+* `protected` - package plus subclasses
+* `private`
+* `final`:
+** a class can't be subclassed
+** a method can't be overridden
+** a variable reference can't be changed (though the object in the reference can be changed)
 
 !!!!Unused
-{{{const}}}
-{{{goto}}}
+`const`
+`goto`
 </pre>
 </div>
 <div _hash="dd07a9d8381517c0bf8a3aa69d491e7fbdd438ce" created="20140714095937000" creator="willrogers" modified="20140714095937000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/JavaMaven/1828247:ad7b42b9c588824ba6b039d0d204569a4b74fd90&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828247" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="JavaMaven" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="JavaMaven" type="text/x-tiddlywiki">
 <pre>Maven is a tool for building Java projects.  Its main benefit is resolving dependencies, from Maven central or other repositories.</pre>
 </div>
-<div _hash="9cb8d2666f4125e11d36c8e82a27bd0ac858e1de" created="20140317194357000" creator="willrogers" modified="20140714095900000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/JavaNotes/1828246:7ec2d1f787fec879369bf6f3a07594224f8e5d5e&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828246" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="JavaNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="JavaNotes" type="text/x-tiddlywiki">
+<div _hash="9cb8d2666f4125e11d36c8e82a27bd0ac858e1de" created="20140317194357000" creator="willrogers" modified="20140812150301429" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/JavaNotes/1828246:7ec2d1f787fec879369bf6f3a07594224f8e5d5e&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1828246" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="JavaNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="JavaNotes" type="text/vnd.tiddlywiki">
 <pre>A very good Java style guide for Android: http://source.android.com/source/code-style.html.
 
 * EffectiveJava
 * JavaKeywords
+* JavaGenerics
 * JavaAnt
 * JavaMaven</pre>
 </div>
@@ -20859,7 +21160,7 @@ You can also [[socialise with others|How to socialise]].</pre>
 <div modified="20140802143200712" title="$:/state/showeditpreview">
 <pre>no</pre>
 </div>
-<div modified="20140802145502598" title="$:/state/sidebar">
+<div modified="20140812151300746" modifier="WillRogers" title="$:/state/sidebar">
 <pre>yes</pre>
 </div>
 <div modified="20140802144445806" title="$:/state/tab-{-1887685055}">
@@ -20954,7 +21255,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="HaskellTypes Home" title="$:/StoryList">
+<div list="Home ComputingNotes JavaNotes EffectiveJava JavaGenerics" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
