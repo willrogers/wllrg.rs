@@ -12204,21 +12204,25 @@ You can have as many spaces as you like and each space can have as many members 
 !Stuck?
 If you're stuck, and would like some help, please visit the [[help|http://help.tiddlyspace.com]] space, which can point you in the right direction.</pre>
 </div>
-<div _hash="72e2b601f27cf7a3620e9f1ed7a242822bfa6eec" created="20131125135419000" creator="willrogers" modified="20140414105838000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitBranch/1720051:2290e8f800f52f4f280a1826672b08607fd2e106&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1720051" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitBranch" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitBranch" type="text/x-tiddlywiki">
+<div _hash="72e2b601f27cf7a3620e9f1ed7a242822bfa6eec" created="20131125135419000" creator="willrogers" modified="20140814141135419" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitBranch/1720051:2290e8f800f52f4f280a1826672b08607fd2e106&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1720051" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitBranch" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitBranch" type="text/vnd.tiddlywiki">
 <pre>Branches are managed magically, unlike in SVN where they are manual.  There are two types of branch - regular, and 'remote-tracking'.  A remote-tracking branch keeps track of where you are compared to a branch on a remote, and will tell you where you are in comparison to that branch.
+
+You can refer to a local branch with its name, and a remote branch with `&lt;remote&gt;/&lt;name&gt;`.
 
 See http://git-scm.com/book/en/Git-Branching-Basic-Branching-and-Merging
 
-* {{{git branch}}} lists the local branches; {{{-r}}} lists branches of the remotes, and {{{-a}}} lists all
-* {{{git checkout &lt;branch&gt;}}} switches to the named branch
-* {{{git branch -d &lt;branch&gt;}}} deletes the named branch (for example, if you have merged it)
-* {{{git branch -m &lt;new-name&gt;}}} renames the current branch
-* {{{git branch -vv}}} - lists local branches and includes any branches that are being tracked
+* `git branch` lists the local branches; `-r` lists branches of the remotes, and `-a` lists all
+* `git checkout &lt;branch&gt;` switches to the named branch
+* `git branch -d &lt;branch&gt;` deletes the named branch (for example, if you have merged it)
+* `git branch -m &lt;new-name&gt;` renames the current branch
+* `git branch -vv` - lists local branches and includes any branches that are being tracked
 
 To list the differences between two branches, use 
-* {{{git diff &lt;branch1&gt;..&lt;branch2&gt;}}}
+* `git diff &lt;branch1&gt;..&lt;branch2&gt;`
 If you omit one branch, the current branch will be used.  You can also compare against commits using the first part of the SHA1 sum:
-* {{{git diff d21d420 sofb.py}}}
+* `git diff d21d420 sofb.py`
+
+
 </pre>
 </div>
 <div _hash="05268f910484e45dd93e3ee81c6371213af90719" created="20131125135551000" creator="willrogers" modified="20131125135551000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitCommit/1560364:7e2168eb0f42e14afce698580e69e648ece6270a&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1560364" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitCommit" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitCommit" type="text/x-tiddlywiki">
@@ -13167,7 +13171,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="GitConfig" modified="20140813151123097" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="GitBranch" modified="20140814141135421" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -14646,6 +14650,49 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;GitConfig&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 306.16668701171875,
+            &quot;left&quot;: 777,
+            &quot;width&quot;: 55,
+            &quot;right&quot;: 832,
+            &quot;bottom&quot;: 324.16668701171875,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;GitBranch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 123.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 63,
+            &quot;right&quot;: 188,
+            &quot;bottom&quot;: 141.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitBranch'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitBranch'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitBranch&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitBranch'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitBranch'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitBranch&quot;
     }
 ]</pre>
 </div>
@@ -21496,7 +21543,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="GitNotes GitConfig Home" title="$:/StoryList">
+<div list="GitNotes GitBranch Home" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
@@ -23129,8 +23176,8 @@ I ended up creating the DHCP pool from scratch.  Some points:
 # [[ToothIssue]]
 </pre>
 </div>
-<div created="20140802142219789" creator="WillRogers" modified="20140813150332955" modifier="WillRogers" title="$:/temp/search">
-<pre>git</pre>
+<div created="20140802142219789" creator="WillRogers" modified="20140814140853449" modifier="WillRogers" title="$:/temp/search">
+<pre></pre>
 </div>
 <div _hash="1b527df524e5f8c1a43dc6ffc755a69ca81a9c23" created="20110819120432000" creator="willrogers" modified="20110829170229000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/TenerifeFlights/364810:b3f00fdc2ae3e2d6b6ef48b225e0f28435bcf9d9&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364810" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="TenerifeFlights" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="TenerifeFlights" type="text/x-tiddlywiki">
 <pre>To get to the Canary Islands, we basically need to fly via Tenerife South.  Both Ryanair and EasyJet fly there.  We ideally want to fly out on the 3rd and back on the 17th, both Saturdays.  We'd also probably want a flight which gets in earlyish on the 3rd so that we can connect with a ferry to the island we're going to which is not Tenerife (likely La Gomera or La Palma).
