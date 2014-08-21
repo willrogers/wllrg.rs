@@ -545,6 +545,8 @@ Error message and password prompt
 
 <li>GitBranch</li>
 
+<li>GitClean</li>
+
 <li>GitCommit</li>
 
 <li>GitDirectory</li>
@@ -2111,8 +2113,7 @@ You can set ~PS1 here, which controls what your prompt looks like.  ~PS2 is the 
 * {{{\s-\v}}} - shell and version</pre>
 </div>
 <div _hash="e6ecd2f482a8c3785e8547b38a20988d82cbc0ec" created="20111031101701000" creator="willrogers" modified="20140819104929495" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/BashScripting/1580471:4dccc15964426fc596674110c6a03bb0c2960e4a&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1580471" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="BashScripting" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="bash linux" title="BashScripting" type="text/vnd.tiddlywiki">
-<pre>
-* BashScriptingBasics
+<pre>* BashScriptingBasics
 * BashSyntax
 * BashSpecialCharacters
 * BashControlFlow
@@ -11983,7 +11984,7 @@ The code uses a few VXWorks libraries:
 * XFS - a rival for {{{ext4}}} used at Diamond for the home filesystem.
 </pre>
 </div>
-<div _hash="32ff70fce3c717bcbe37c72cd8b70b976ab308b4" created="20120307141515000" creator="willrogers" modified="20140804084744780" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/FindLocate/1572575:cc7041994ab49d87b16a29e5b73f4b5e3145ea77&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1572575" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="FindLocate" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="FindLocate" type="text/vnd.tiddlywiki">
+<div _hash="32ff70fce3c717bcbe37c72cd8b70b976ab308b4" created="20120307141515000" creator="willrogers" modified="20140821121326935" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/FindLocate/1572575:cc7041994ab49d87b16a29e5b73f4b5e3145ea77&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1572575" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="FindLocate" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="FindLocate" type="text/vnd.tiddlywiki">
 <pre>`find` and `locate` are two variations of ways to find files on a Linux filesystem.
 
 !!Locate
@@ -11997,8 +11998,11 @@ find &lt;options&gt; &lt;path&gt; &lt;expression&gt;
 
 * `find /dls_sw/ -name '*.edl` - find all the `edl` files in `dls_sw`
 ** the quotes are important - otherwise bash will expand the variables
-* `iname` is case-insensitive
-* `-exec` allows you to execute a command for each match
+* `-iname` is case-insensitive
+* `-exec` allows you to execute a command for each match:
+** `find applications/plugins/org.csstudio.opibuilder -name MANIFEST.MF -exec grep resource '{}' \;`
+** `'{}'` represents each match in the command
+** you can have more than one `-exec` argument
 * `-printf` allows you to format the output 
 
 !!!Links
@@ -12260,23 +12264,40 @@ If you omit one branch, the current branch will be used.  You can also compare a
 * `git diff d21d420 sofb.py`
 </pre>
 </div>
-<div _hash="05268f910484e45dd93e3ee81c6371213af90719" created="20131125135551000" creator="willrogers" modified="20131125135551000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitCommit/1560364:7e2168eb0f42e14afce698580e69e648ece6270a&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1560364" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitCommit" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitCommit" type="text/x-tiddlywiki">
+<div created="20140821090232620" creator="WillRogers" modified="20140821090444531" modifier="WillRogers" title="GitClean">
+<pre>`git clean` is used for removing files which are not tracked by git.
+
+* `-d` - remove directories as well as files
+* `-f` - generally required, because it's a dangerous operation
+* `-n` - dry run
+* `-x` - remove items matched by `.gitignore`, even though you don't see them in `git status`</pre>
+</div>
+<div _hash="05268f910484e45dd93e3ee81c6371213af90719" created="20131125135551000" creator="willrogers" modified="20140821090728730" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitCommit/1560364:7e2168eb0f42e14afce698580e69e648ece6270a&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1560364" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitCommit" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitCommit" type="text/vnd.tiddlywiki">
 <pre>!!Commits
-When you commit, only things that you have added are committed.  You can add a file using {{{git add &lt;file&gt;}}}; you can add parts of a file using {{{git add -p}}}.
+When you commit, only things that you have added are committed.  You can add a file using `git add &lt;file&gt;`; you can add parts of a file using `git add -p`.
 A commit is a well-defined unit in git.  Each is unambiguously named by its SHA1 sum.  You can refer to it by the shortest part of the SHA1 sum which is unambiguous.
-* {{{HEAD}}} refers to the latest commit on the current branch
-* {{{HEAD^}}} and {{{HEAD^^}}} refer to the previous commits
-* {{{HEAD~1}}} and {{{HEAD~2}}} refer to the same commits as above 
-Because of merges, a commit may have more than one parent.  If this is the case, {{{git show &lt;commit&gt;}}} will show {{{Merge: &lt;p1&gt; &lt;p2&gt;}}}.   In this case,
-* {{{HEAD^}}} or {{{HEAD^1}}} refers to the first parent
-* {{{HEAD^2}}} refers to the second parent
-* {{{HEAD^@}}} refers to all parents, where relevant
+
+* `HEAD` refers to the latest commit on the current branch
+* `HEAD^` and `HEAD^^` refer to the previous commits
+* `HEAD~1` and `HEAD~2` refer to the same commits as above 
+Because of merges, a commit may have more than one parent.  If this is the case, `git show &lt;commit&gt;` will show `Merge: &lt;p1&gt; &lt;p2&gt;`.   In this case,
+
+* `HEAD^` or `HEAD^1` refers to the first parent
+* `HEAD^2` refers to the second parent
+* `HEAD^@` refers to all parents, where relevant
 
 !!Undoing commits
 You can undo a commit in a few ways:
-* {{{git reset HEAD~1}}} removes the last commit, but leaves the files as they were
-* {{{git reset --hard HEAD~1}}} removes the last commit and also sets all the files to how they were at the time of that commit
-* {{{git commit --amend}}} changes the latest commit so that it now reflects the changes you've made since that commit.  Don't do this if you have pushed the commit somewhere.</pre>
+
+* `git reset HEAD~1` removes the last commit, but leaves the files as they were
+* `git reset --hard HEAD~1` removes the last commit and also sets all the files to how they were at the time of that commit
+* `git commit --amend` changes the latest commit so that it now reflects the changes you've made since that commit.  Don't do this if you have pushed the commit somewhere.
+
+!!Commit messages
+
+Here's a good style guide for using git: https://wiki.openstack.org/wiki/GitCommitMessages#Information_in_commit_messages
+
+</pre>
 </div>
 <div created="20140817155118181" creator="WillRogers" modified="20140817160023470" modifier="WillRogers" title="GitDirectory" type="`">
 <pre>When you run `git init` in a directory, a new directory is created inside called `.git`.  This contains all the bits that make git work.  The standard contents are:
@@ -12296,7 +12317,7 @@ All things stored in git are objects.  You can create arbitrary objects and stor
 
 </pre>
 </div>
-<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140817155000158" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/vnd.tiddlywiki">
+<div _hash="01c241efd541990de255a4d1c381f76a8cda976a" created="20121129111245000" creator="willrogers" modified="20140821090525755" modifier="WillRogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/GitNotes/1686353:f471c13c7aa9d3637dcb9b42f3d64dc4eae94761&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="1686353" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="GitNotes" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="GitNotes" type="text/vnd.tiddlywiki">
 <pre>* GitCommit
 * GitBranch
 * GitTag
@@ -12306,6 +12327,7 @@ All things stored in git are objects.  You can create arbitrary objects and stor
 * GitRemote
 * GitStash
 * GitReset
+* GitClean
 * GitDirectory
 
 To set up a repo, follow the instructions on this page: https://help.github.com/articles/create-a-repo
@@ -12315,8 +12337,6 @@ In order to connect from behind a proxy, I had to set:
 `export https_proxy=wwwcache.rl.ac.uk:8080`.
 
 `gitk` is useful to visualise the progress of a repo; in particular `gitk --all`.
-
-Here's a good style guide for using git: https://wiki.openstack.org/wiki/GitCommitMessages#Information_in_commit_messages
 
 
 !!General idea
@@ -13223,7 +13243,7 @@ Prelude&gt; 5 :: Int
 }}}
 * here {{{a}}} is a generic type</pre>
 </div>
-<div current-tiddler="BashGlobs" modified="20140819111724642" modifier="WillRogers" title="$:/HistoryList" type="application/json">
+<div current-tiddler="FindLocate" modified="20140821121326937" modifier="WillRogers" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;GettingStarted&quot;
@@ -15005,6 +15025,161 @@ Prelude&gt; 5 :: Int
     },
     {
         &quot;title&quot;: &quot;BashGlobs&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Home&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 280.48333740234375,
+            &quot;left&quot;: 770,
+            &quot;width&quot;: 55,
+            &quot;right&quot;: 825,
+            &quot;bottom&quot;: 298.48333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitClean&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 283.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 55,
+            &quot;right&quot;: 180,
+            &quot;bottom&quot;: 301.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitClean'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitClean'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitClean&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitClean'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitClean'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitClean&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitNotes'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitNotes&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitCommit&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 103.98333740234375,
+            &quot;left&quot;: 125,
+            &quot;width&quot;: 67,
+            &quot;right&quot;: 192,
+            &quot;bottom&quot;: 121.98333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitCommit&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitCommit&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitCommit&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'GitCommit'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;GitCommit&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FindLocate&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 260.48333740234375,
+            &quot;left&quot;: 770,
+            &quot;width&quot;: 71,
+            &quot;right&quot;: 841,
+            &quot;bottom&quot;: 278.48333740234375,
+            &quot;height&quot;: 18
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FindLocate&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FindLocate&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FindLocate&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'FindLocate'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;FindLocate&quot;
     }
 ]</pre>
 </div>
@@ -21855,7 +22030,7 @@ They're going to try and organise a teleconference every two weeks to speed up d
 There should be a 'profile' of the element for EMI, so that we understand within EMI our interpretations and usages of the same fields are the same and useful to the users.
 </pre>
 </div>
-<div list="ConfigureScripts BashScripting BashGlobs BashStrings" title="$:/StoryList">
+<div list="FindLocate GitNotes GitCommit GitClean Home" title="$:/StoryList">
 <pre></pre>
 </div>
 <div _hash="6f3793d06c343261c4ba0befb80e8d687c67e4b2" created="20111120111104000" creator="willrogers" modified="20120229160919000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/StructuredMarkup/364772:d9648fa9ebc2e33f58d00c16ed9eeedb6a8e62c0&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364772" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="StructuredMarkup" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="html python xml" title="StructuredMarkup" type="text/x-tiddlywiki">
@@ -23488,8 +23663,8 @@ I ended up creating the DHCP pool from scratch.  Some points:
 # [[ToothIssue]]
 </pre>
 </div>
-<div created="20140802142219789" creator="WillRogers" modified="20140819105730145" modifier="WillRogers" title="$:/temp/search">
-<pre>configure</pre>
+<div created="20140802142219789" creator="WillRogers" modified="20140821120545092" modifier="WillRogers" title="$:/temp/search">
+<pre>findlo</pre>
 </div>
 <div _hash="1b527df524e5f8c1a43dc6ffc755a69ca81a9c23" created="20110819120432000" creator="willrogers" modified="20110829170229000" modifier="willrogers" server.bag="willrogers_public" server.content-type="" server.etag="&quot;willrogers_public/TenerifeFlights/364810:b3f00fdc2ae3e2d6b6ef48b225e0f28435bcf9d9&quot;" server.host="http://willrogers.tiddlyspace.com" server.page.revision="364810" server.permissions="read, write, create, delete" server.recipe="willrogers_private" server.title="TenerifeFlights" server.type="tiddlyweb" server.workspace="bags/willrogers_public" tags="" title="TenerifeFlights" type="text/x-tiddlywiki">
 <pre>To get to the Canary Islands, we basically need to fly via Tenerife South.  Both Ryanair and EasyJet fly there.  We ideally want to fly out on the 3rd and back on the 17th, both Saturdays.  We'd also probably want a flight which gets in earlyish on the 3rd so that we can connect with a ferry to the island we're going to which is not Tenerife (likely La Gomera or La Palma).
