@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <script src="d3/d3.min.js" charset="utf-8"></script>
+    <style type="text/css">
+      div.bar {
+        display: inline-block;
+        width: 20px;
+        height: 75px;
+        background-color: teal;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var dataset = [ 5, 10, 15, 20, 25 ];
+      for (var i = 0; i < 20; i++) {
+        var num = Math.random() * 30;
+        dataset.push(num);
+      }
+      d3.select("body").selectAll("div")
+          .data(dataset)
+          .enter()
+          .append("div")
+          .style("color", function(d) {
+            if (d < 15) { 
+              return "red"; 
+             } else {
+              return "blue";
+            }
+          }).attr("class", "bar")
+            .style("height", function(d) {
+              return (d * 5) + "px";
+          }).style("margin-right", "2px");
+    </script>
+  </body>
+  <svg width="100" height="100">
+      <circle cx="50" cy="50" r="25" />
+      <line x1="0" y1="0" x2="500" y2="50" stroke="orange"/>
+  </svg>
+</html>
