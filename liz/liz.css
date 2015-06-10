@@ -22,7 +22,7 @@ h1 {
 
 #sig-banner {
   margin-left: 100px;
-  margin-top: 30px;
+  margin-top: 20px;
   width: 400px;
   height: auto;
 }
@@ -78,14 +78,14 @@ ul.vert-list {
 }
 
 .vert-list-item {
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   border-bottom: 1px solid #BBBBBB;
 }
 
 .vert-list-last {
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .horiz-list-item {
