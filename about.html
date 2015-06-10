@@ -1,47 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    <link type="text/css" rel="stylesheet" href="style.css"/>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <script type="text/javascript" src="jquery/jquery-2.1.1.js"></script>
-    <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-R9F84Zl_NRErIGMrZXk6fnJWpWW1AVY"></script>
-    <script type="text/javascript">
-      function initialize() {
-        var mapOptions = {
-          center: { lat: 51.760, lng: -1.239},
-          zoom: 14
-        };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-            mapOptions);
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-  </head>
-  <body class=background>
-    <div class="wrapper">
-      <div class="header">
-        <div class="menu">
-          <ul class="nav">
-            <li class="header-nav-item"><a href="index.html">willrogers.github.io</a></li>
-            <li class="header-nav-item"><i class="fa fa-camera-retro fa-lg"></i></li>
-            <li class="header-nav-item"><a href="about.html">About</a></li>
-            <li class="header-nav-item">Contact</li>
-            <li class="header-nav-item">Something else</li>
-          </ul>
-          <div class="login">
-            <button type="button" href="login.txt">Log In</button>
-          </div>
-        </div>
-      </div>
-      <div class="main">
-        <div class="content">
-          <h3>This is where I live.</h3>
+---
+layout: main
+extra_js:
+  - https://maps.googleapis.com/maps/api/js?key=AIzaSyA-R9F84Zl_NRErIGMrZXk6fnJWpWW1AVY
+  - maps.js
+---
+
+          <h3>Hi!</h3>
+          <p>My name's Will.  I work as a software engineer at Diamond Light Source in Oxfordshire, UK.  It's a Synchrotron Light Source used for doing Science; I'm one of the people that helps make it go.</p>
+          <p>This is where I live.</p>
           <div id="map-canvas"></div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>

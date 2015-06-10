@@ -1,6 +1,6 @@
 
 function joke() {
-    alert("Only joking.");
+    alert("Not really.");
 }
 
 $(function() {
