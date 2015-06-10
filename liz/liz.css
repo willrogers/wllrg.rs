@@ -13,17 +13,18 @@ a:hover {
 
 h1 {
   margin-top: 0;
+  font-weight: 400;
 }
 
 .signature {
-  width: 400px;
+  width: 500px;
   height: auto;
 }
 
 #sig-banner {
-  margin-left: 100px;
+  margin-left: 50px;
   margin-top: 20px;
-  width: 400px;
+  width: 270px;
   height: auto;
 }
 
@@ -38,11 +39,11 @@ h1 {
   left: 50%;
   margin: 0;
   margin-top: -125px;
-  margin-left: -200px;
+  margin-left: -250px;
 }
 
 .photo {
-  background-color: blue;
+  background-color: #C0C0C0;
   margin-right: 25px;
   margin-top: 25px;
   height: 200px;
@@ -51,9 +52,9 @@ h1 {
 }
 
 .thumb {
-  height: 180px;
-  width: 180px;
-  margin: 10px;
+  height: 196px;
+  width: 196px;
+  margin: 2px;
 }
 
 ul {
@@ -62,13 +63,13 @@ ul {
 
 ul.horiz-list {
   margin-top: 20px;
-  margin-left: 0px;
+  margin-left: 70px;
   margin-bottom: 0px;
 }
 
 #side-links {
   float: right;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 ul.vert-list {
@@ -90,8 +91,8 @@ ul.vert-list {
 
 .horiz-list-item {
   display: inline-block;
-  padding-right: 7px;
-  padding-left: 7px;
+  padding-right: 5px;
+  padding-left: 5px;
   font-size: 1.2em;
 }
 
