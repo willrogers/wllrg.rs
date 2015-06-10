@@ -43,12 +43,22 @@ h1 {
 }
 
 .photo {
+  opacity: 0.8;
+  filter: grayscale(100%);
+  transition: grayscale .25s ease-in-out;
+  transition: opacity .25s ease-in-out;
   background-color: white;
   margin-right: 25px;
   margin-top: 25px;
   height: 230px;
   width: 200px;
   float: left;
+  cursor: pointer;
+}
+
+.photo:hover {
+  filter: grayscale(0%);
+  opacity: 1;
 }
 
 .caption {
