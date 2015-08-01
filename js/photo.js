@@ -19,9 +19,6 @@ function resize_photo() {
     var height = pdiv.naturalHeight;
     var ratio = height / width;
 
-    console.log("ratio is " + ratio);
-    console.log("avail ratio is " + avail_ratio);
-
     if (ratio <= avail_ratio) {
         pdiv.setAttribute("width", max_width);
         pdiv.setAttribute("height", max_width * ratio);
@@ -37,3 +34,11 @@ $(function() {
 });
 
 $(window).resize(resize_photo);
+
+$(document).keydown(function(event) {
+    if (event.keyCode === 39) {
+      alert("right arrow key");
+    } else if (event.keyCode === 37) {
+        alert("left arrow key");
+    }
+});
