@@ -141,3 +141,13 @@ ul.vert-list {
 #photo-container {
   margin-top: 10px;
 }
+
+.galleria {
+  width: 700px;
+  height: 450px;
+  background: white;
+}
+
+.galleria-container {
+  background: #BFBFBC;
+}
