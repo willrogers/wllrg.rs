@@ -32,18 +32,19 @@ function move(left) {
         total += this;
      });
     console.log('nextml' + nextml + ' total' + total);
-    if (nextml === extra) {
-        console.log('at left, not doing anything');
+    if (!left && active === 0) {
+        console.log('at left');
         return;
-    } else if (nextml > -extra) {
-        nextml = -extra;
-    } else if (nextml === screen_width() - extra - total) {
-        console.log('at right, not doing anything');
+    } else if (left && active === nphotos - 1) {
+        console.log('at right');
         return;
-    } else if (nextml < screen_width() - extra - total) {
-        nextml = screen_width() - total - extra;
     }
     var nextactive = left ? active + 1 : active - 1;
+    if (nextactive === 0) {
+        nextml = -extra;
+    } else if (nextactive === nphotos - 1) {
+        nextml = screen_width() - total - extra;
+    }
     var next_active_photo = $('.photospan').children()[nextactive];
     $(next_active_photo).css('opacity', 1.0);
     $(active_photo).css('opacity', 0.7);
