@@ -1,6 +1,12 @@
+function screen_width() {
+    return window.innerWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth;
+}
+
 function photo_widths() {
     var lengths = [];
-    var photos = $('.photos').children();
+    var photos = $('.photospan').children();
     for (var i = 0; i < photos.length; i++) {
         lengths.push($(photos[i]).width());
     }
@@ -9,27 +15,39 @@ function photo_widths() {
 
 function move(left) {
     console.log('move left?' + left);
-    console.log(photo_widths());
-    var active = $('.photospan').data('active-photo');
     if ($('.photospan').is(':animated')) {
         console.log('moving');
         return;
     }
+    var active = $('.photospan').data('active-photo');
     var active_photo = $('.photospan').children()[active];
     var w = $(active_photo).width();
     var nphotos = $('.photospan').children().length;
     console.log('There are ' + nphotos + ' photos; active is ' + active);
-    if (left && active === nphotos - 1) {
-        console.log('at right, not doing anything');
-        return;
-    } else if (!left && active === 0) {
+    var ml = parseInt($('.photospan').css('margin-left'));
+    var extra = photosdiv.data('extra');
+    var nextml = left ? ml - w : ml + w;
+    var total = 0;
+    $.each(photo_widths(),function() {
+        total += this;
+     });
+    console.log('nextml' + nextml + ' total' + total);
+    if (nextml === extra) {
         console.log('at left, not doing anything');
         return;
+    } else if (nextml > -extra) {
+        nextml = -extra;
+    } else if (nextml === screen_width() - extra - total) {
+        console.log('at right, not doing anything');
+        return;
+    } else if (nextml < screen_width() - extra - total) {
+        nextml = screen_width() - total - extra;
     }
-    var ml = parseInt($('.photospan').css('margin-left'));
-    var nextml = left ? ml - w : ml + w;
     var nextactive = left ? active + 1 : active - 1;
-    $('.photospan').animate({'margin-left': nextml}, 500);
+    var next_active_photo = $('.photospan').children()[nextactive];
+    $(next_active_photo).css('opacity', 1.0);
+    $(active_photo).css('opacity', 0.7);
+    $('.photospan').animate({'margin-left': nextml}, 300);
     $('.photospan').data('active-photo', nextactive);
 }
 
@@ -38,15 +56,12 @@ function render(urls) {
 
     container = $('.photospan-container');
     photosdiv = $('.photospan');
-    var psw = container.width();
-    var w = window.innerWidth
-    || document.documentElement.clientWidth
-    || document.body.clientWidth;
-    var extra = (w - psw) / 2;
+    var extra = (screen_width() - container.width()) / 2;
     photosdiv.css({'margin-left': '-'.concat(extra.toString(), 'px'),
                    'overflow': 'hidden',
                    'width': '20000px'});
     photosdiv.data('activePhoto', 0);
+    photosdiv.data('extra', extra);
     for (var i = 0; i < urls.length; i++) {
         img = $('<img/>', {
             src: urls[i],
@@ -54,11 +69,13 @@ function render(urls) {
             class: 'spanphoto'
         });
         img.css('float', 'left');
+        if (i > 0) {
+            img.css('opacity', 0.7);
+        }
         img.appendTo(photosdiv);
         img.click(true, move);
     }
     console.log('image width:' + img.width());
-    console.log('screen width:' + w);
     console.log('margin-left', '-'.concat(extra.toString()), 'px');
 }
 
