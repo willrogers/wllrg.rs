@@ -1,7 +1,7 @@
 function screen_width() {
     return window.innerWidth
-    || document.documentElement.clientWidth
-    || document.body.clientWidth;
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
 }
 
 function photo_widths() {
@@ -25,6 +25,7 @@ function move(right) {
     var nphotos = $('.photospan').children().length;
     console.log('There are ' + nphotos + ' photos; active is ' + active);
     var ml = parseInt($('.photospan').css('margin-left'));
+    var photosdiv = $('.photospan');
     var extra = photosdiv.data('extra');
     var nextml = right ? ml + w : ml - w;
     var total = 0;
@@ -53,10 +54,10 @@ function move(right) {
 }
 
 function render(urls) {
-    height = 430;
+    var height = 430;
 
-    container = $('.photospan-container');
-    photosdiv = $('.photospan');
+    var container = $('.photospan-container');
+    var photosdiv = $('.photospan');
     var extra = (screen_width() - container.width()) / 2;
     photosdiv.css({'margin-left': '-'.concat(extra.toString(), 'px'),
                    'overflow': 'hidden',
@@ -64,7 +65,7 @@ function render(urls) {
     photosdiv.data('activePhoto', 0);
     photosdiv.data('extra', extra);
     for (var i = 0; i < urls.length; i++) {
-        img = $('<img/>', {
+        var img = $('<img/>', {
             src: urls[i],
             height: height,
             class: 'spanphoto'
@@ -76,13 +77,12 @@ function render(urls) {
         img.appendTo(photosdiv);
         img.click(true, move);
     }
-    console.log('image width:' + img.width());
     console.log('margin-left', '-'.concat(extra.toString()), 'px');
 }
 
 $(document).ready(function() {
-    images = $('.photospan').children('img');
-    urls = images.map(function() {return $(this).attr('src');}).get();
+    var images = $('.photospan').children('img');
+    var urls = images.map(function() {return $(this).attr('src');}).get();
     $('.photospan > img').remove();
     console.log(urls);
     render(urls);
