@@ -13,8 +13,8 @@ function photo_widths() {
     return lengths;
 }
 
-function move(left) {
-    console.log('move left?' + left);
+function move(right) {
+    console.log('move right?' + right);
     if ($('.photospan').is(':animated')) {
         console.log('moving');
         return;
@@ -26,23 +26,23 @@ function move(left) {
     console.log('There are ' + nphotos + ' photos; active is ' + active);
     var ml = parseInt($('.photospan').css('margin-left'));
     var extra = photosdiv.data('extra');
-    var nextml = left ? ml - w : ml + w;
+    var nextml = right ? ml + w : ml - w;
     var total = 0;
     $.each(photo_widths(),function() {
         total += this;
      });
     console.log('nextml' + nextml + ' total' + total);
-    if (!left && active === 0) {
+    if (right && active === 0) {
         console.log('at left');
         return;
-    } else if (left && active === nphotos - 1) {
+    } else if (!right && active === nphotos - 1) {
         console.log('at right');
         return;
     }
-    var nextactive = left ? active + 1 : active - 1;
-    if (nextactive === 0) {
+    var nextactive = right ? active - 1 : active + 1;
+    if (nextactive === 0 || nextml > -extra) {
         nextml = -extra;
-    } else if (nextactive === nphotos - 1) {
+    } else if (nextactive === nphotos - 1 || nextml < screen_width() - total -extra) {
         nextml = screen_width() - total - extra;
     }
     var next_active_photo = $('.photospan').children()[nextactive];
