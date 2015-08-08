@@ -46,6 +46,12 @@ h1 {
   margin-bottom: 10px;
 }
 
+#gallery-header {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #sig-banner {
   float: left;
   width: 270px;
@@ -164,7 +170,6 @@ ul.vert-list {
   /* background-color: red; */
   /* background-color: rgba(255,255,255,0.7); */
   border-radius: 5px;
-  width: 800px;
   margin-left: auto;
   margin-right: auto;
 }

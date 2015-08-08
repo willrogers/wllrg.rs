@@ -26,7 +26,6 @@ function move(right) {
     console.log('There are ' + nphotos + ' photos; active is ' + active);
     var ml = parseInt($('.photospan').css('margin-left'));
     var photosdiv = $('.photospan');
-    var extra = photosdiv.data('extra');
     var nextml = right ? ml + w : ml - w;
     var total = 0;
     $.each(photo_widths(),function() {
@@ -41,10 +40,10 @@ function move(right) {
         return;
     }
     var nextactive = right ? active - 1 : active + 1;
-    if (nextactive === 0 || nextml > -extra) {
-        nextml = -extra;
-    } else if (nextactive === nphotos - 1 || nextml < screen_width() - total -extra) {
-        nextml = screen_width() - total - extra;
+    if (nextactive === 0 || nextml > 0) {
+        nextml = 0;
+    } else if (nextactive === nphotos - 1 || nextml < screen_width() - total) {
+        nextml = screen_width() - total;
     }
     var next_active_photo = $('.photospan').children()[nextactive];
     $(next_active_photo).css('opacity', 1.0);
@@ -58,12 +57,9 @@ function render(urls) {
 
     var container = $('.photospan-container');
     var photosdiv = $('.photospan');
-    var extra = (screen_width() - container.width()) / 2;
-    photosdiv.css({'margin-left': '-'.concat(extra.toString(), 'px'),
-                   'overflow': 'hidden',
+    photosdiv.css({'overflow': 'hidden',
                    'width': '20000px'});
     photosdiv.data('activePhoto', 0);
-    photosdiv.data('extra', extra);
     for (var i = 0; i < urls.length; i++) {
         var img = $('<img/>', {
             src: urls[i],
@@ -77,7 +73,6 @@ function render(urls) {
         img.appendTo(photosdiv);
         img.click(true, move);
     }
-    console.log('margin-left', '-'.concat(extra.toString()), 'px');
 }
 
 $(document).ready(function() {
