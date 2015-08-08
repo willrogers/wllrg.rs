@@ -13,43 +13,56 @@ function photo_widths() {
     return lengths;
 }
 
-function move(right) {
+function centre(photo) {
+    console.log('photo is ' + photo.data);
+    photo = photo.data;
+    var widths = photo_widths();
+    var centre_point = 0;
+    for (var i = 0; i < photo; i++) {
+        console.log(widths[i]);
+        centre_point += widths[i];
+    }
+    console.log('widths: ' + widths);
+    console.log('computed centre point: ' + centre_point);
+    centre_point += widths[photo] / 2;
+    var ml = screen_width() / 2 - centre_point;
+    console.log('computed ml: ' + ml);
+    var total = 0;
+    $.each(photo_widths(),function() {
+        total += this;
+     });
+    if (ml > 0) {
+        ml = 0;
+    } else if (ml < screen_width() - total) {
+        ml = screen_width() - total;
+    }
+    $('.photospan').animate({'margin-left': ml + 'px'}, 300);
+    var active = $('.photospan').data('active-photo');
+    var active_photo = $('.photospan').children()[active];
+    $(active_photo).css('opacity', 0.7);
+    var active_photo = $('.photospan').children()[photo];
+    $(active_photo).css('opacity', 1.0);
+    $('.photospan').data('active-photo', photo);
+
+}
+
+function shift(right) {
     console.log('move right?' + right);
     if ($('.photospan').is(':animated')) {
         console.log('moving');
         return;
     }
     var active = $('.photospan').data('active-photo');
+    console.log('active is ' + active);
     var active_photo = $('.photospan').children()[active];
-    var w = $(active_photo).width();
     var nphotos = $('.photospan').children().length;
-    console.log('There are ' + nphotos + ' photos; active is ' + active);
-    var ml = parseInt($('.photospan').css('margin-left'));
-    var photosdiv = $('.photospan');
-    var nextml = right ? ml + w : ml - w;
-    var total = 0;
-    $.each(photo_widths(),function() {
-        total += this;
-     });
-    console.log('nextml' + nextml + ' total' + total);
-    if (right && active === 0) {
-        console.log('at left');
-        return;
-    } else if (!right && active === nphotos - 1) {
-        console.log('at right');
-        return;
-    }
     var nextactive = right ? active - 1 : active + 1;
-    if (nextactive === 0 || nextml > 0) {
-        nextml = 0;
-    } else if (nextactive === nphotos - 1 || nextml < screen_width() - total) {
-        nextml = screen_width() - total;
+    if (nextactive === -1) {
+        nextactive = nphotos - 1;
+    } else if (nextactive === nphotos) {
+        nextactive = 0;
     }
-    var next_active_photo = $('.photospan').children()[nextactive];
-    $(next_active_photo).css('opacity', 1.0);
-    $(active_photo).css('opacity', 0.7);
-    $('.photospan').animate({'margin-left': nextml}, 300);
-    $('.photospan').data('active-photo', nextactive);
+    centre({data: nextactive});
 }
 
 function render(urls) {
@@ -71,7 +84,7 @@ function render(urls) {
             img.css('opacity', 0.7);
         }
         img.appendTo(photosdiv);
-        img.click(true, move);
+        img.click(i, centre);
     }
 }
 
@@ -85,8 +98,8 @@ $(document).ready(function() {
 
 $(document).keydown(function(event) {
     if (event.keyCode === 39) {
-        move(false);
+        shift(false);
     } else if (event.keyCode === 37) {
-        move(true);
+        shift(true);
     }
 });
