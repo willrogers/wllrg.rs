@@ -19,6 +19,7 @@ h1 {
   display: flex;
   margin-top: 8px;
   height: 100%;
+  width: 100%;
   flex-wrap: wrap;
 }
 
@@ -69,6 +70,7 @@ h1 {
 #sig-banner {
   float: left;
   height: 80%;
+  max-width: 60%;
 }
 
 #sig-link {
@@ -78,7 +80,7 @@ h1 {
 
 #sig-img {
   height: 100%;
-  width: auto;
+  width: 100%;
 }
 
 
@@ -192,17 +194,17 @@ ul.vert-list {
 
   #top-links {
     display: block;
-  width: 100%;
-  background: #999;
-  color: #fff;
+    width: 100%;
+    background: #999;
+    color: #fff;
     height: 100%;
   }
   #css-toggle-label {
     display: block;
     background: url(/img/hamburger.png) center no-repeat #fff;
-    background-size: 20%;
+    background-size: contain;
     background-position: right;
-    max-width: 150px;
+    max-width: 30%;
     height: 60%;
   }
  .nav-item {
