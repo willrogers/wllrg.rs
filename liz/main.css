@@ -19,10 +19,10 @@ h1 {
   display: flex;
   margin-top: 8px;
   height: 100%;
+  flex-wrap: wrap;
 }
 
 #header {
-  overflow: hidden;
   width: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -33,6 +33,17 @@ h1 {
   display: flex;
   flex: 1 0 50%;
 }
+
+#css-toggle-menu {
+  display: none;
+}
+
+#css-toggle-label {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
 
 #top-links {
   display: flex;
@@ -58,6 +69,11 @@ h1 {
 #sig-banner {
   float: left;
   height: 80%;
+}
+
+#sig-link {
+  height: 100%;
+  display: block;
 }
 
 #sig-img {
@@ -161,9 +177,49 @@ ul.vert-list {
   top: 0px;
 }
 
-
 @media (max-width: 750px) {
     #header {
         height: 80px;
     }
+}
+
+@media (max-width: 600px){
+ nav {
+    transform: translateY(0);
+    box-shadow: 0 0 5px rgba(0,0,0, .7);
+    transition: all .5s;
+ }
+
+  #top-links {
+    display: block;
+  width: 100%;
+  background: #999;
+  color: #fff;
+    height: 100%;
+  }
+  #css-toggle-label {
+    display: block;
+    background: url(/img/hamburger.png) center no-repeat #fff;
+    background-size: 20%;
+    background-position: right;
+    max-width: 150px;
+    height: 60%;
+  }
+ .nav-item {
+  /*flex: none;*/
+  max-width: none;
+  width: 100%;
+  display: flex;
+  height: 50px;
+  background: white;
+  border-bottom: solid 1px #777;
+  text-transform: uppercase;
+ }
+ header input[type="checkbox"]:checked + #top-links {
+  /*
+  transform: translateX(-100%);
+  transition: all .5s;
+  */
+  display: none;
+ }
 }
