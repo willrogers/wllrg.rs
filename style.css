@@ -121,3 +121,7 @@ li.header-nav-item {
   margin-left: auto;
   overflow: auto;
 }
+
+.post-date {
+  color: darkgray;
+}

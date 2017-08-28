@@ -1,3 +1,7 @@
 
 # Generated jekyll site
 _site
+
+# Vim temporary files
+*.swp
+*.swo
