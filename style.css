@@ -1,6 +1,6 @@
 
 * {
-  font-family: sans-serif;
+  font-family: 'Mukta Mahee', sans-serif;
 }
 
 body.background {
@@ -30,7 +30,7 @@ body {
 h1 {
   margin: 0px;
   padding: 10px;
-  text-align: center;
+  text-align: left;
   font-size: 40px;
 }
 
@@ -50,8 +50,6 @@ a:hover {
 }
 
 .header {
-  padding-top: 10px;
-  padding-bottom: 10px;
   background-color: #F5F5F5;
   width: 100%;
   float: left;
@@ -106,6 +104,7 @@ ul.nav {
   margin-bottom: 0px;
   /* make the list vertically centred */
   display: block;
+  height: 100%;
 }
 
 li.header-nav-item {
@@ -120,6 +119,17 @@ li.header-nav-item {
   margin-right: auto;
   margin-left: auto;
   overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#logo {
+  font-family: 'Raleway', sans-serif;;
+  float: left;
+  vertical-align: center;
+  display: inline-block;
+  font-size: 4em;
 }
 
 .post-date {
