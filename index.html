@@ -1,15 +1,13 @@
 ---
 layout: main
 ---
-<h1>This is it.</h1>
-<p>
-Miscellaneous links:
-  <ul>
-    <li><a href="http://cloud.feedly.com">Feedly</a></li>
-    <li><a href="liz/index.html">Liz</a></li>
-    <li><a href="greece.html">Greece</a></li>
-    <li><a href="shapes.html">D3 shapes</a></li>
-    <li><a href="chart.html">D3 chart</a></li>
-    <li><a href="scatter.html">D3 scatter</a></li>
-  </ul>
-</p>
+<h1>Blog</h1>
+<div>
+<ul>
+  {% for post in site.posts %}
+    <li>
+      <span class="post-date">{{ post.date | date_to_string }} </span><a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
+</div>
