@@ -5,7 +5,6 @@
 
 body {
   margin:0px;
-  margin-top:0px;
 }
 
 h1 {
@@ -33,17 +32,13 @@ a:hover {
 .header {
   background-color: #F5F5F5;
   width: 100%;
-  float: left;
   border-bottom: 1px solid #E5E5E5;
-  display: table-cell;
-  overflow: auto; 
 }
 
 .menu {
   width: 800px;
   margin-right: auto;
   margin-left: auto;
-  overflow: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,21 +55,13 @@ img.embed {
 }
 
 ul.nav {
-  line-height: 25px;
   list-style-type: none;
-  list-style-image: none;
-  list-style-position: outside;
-  text-align: center;
   margin-top: 0px;
   margin-bottom: 0px;
-  /* make the list vertically centred */
-  display: block;
-  height: 100%;
 }
 
 li.header-nav-item {
   float: left;
-  vertical-align: center;
   padding-right: 10px;
   padding-left: 10px;
 }
@@ -82,17 +69,19 @@ li.header-nav-item {
 
 #logo {
   font-family: 'Raleway', sans-serif;;
-  float: left;
   display: inline-flex;
   font-size: 4em;
 }
 
-div.monkey {
-  height: inherit;
-
+#name-logo a {
+  font-family: 'Raleway', sans-serif;;
 }
 
-div.monkey img {
+#monkey {
+  height: inherit;
+}
+
+#monkey img {
     height: 60px;
     max-width: 100%;
     float: left;
