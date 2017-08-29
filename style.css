@@ -127,11 +127,22 @@ li.header-nav-item {
 #logo {
   font-family: 'Raleway', sans-serif;;
   float: left;
-  vertical-align: center;
-  display: inline-block;
+  display: inline-flex;
   font-size: 4em;
 }
 
 .post-date {
   color: darkgray;
+}
+
+div.monkey {
+  height: inherit;
+
+}
+
+div.monkey img {
+    height: 60px;
+    max-width: 100%;
+    float: left;
+    padding-top: 40px;
 }
