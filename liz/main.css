@@ -201,7 +201,7 @@ ul.vert-list {
   }
   #css-toggle-label {
     display: block;
-    background: url(/img/hamburger.png) center no-repeat #fff;
+    background: url(/static/hamburger.png) center no-repeat #fff;
     background-size: contain;
     background-position: right;
     max-width: 30%;

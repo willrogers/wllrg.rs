@@ -69,7 +69,8 @@ li.header-nav-item {
 
 #logo {
   font-family: 'Raleway', sans-serif;;
-  display: inline-flex;
+  display: flex;
+  align-items: center;
   font-size: 4em;
 }
 
@@ -111,4 +112,86 @@ li.header-nav-item {
   margin-left: 100px;
   margin-right: 100px;
   padding: 0;
+}
+
+#toggle-menu {
+  display: none;
+}
+
+#toggle-label {
+    /*background: url(/static/hamburger.png) center no-repeat #fff;*/
+    /*
+    background: black;
+    display: block;
+    background-size: contain;
+    background-position: left;
+    height: 50px;
+    width: 50px;
+    */
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile media queries */
+@media (max-width: 800px) {
+  .content {
+    width: 90%;
+  }
+
+  .menu {
+    width: 90%;
+    height: 80px;
+  }
+
+  #logo {
+    font-size: 2em;
+  }
+
+}
+
+@media (max-width: 650px) {
+ nav {
+    transform: translateY(0);
+    box-shadow: 0 0 5px rgba(0,0,0, .7);
+    transition: all .5s;
+    background: white;
+    padding: 0 0 0 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 150px;
+    text-align: center;
+  }
+
+  ul.nav {
+    padding: 0 0 0 0;
+  }
+
+  li.header-nav-item {
+    padding: 0 0 0 0;
+    float: none;
+    height: 40px;
+    font-size: 1.2em;
+    line-height: 2.1;
+    border-bottom: 1px solid #E5E5E5;
+  }
+
+  #toggle-label {
+    display: block;
+    background: url(https://cdn4.iconfinder.com/data/icons/wirecons-free-vector-icons/32/menu-alt-512.png);
+    background-size: contain;
+    background-position: left;
+    height: 40px;
+    width: 40px;
+  }
+
+ input[type="checkbox"]:checked + nav {
+  /*
+  transform: translateX(-100%);
+  transition: all .5s;
+  */
+  display: none;
+ }
 }
