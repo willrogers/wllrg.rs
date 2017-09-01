@@ -3,8 +3,14 @@
   font-family: 'Mukta Mahee', sans-serif;
 }
 
+
+html {
+  height: 100%;
+}
+
 body {
   margin:0px;
+  min-height: 100%;
 }
 
 h1 {
@@ -190,10 +196,7 @@ li.header-nav-item {
   }
 
  input[type="checkbox"]:checked + nav {
-  /*
-  transform: translateX(-100%);
-  transition: all .5s;
-  */
-  display: none;
+  transform: translateX(100%);
+  transition: all .3s;
  }
 }
