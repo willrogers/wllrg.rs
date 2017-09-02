@@ -16,10 +16,10 @@
       <script type="text/javascript" src="{{ js_name }}"></script>
     {% endfor %}
   </head>
-  <body class=background>
-    <div class="wrapper">
-      <div class="header">
-        <div class="menu">
+  <body id=background>
+    <div id="wrapper">
+      <div id="header">
+        <div id="menu">
           <div id="logo">
             <div id="monkey">
               <img src="/static/monkey.png" alt="monkey">
@@ -31,7 +31,7 @@
           <label id="toggle-label"></label>
           <input type="checkbox" id="toggle-menu" name="toggle-label" checked>
           <nav>
-            <ul class="nav">
+            <ul class="nav-items">
               <li class="header-nav-item"><a href="/index.html">Blog</a></li>
               <li class="header-nav-item"><a href="/about.html">About</a></li>
               <li class="header-nav-item"><a href="https://twitter.com/wrgrs">Twitter</a></li>
@@ -41,16 +41,16 @@
           </nav>
         </div>
       </div>
-      <div class="main">
-        <div class="content">
+      <div id="main">
+        <div id="content">
           {{ content }}
         </div>
       </div>
     </div>
     <script>
       var checkbox = document.querySelector("#toggle-menu");
-      var wrapper = document.querySelector(".background");
-      wrapper.addEventListener("click", hideMenu, false);
+      var background = document.querySelector("#background");
+      background.addEventListener("click", hideMenu, false);
       var ham = document.querySelector("#toggle-label");
       ham.addEventListener("click", showMenu, true);
       function hideMenu(e) {
