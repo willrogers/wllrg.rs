@@ -93,10 +93,11 @@ li.header-nav-item {
 }
 
 #map-canvas {
-  height: 400px;
-  margin-left: 100px;
-  margin-right: 100px;
   padding: 0;
+  height: 400px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #toggle-menu {
@@ -139,6 +140,8 @@ li.header-nav-item {
     width: 150px;
     text-align: center;
     overflow: scroll;
+    /* Make sure it's on top */
+    z-index: 1000;
   }
 
   ul.nav-items {
