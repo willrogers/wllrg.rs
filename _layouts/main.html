@@ -59,12 +59,14 @@
             checkbox.checked = true;
           }
         }
+        document.body.style.overflow = "auto";
       }
       function showMenu(e) {
         if (checkbox.checked === true) {
           checkbox.checked = false;
         }
         e.stopPropagation();
+        document.body.style.overflow = "hidden";
       }
     </script>
   </body>

@@ -149,6 +149,7 @@ li.header-nav-item {
     height: 100%;
     width: 150px;
     text-align: center;
+    overflow: scroll;
   }
 
   ul.nav {
