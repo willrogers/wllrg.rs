@@ -136,7 +136,8 @@ li.header-nav-item {
     position: fixed;
     top: 0;
     right: 0;
-    height: 100%;
+    /* Extend menu for cases where screen can lengthen unexpectedly. */
+    height: 120%;
     width: 150px;
     text-align: center;
     overflow: scroll;
