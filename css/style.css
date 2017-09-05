@@ -64,13 +64,14 @@ li.header-nav-item {
   float: left;
   padding-right: 10px;
   padding-left: 10px;
+  font-size: 1.2em;
 }
 
 #logo {
   font-family: 'Raleway', sans-serif;;
   display: flex;
   align-items: center;
-  font-size: 4em;
+  font-size: 3.5em;
 }
 
 #name-logo a {
