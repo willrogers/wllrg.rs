@@ -145,7 +145,17 @@ highlightClue = function(ctx, cellSize, direction, number, details) {
     drawNumbers(ctx, cellSize);
 }
 
-drawGrid = function(canvas, ac_squares, dn_squares) {
+emitEvent = function(elt, direction, clueNumber) {
+    var event = new CustomEvent('clue-selected', { detail:
+        {
+            'direction': direction,
+            'clueNumber': clueNumber
+        }
+    }, true, true);
+    elt.dispatchEvent(event);
+}
+
+drawGrid = function(canvas, eventTarget, acSquares, dnSquares) {
     var ctx = canvas.getContext('2d');
     canvas.width = 602;
     canvas.height = 602;
@@ -175,11 +185,11 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
         var y = Math.floor((event.pageY - ypos - 2) / cellSize);
         done = false;
         if (cellInArray(WHITE_SQUARES, x, y)) {
-            console.log('clicked in white cell (' + x + ', ' + y + ')');
             if (highlightedClue !== null) {
                 direction = highlightedClue[0];
                 number = highlightedClue[1];
                 unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
+                emitEvent(eventTarget, null, null);
             }
             for (var clueNumber in clues['ac']) {
                 if (clues['ac'].hasOwnProperty(clueNumber)) {
@@ -187,6 +197,7 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
                         if ((highlightedClue === null) || (!(highlightedClue[0] === 'ac' && highlightedClue[1] === clueNumber))) {
                             highlightClue(ctx, cellSize, 'ac', clueNumber, clues['ac'][clueNumber]);
                             highlightedClue = ['ac', clueNumber];
+                            emitEvent(eventTarget, 'ac', clueNumber);
                             done = true;
                         }
                     }
@@ -199,6 +210,7 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
                             if ((highlightedClue === null) || (!(highlightedClue[0] === 'dn' && highlightedClue[1] === clueNumber))) {
                                 highlightClue(ctx, cellSize, 'dn', clueNumber, clues['dn'][clueNumber]);
                                 highlightedClue = ['dn', clueNumber];
+                                emitEvent(eventTarget, 'dn', clueNumber);
                                 done = true;
                             }
                         }
@@ -210,15 +222,23 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
                     direction = highlightedClue[0];
                     number = highlightedClue[1];
                     unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
+                    emitEvent(eventTarget, null, null);
                     highlightedClue = null;
                 }
             }
         }
     });
-    console.log('done');
 }
 
 window.onload = function() {
     var canvas = document.getElementById('xwd');
-    drawGrid(canvas, AC_SQUARES, DN_SQUARES);
+    var clueDiv = document.getElementById('cluediv');
+    clueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            clueDiv.textContent = event.detail.clueNumber + event.detail.direction;
+        } else {
+            clueDiv.textContent = 'no clue selected';
+        }
+    });
+    drawGrid(canvas, clueDiv, AC_SQUARES, DN_SQUARES);
 }
