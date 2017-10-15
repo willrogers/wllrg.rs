@@ -83,12 +83,66 @@ colorClue = function(ctx, cellSize, color, direction, number, details) {
     }
 }
 
+drawNumbers = function(ctx, cellSize) {
+    /* Collect clues and write in numbers */
+    ctx.fillStyle = 'black';
+    var clueNumber = 1;
+    var clues = {
+        'ac': {},
+        'dn': {}
+    };
+    /* loop from right to left then top to bottom */
+    for (var j = 0; j < DN_SQUARES; j++) {
+        for (var i = 0; i < AC_SQUARES; i++) {
+            var acrossCount = 0;
+            var downCount = 0;
+            if (cellInArray(WHITE_SQUARES, i, j)) {
+                /* Start of across clue */
+                if (i === 0 || !cellInArray(WHITE_SQUARES, i - 1, j)) {
+                    acrossCount = 1;
+                    for (var l = i + 1; l < AC_SQUARES; l++) {
+                        if (cellInArray(WHITE_SQUARES, l, j)) {
+                            acrossCount += 1;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (acrossCount > 1) {
+                        clues['ac'][clueNumber] = [i, j, acrossCount];
+                    }
+                }
+                /* Start of down clue */
+                if (j === 0 || !cellInArray(WHITE_SQUARES, i, j - 1)) {
+                    downCount = 1;
+                    for (var l = j + 1; l < DN_SQUARES; l++) {
+                        if (cellInArray(WHITE_SQUARES, i, l)) {
+                            downCount += 1;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (downCount > 1) {
+                        clues['dn'][clueNumber] = [i, j, downCount];
+                    }
+                }
+                if (acrossCount > 1 || downCount > 1) {
+                    drawNumber(ctx, cellSize, clueNumber, i, j);
+                    clueNumber += 1;
+                }
+            }
+        }
+    }
+    return clues;
+}
+
 unhighlightClue = function(ctx, cellSize, direction, number, details) {
     colorClue(ctx, cellSize, 'white', direction, number, details);
+    drawNumbers(ctx, cellSize);
 }
 
 highlightClue = function(ctx, cellSize, direction, number, details) {
     colorClue(ctx, cellSize, 'aqua', direction, number, details);
+    drawNumbers(ctx, cellSize);
 }
 
 drawGrid = function(canvas, ac_squares, dn_squares) {
@@ -112,52 +166,9 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
             }
         }
     }
-    /* Collect clues and write in numbers */
-    ctx.fillStyle = 'black';
-    var clueNumber = 1;
-    var acClues = {};
-    var dnClues = {};
-    /* loop from right to left then top to bottom */
-    for (var j = 0; j < DN_SQUARES; j++) {
-        for (var i = 0; i < AC_SQUARES; i++) {
-            acrossCount = 0;
-            downCount = 0;
-            if (cellInArray(WHITE_SQUARES, i, j)) {
-                /* Start of across clue */
-                if (i === 0 || !cellInArray(WHITE_SQUARES, i - 1, j)) {
-                    acrossCount = 1;
-                    for (var l = i + 1; l < AC_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, l, j)) {
-                            acrossCount += 1;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (acrossCount > 1) {
-                        acClues[clueNumber] = [i, j, acrossCount];
-                    }
-                }
-                /* Start of down clue */
-                if (j === 0 || !cellInArray(WHITE_SQUARES, i, j - 1)) {
-                    downCount = 1;
-                    for (var l = j + 1; l < DN_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, i, l)) {
-                            downCount += 1;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (downCount > 1) {
-                        dnClues[clueNumber] = [i, j, downCount];
-                    }
-                }
-                if (acrossCount > 1 || downCount > 1) {
-                    drawNumber(ctx, cellSize, clueNumber, i, j);
-                    clueNumber += 1;
-                }
-            }
-        }
-    }
+
+    clues = drawNumbers(ctx, cellSize);
+    /* Add click listener to react to events */
     var highlightedClue = null;
     canvas.addEventListener('click', function(event) {
         var x = Math.floor((event.pageX - xpos - 2) / cellSize);
@@ -168,29 +179,38 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
             if (highlightedClue !== null) {
                 direction = highlightedClue[0];
                 number = highlightedClue[1];
-                if (direction === 'ac') {
-                    unhighlightClue(ctx, cellSize, direction, number, acClues[number]);
-                } else {
-                    unhighlightClue(ctx, cellSize, direction, number, dnClues[number]);
-                }
+                unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
             }
-            for (var clueNumber in acClues) {
-                if (acClues.hasOwnProperty(clueNumber)) {
-                    if (cellInClue(acClues[clueNumber], 'ac', x, y)) {
-                        highlightClue(ctx, cellSize, 'ac', clueNumber, acClues[clueNumber]);
-                        highlightedClue = ['ac', clueNumber];
-                        done = true;
+            for (var clueNumber in clues['ac']) {
+                if (clues['ac'].hasOwnProperty(clueNumber)) {
+                    if (cellInClue(clues['ac'][clueNumber], 'ac', x, y)) {
+                        if ((highlightedClue === null) || (!(highlightedClue[0] === 'ac' && highlightedClue[1] === clueNumber))) {
+                            highlightClue(ctx, cellSize, 'ac', clueNumber, clues['ac'][clueNumber]);
+                            highlightedClue = ['ac', clueNumber];
+                            done = true;
+                        }
                     }
                 }
             }
             if (!done) {
-                for (var clueNumber in dnClues) {
-                    if (dnClues.hasOwnProperty(clueNumber)) {
-                        if (cellInClue(dnClues[clueNumber], 'dn', x, y)) {
-                            highlightClue(ctx, cellSize, 'dn', clueNumber, dnClues[clueNumber]);
-                            highlightedClue = ['dn', clueNumber];
+                for (var clueNumber in clues['dn']) {
+                    if (clues['dn'].hasOwnProperty(clueNumber)) {
+                        if (cellInClue(clues['dn'][clueNumber], 'dn', x, y)) {
+                            if ((highlightedClue === null) || (!(highlightedClue[0] === 'dn' && highlightedClue[1] === clueNumber))) {
+                                highlightClue(ctx, cellSize, 'dn', clueNumber, clues['dn'][clueNumber]);
+                                highlightedClue = ['dn', clueNumber];
+                                done = true;
+                            }
                         }
                     }
+                }
+            }
+            if (!done) {
+                if (highlightedClue !== null) {
+                    direction = highlightedClue[0];
+                    number = highlightedClue[1];
+                    unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
+                    highlightedClue = null;
                 }
             }
         }
