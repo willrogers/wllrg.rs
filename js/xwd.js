@@ -43,9 +43,52 @@ drawNumber = function(ctx, cellSize, number, x, y) {
     ctx.fillText(number, cellSize * x + 3, cellSize * y + 3);
 }
 
-drawWhiteSquare = function(ctx, cellSize, x, y) {
-    ctx.fillStyle = 'white';
+fillSquare = function(ctx, cellSize, x, y, color) {
+    ctx.fillStyle = color;
     ctx.fillRect(cellSize * x + 2, cellSize * y + 2, cellSize - 2, cellSize - 2);
+}
+
+cellInClue = function(details, direction, x, y) {
+    if (direction === 'ac') {
+        for (var i = details[0]; i < details[0] + details[2]; i++) {
+            if (x == i && y == details[1]) {
+                return true;
+            }
+        }
+    }
+    if (direction === 'dn') {
+        for (var i = details[1]; i < details[1] + details[2]; i++) {
+            if (x == details[0] && y == i) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+colorClue = function(ctx, cellSize, color, direction, number, details) {
+    if (direction === 'ac') {
+        for (var i = details[0]; i < details[0] + details[2]; i++) {
+            fillSquare(ctx, cellSize, i, details[1], color);
+        }
+        ctx.fillStyle = 'black';
+        drawNumber(ctx, cellSize, number, details[0], details[1]);
+    }
+    if (direction === 'dn') {
+        for (var i = details[1]; i < details[1] + details[2]; i++) {
+            fillSquare(ctx, cellSize, details[0], i, color);
+        }
+        ctx.fillStyle = 'black';
+        drawNumber(ctx, cellSize, number, details[0], details[1]);
+    }
+}
+
+unhighlightClue = function(ctx, cellSize, direction, number, details) {
+    colorClue(ctx, cellSize, 'white', direction, number, details);
+}
+
+highlightClue = function(ctx, cellSize, direction, number, details) {
+    colorClue(ctx, cellSize, 'aqua', direction, number, details);
 }
 
 drawGrid = function(canvas, ac_squares, dn_squares) {
@@ -65,7 +108,7 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
             if (cellInArray(WHITE_SQUARES, i, j)) {
-                drawWhiteSquare(ctx, cellSize, i, j);
+                fillSquare(ctx, cellSize, i, j, 'white');
             }
         }
     }
@@ -74,8 +117,6 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
     var clueNumber = 1;
     var acClues = {};
     var dnClues = {};
-    console.log(cellInArray(BLACK_SQUARES, 4, 1));
-    console.log(cellInArray(WHITE_SQUARES, 4, 1));
     /* loop from right to left then top to bottom */
     for (var j = 0; j < DN_SQUARES; j++) {
         for (var i = 0; i < AC_SQUARES; i++) {
@@ -117,6 +158,43 @@ drawGrid = function(canvas, ac_squares, dn_squares) {
             }
         }
     }
+    var highlightedClue = null;
+    canvas.addEventListener('click', function(event) {
+        var x = Math.floor((event.pageX - xpos - 2) / cellSize);
+        var y = Math.floor((event.pageY - ypos - 2) / cellSize);
+        done = false;
+        if (cellInArray(WHITE_SQUARES, x, y)) {
+            console.log('clicked in white cell (' + x + ', ' + y + ')');
+            if (highlightedClue !== null) {
+                direction = highlightedClue[0];
+                number = highlightedClue[1];
+                if (direction === 'ac') {
+                    unhighlightClue(ctx, cellSize, direction, number, acClues[number]);
+                } else {
+                    unhighlightClue(ctx, cellSize, direction, number, dnClues[number]);
+                }
+            }
+            for (var clueNumber in acClues) {
+                if (acClues.hasOwnProperty(clueNumber)) {
+                    if (cellInClue(acClues[clueNumber], 'ac', x, y)) {
+                        highlightClue(ctx, cellSize, 'ac', clueNumber, acClues[clueNumber]);
+                        highlightedClue = ['ac', clueNumber];
+                        done = true;
+                    }
+                }
+            }
+            if (!done) {
+                for (var clueNumber in dnClues) {
+                    if (dnClues.hasOwnProperty(clueNumber)) {
+                        if (cellInClue(dnClues[clueNumber], 'dn', x, y)) {
+                            highlightClue(ctx, cellSize, 'dn', clueNumber, dnClues[clueNumber]);
+                            highlightedClue = ['dn', clueNumber];
+                        }
+                    }
+                }
+            }
+        }
+    });
     console.log('done');
 }
 
