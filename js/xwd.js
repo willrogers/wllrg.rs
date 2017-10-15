@@ -1,4 +1,4 @@
-/* Draw a crossword on the screen. */
+/* Draw a crossword on an HTML canvas. */
 
 AC_SQUARES = 13;
 DN_SQUARES = 13;
@@ -48,8 +48,7 @@ drawWhiteSquare = function(ctx, cellSize, x, y) {
     ctx.fillRect(cellSize * x + 2, cellSize * y + 2, cellSize - 2, cellSize - 2);
 }
 
-drawGrid = function(ac_squares, dn_squares) {
-    var canvas = document.getElementById('xwd');
+drawGrid = function(canvas, ac_squares, dn_squares) {
     var ctx = canvas.getContext('2d');
     canvas.width = 602;
     canvas.height = 602;
@@ -65,14 +64,7 @@ drawGrid = function(ac_squares, dn_squares) {
     /* Draw in the white squares. */
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
-            var drawWhite = true;
-            for (var k = 0; k < BLACK_SQUARES.length; k++) {
-                if (i === BLACK_SQUARES[k][0] && j === BLACK_SQUARES[k][1]) {
-                    drawWhite = false;
-                    break;
-                }
-            }
-            if (drawWhite) {
+            if (cellInArray(WHITE_SQUARES, i, j)) {
                 drawWhiteSquare(ctx, cellSize, i, j);
             }
         }
@@ -129,5 +121,6 @@ drawGrid = function(ac_squares, dn_squares) {
 }
 
 window.onload = function() {
-    drawGrid(AC_SQUARES, DN_SQUARES);
+    var canvas = document.getElementById('xwd');
+    drawGrid(canvas, AC_SQUARES, DN_SQUARES);
 }
