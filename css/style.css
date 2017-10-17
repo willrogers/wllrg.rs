@@ -113,6 +113,16 @@ li.header-nav-item {
   display: none;
 }
 
+#xwd {
+    float: left;
+}
+
+#cluediv {
+    padding-left: 20px;
+    padding-right: 20px;
+    float: left;
+}
+
 /* Less wide than the default width of the content */
 @media (max-width: 800px) {
   #content {

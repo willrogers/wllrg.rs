@@ -3,6 +3,7 @@
 AC_SQUARES = 13;
 DN_SQUARES = 13;
 LINE_WIDTH = 1;
+CLUE_FILE = '/static/clues.json';
 
 
 BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
@@ -37,8 +38,21 @@ for (var i = 0; i < AC_SQUARES; i++) {
     }
 }
 
+loadJson = function(file, callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', file, true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+          }
+    };
+    xobj.send(null);
+}
+
 drawNumber = function(ctx, cellSize, number, x, y) {
-    ctx.font = '18px serif';
+    ctx.font = '28px serif';
     ctx.textBaseline = 'hanging';
     ctx.fillText(number, cellSize * x + 3, cellSize * y + 3);
 }
@@ -155,10 +169,16 @@ emitEvent = function(elt, direction, clueNumber) {
     elt.dispatchEvent(event);
 }
 
-drawGrid = function(canvas, eventTarget, acSquares, dnSquares) {
+drawGrid = function(canvas, eventTarget, clueJson) {
     var ctx = canvas.getContext('2d');
-    canvas.width = 602;
-    canvas.height = 602;
+    var width = 400;
+    var height = 400;
+    // Handle device scaling.
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = width * window.devicePixelRatio;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+
     var xpos = canvas.offsetLeft;
     var ypos = canvas.offsetTop;
     var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
@@ -181,8 +201,8 @@ drawGrid = function(canvas, eventTarget, acSquares, dnSquares) {
     /* Add click listener to react to events */
     var highlightedClue = null;
     canvas.addEventListener('click', function(event) {
-        var x = Math.floor((event.pageX - xpos - 2) / cellSize);
-        var y = Math.floor((event.pageY - ypos - 2) / cellSize);
+        var x = Math.floor((event.pageX - xpos - 2) / cellSize * window.devicePixelRatio);
+        var y = Math.floor((event.pageY - ypos - 2) / cellSize * window.devicePixelRatio);
         done = false;
         if (cellInArray(WHITE_SQUARES, x, y)) {
             if (highlightedClue !== null) {
@@ -233,12 +253,23 @@ drawGrid = function(canvas, eventTarget, acSquares, dnSquares) {
 window.onload = function() {
     var canvas = document.getElementById('xwd');
     var clueDiv = document.getElementById('cluediv');
+    var json = null;
+    loadJson(CLUE_FILE, function(response) {
+        console.log(response);
+        clue_json = JSON.parse(response);
+    });
     clueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
-            clueDiv.textContent = event.detail.clueNumber + event.detail.direction;
+            var clueName = event.detail.clueNumber + event.detail.direction;
+            if (clueName) {
+                var clue = clue_json[clueName];
+                clueDiv.textContent = clueName + ' ' + clue;
+            } else {
+                clueDiv.textContent = 'No clue data';
+            }
         } else {
             clueDiv.textContent = 'no clue selected';
         }
     });
-    drawGrid(canvas, clueDiv, AC_SQUARES, DN_SQUARES);
+    drawGrid(canvas, clueDiv, clue_json);
 }
