@@ -10,6 +10,13 @@ BLACK = 'black';
 HIGHLIGHT = 'aqua';
 GREYED = 'gainsboro';
 
+coord = function(x, y) {
+    return {x: x, y: y};
+}
+
+clue = function(x, y, length) {
+    return {x: x, y: y, length: length};
+}
 
 BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 8],
@@ -25,9 +32,9 @@ BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [11, 4],
                  [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
 
-cellInArray = function(array, x, y) {
+cellInArray = function(array, cell) {
     for (var k = 0; k < array.length; k++) {
-        if (array[k][0] === x && array[k][1] === y) {
+        if (array[k][0] === cell.x && array[k][1] === cell.y) {
             return true;
         }
     }
@@ -37,7 +44,8 @@ cellInArray = function(array, x, y) {
 WHITE_SQUARES = []
 for (var i = 0; i < AC_SQUARES; i++) {
     for (var j = 0; j < DN_SQUARES; j++) {
-        if (!cellInArray(BLACK_SQUARES, i, j)) {
+        cell = coord(i, j);
+        if (!cellInArray(BLACK_SQUARES, cell)) {
             WHITE_SQUARES.push([i, j]);
         }
     }
@@ -68,9 +76,10 @@ drawNumber = function(ctx, cellSize, number, x, y) {
     ctx.fillText(number, cellSize * x + 3, cellSize * y + 3);
 }
 
-fillSquare = function(ctx, cellSize, x, y, color) {
+fillSquare = function(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
-    ctx.fillRect(cellSize * x + 2, cellSize * y + 2, cellSize - 2, cellSize - 2);
+    ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
+            cellSize - 2, cellSize - 2);
 }
 
 cellInClue = function(clueX, clueY, length, direction, x, y) {
@@ -115,12 +124,12 @@ checkForHighlight = function(clues, x, y, highlightedClue) {
 colorClue = function(ctx, cellSize, color, direction, x, y, length) {
     if (direction === 'ac') {
         for (var i = x; i < x + length; i++) {
-            fillSquare(ctx, cellSize, i, y, color);
+            fillSquare(ctx, cellSize, coord(i, y), color);
         }
     }
     if (direction === 'dn') {
         for (var i = y; i < y + length; i++) {
-            fillSquare(ctx, cellSize, x, i, color);
+            fillSquare(ctx, cellSize, coord(x, i), color);
         }
     }
 }
@@ -136,14 +145,15 @@ drawNumbers = function(ctx, cellSize) {
     /* loop from right to left then top to bottom */
     for (var j = 0; j < DN_SQUARES; j++) {
         for (var i = 0; i < AC_SQUARES; i++) {
+            var cell = coord(i, j);
             var acrossCount = 0;
             var downCount = 0;
-            if (cellInArray(WHITE_SQUARES, i, j)) {
+            if (cellInArray(WHITE_SQUARES, cell)) {
                 /* Start of across clue */
-                if (i === 0 || !cellInArray(WHITE_SQUARES, i - 1, j)) {
+                if (i === 0 || !cellInArray(WHITE_SQUARES, coord(i - 1, j))) {
                     acrossCount = 1;
                     for (var l = i + 1; l < AC_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, l, j)) {
+                        if (cellInArray(WHITE_SQUARES, coord(l, j))) {
                             acrossCount += 1;
                         } else {
                             break;
@@ -154,10 +164,10 @@ drawNumbers = function(ctx, cellSize) {
                     }
                 }
                 /* Start of down clue */
-                if (j === 0 || !cellInArray(WHITE_SQUARES, i, j - 1)) {
+                if (j === 0 || !cellInArray(WHITE_SQUARES, coord(i, j - 1))) {
                     downCount = 1;
                     for (var l = j + 1; l < DN_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, i, l)) {
+                        if (cellInArray(WHITE_SQUARES, coord(i, l))) {
                             downCount += 1;
                         } else {
                             break;
@@ -222,8 +232,9 @@ drawGrid = function(canvas, eventTarget) {
     /* Draw in the white squares. */
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
-            if (cellInArray(WHITE_SQUARES, i, j)) {
-                fillSquare(ctx, cellSize, i, j, WHITE);
+            var cell = coord(i, j);
+            if (cellInArray(WHITE_SQUARES, cell)) {
+                fillSquare(ctx, cellSize, cell, WHITE);
             }
         }
     }
@@ -232,10 +243,12 @@ drawGrid = function(canvas, eventTarget) {
     /* Add click listener to react to events */
     var highlightedClue = null;
     canvas.addEventListener('click', function(event) {
-        var x = Math.floor((event.pageX - canvas.offsetLeft - 2) / cellSize * window.devicePixelRatio);
-        var y = Math.floor((event.pageY - canvas.offsetTop - 2) / cellSize * window.devicePixelRatio);
-        done = false;
-        if (cellInArray(WHITE_SQUARES, x, y)) {
+        var x = Math.floor((event.pageX - canvas.offsetLeft - 2) /
+                cellSize * window.devicePixelRatio);
+        var y = Math.floor((event.pageY - canvas.offsetTop - 2) /
+                cellSize * window.devicePixelRatio);
+        cell = coord(x, y);
+        if (cellInArray(WHITE_SQUARES, cell)) {
             /* Clear previous highlight */
             if (highlightedClue !== null) {
                 var direction = highlightedClue[0];
