@@ -245,7 +245,7 @@ drawGrid = function(canvas, eventTarget) {
 
     clues = drawNumbers(ctx, cellSize);
     /* Add click listener to react to events */
-    var highlightedClue = null;
+    var highlighted = null;
     canvas.addEventListener('click', function(event) {
         var x = Math.floor((event.pageX - canvas.offsetLeft - 2) /
                 cellSize * window.devicePixelRatio);
@@ -254,22 +254,22 @@ drawGrid = function(canvas, eventTarget) {
         cell = coord(x, y);
         if (cellInArray(WHITE_SQUARES, cell)) {
             /* Clear previous highlight */
-            if (highlightedClue !== null) {
-                var clue = clues[highlightedClue.direction][highlightedClue.number];
+            if (highlighted !== null) {
+                var clue = clues[highlighted.direction][highlighted.number];
                 unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null);
             }
-            var highlighted = checkForHighlight(clues, cell, highlightedClue);
-            if (highlighted !== null) {
-                var clue = clues[highlighted.direction][highlighted.number];
+            var selected = checkForHighlight(clues, cell, highlighted);
+            if (selected !== null) {
+                var clue = clues[selected.direction][selected.number];
                 highlightClue(ctx, cellSize, clue);
-                highlightedClue = highlighted;
-                emitEvent(eventTarget, highlighted);
+                highlighted = selected;
+                emitEvent(eventTarget, selected);
             } else if (highlighted !== null) {
                 var clue = clues[highlighted.direction][highlighted.number];
                 unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null);
-                highlightedClue = null;
+                highlighted = null;
             }
         }
     });
