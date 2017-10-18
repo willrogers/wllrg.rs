@@ -18,6 +18,10 @@ clue_seq = function(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
 
+clue_name = function(direction, number) {
+    return {direction: direction, number: number};
+}
+
 BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 8],
                  [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
@@ -70,10 +74,10 @@ loadJson(CLUE_FILE, function(response) {
     CLUE_JSON = JSON.parse(response);
 });
 
-drawNumber = function(ctx, cellSize, number, x, y) {
+drawNumber = function(ctx, cellSize, number, cell) {
     ctx.font = '28px serif';
     ctx.textBaseline = 'hanging';
-    ctx.fillText(number, cellSize * x + 3, cellSize * y + 3);
+    ctx.fillText(number, cellSize * cell.x + 3, cellSize * cell.y + 3);
 }
 
 fillSquare = function(ctx, cellSize, cell, color) {
@@ -82,17 +86,17 @@ fillSquare = function(ctx, cellSize, cell, color) {
             cellSize - 2, cellSize - 2);
 }
 
-cellInClue = function(clueX, clueY, length, direction, x, y) {
-    if (direction === 'ac') {
-        for (var i = clueX; i < clueX + length; i++) {
-            if (x == i && y == clueY) {
+cellInClue = function(clue, cell) {
+    if (clue.direction === 'ac') {
+        for (var i = clue.x; i < clue.x + clue.length; i++) {
+            if (cell.x == i && cell.y == clue.y) {
                 return true;
             }
         }
     }
-    if (direction === 'dn') {
-        for (var i = clueY; i < clueY + length; i++) {
-            if (x == clueX && y == i) {
+    if (clue.direction === 'dn') {
+        for (var i = clue.y; i < clue.y + clue.length; i++) {
+            if (cell.x == clue.x && cell.y == i) {
                 return true;
             }
         }
@@ -100,16 +104,16 @@ cellInClue = function(clueX, clueY, length, direction, x, y) {
     return false;
 }
 
-checkForHighlight = function(clues, x, y, highlightedClue) {
+checkForHighlight = function(clues, cell, highlighted) {
     var directions = ['ac', 'dn'];
     for (var i = 0; i < 2; i++) {
         var direction = directions[i];
         for (var clueNumber in clues[direction]) {
             if (clues[direction].hasOwnProperty(clueNumber)) {
                 var clue = clues[direction][clueNumber];
-                if (cellInClue(clue.x, clue.y, clue.length, direction, x, y)) {
-                    if ((highlightedClue === null) || (!(highlightedClue[0] === direction && highlightedClue[1] === clueNumber))) {
-                        return [direction, clueNumber];
+                if (cellInClue(clue, cell)) {
+                    if ((highlighted === null) || (!(highlighted.direction === direction && highlighted.number === clueNumber))) {
+                        return clue_name(direction, clueNumber);
                     }
                 }
             }
@@ -175,7 +179,7 @@ drawNumbers = function(ctx, cellSize) {
                     }
                 }
                 if (acrossCount > 1 || downCount > 1) {
-                    drawNumber(ctx, cellSize, clueNumber, i, j);
+                    drawNumber(ctx, cellSize, clueNumber, coord(i, j));
                     clueNumber += 1;
                 }
             }
@@ -248,24 +252,18 @@ drawGrid = function(canvas, eventTarget) {
         if (cellInArray(WHITE_SQUARES, cell)) {
             /* Clear previous highlight */
             if (highlightedClue !== null) {
-                var direction = highlightedClue[0];
-                var clueNumber = highlightedClue[1];
-                var clue = clues[direction][clueNumber];
+                var clue = clues[highlightedClue.direction][highlightedClue.number];
                 unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null, null);
             }
-            var hclue = checkForHighlight(clues, x, y, highlightedClue);
-            if (hclue !== null) {
-                var direction = hclue[0];
-                var clueNumber = hclue[1];
-                var clue = clues[direction][clueNumber];
+            var highlighted = checkForHighlight(clues, cell, highlightedClue);
+            if (highlighted !== null) {
+                var clue = clues[highlighted.direction][highlighted.number];
                 highlightClue(ctx, cellSize, clue);
-                highlightedClue = hclue;
+                highlightedClue = highlighted;
                 emitEvent(eventTarget, clue[0], clue[1]);
-            } else if (highlightedClue !== null) {
-                var direction = highlightedClue[0];
-                var clueNumber = highlightedClue[1];
-                var clue = clues[direction][clueNumber];
+            } else if (highlighted !== null) {
+                var clue = clues[highlighted.direction][highlighted.number];
                 unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null, null);
                 highlightedClue = null;
