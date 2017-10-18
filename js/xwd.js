@@ -203,11 +203,14 @@ highlightClue = function(ctx, cellSize, clue) {
     drawNumbers(ctx, cellSize);
 }
 
-emitEvent = function(elt, direction, clueNumber) {
+emitEvent = function(elt, clue) {
+    if (clue === null) {
+        clue = clue_name(null, null);
+    }
     var event = new CustomEvent('clue-selected', { detail:
         {
-            'direction': direction,
-            'clueNumber': clueNumber
+            'direction': clue.direction,
+            'clueNumber': clue.number
         }
     }, true, true);
     elt.dispatchEvent(event);
@@ -254,18 +257,18 @@ drawGrid = function(canvas, eventTarget) {
             if (highlightedClue !== null) {
                 var clue = clues[highlightedClue.direction][highlightedClue.number];
                 unhighlightClue(ctx, cellSize, clue);
-                emitEvent(eventTarget, null, null);
+                emitEvent(eventTarget, null);
             }
             var highlighted = checkForHighlight(clues, cell, highlightedClue);
             if (highlighted !== null) {
                 var clue = clues[highlighted.direction][highlighted.number];
                 highlightClue(ctx, cellSize, clue);
                 highlightedClue = highlighted;
-                emitEvent(eventTarget, clue[0], clue[1]);
+                emitEvent(eventTarget, highlighted);
             } else if (highlighted !== null) {
                 var clue = clues[highlighted.direction][highlighted.number];
                 unhighlightClue(ctx, cellSize, clue);
-                emitEvent(eventTarget, null, null);
+                emitEvent(eventTarget, null);
                 highlightedClue = null;
             }
         }
