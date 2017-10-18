@@ -5,6 +5,11 @@ DN_SQUARES = 13;
 LINE_WIDTH = 1;
 CLUE_FILE = '/static/clues.json';
 
+WHITE = 'white';
+BLACK = 'black';
+HIGHLIGHT = 'aqua';
+GREYED = 'gainsboro';
+
 
 BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 8],
@@ -39,9 +44,10 @@ for (var i = 0; i < AC_SQUARES; i++) {
 }
 
 loadJson = function(file, callback) {
+    // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', file, true); // Replace 'my_data' with the path to your file
+    xobj.open('GET', file, true);
     xobj.onreadystatechange = function () {
           if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -50,6 +56,11 @@ loadJson = function(file, callback) {
     };
     xobj.send(null);
 }
+
+CLUE_JSON = null;
+loadJson(CLUE_FILE, function(response) {
+    CLUE_JSON = JSON.parse(response);
+});
 
 drawNumber = function(ctx, cellSize, number, x, y) {
     ctx.font = '28px serif';
@@ -62,17 +73,17 @@ fillSquare = function(ctx, cellSize, x, y, color) {
     ctx.fillRect(cellSize * x + 2, cellSize * y + 2, cellSize - 2, cellSize - 2);
 }
 
-cellInClue = function(details, direction, x, y) {
+cellInClue = function(clueX, clueY, length, direction, x, y) {
     if (direction === 'ac') {
-        for (var i = details[0]; i < details[0] + details[2]; i++) {
-            if (x == i && y == details[1]) {
+        for (var i = clueX; i < clueX + length; i++) {
+            if (x == i && y == clueY) {
                 return true;
             }
         }
     }
     if (direction === 'dn') {
-        for (var i = details[1]; i < details[1] + details[2]; i++) {
-            if (x == details[0] && y == i) {
+        for (var i = clueY; i < clueY + length; i++) {
+            if (x == clueX && y == i) {
                 return true;
             }
         }
@@ -80,26 +91,43 @@ cellInClue = function(details, direction, x, y) {
     return false;
 }
 
-colorClue = function(ctx, cellSize, color, direction, number, details) {
-    if (direction === 'ac') {
-        for (var i = details[0]; i < details[0] + details[2]; i++) {
-            fillSquare(ctx, cellSize, i, details[1], color);
+checkForHighlight = function(clues, x, y, highlightedClue) {
+    var directions = ['ac', 'dn'];
+    for (var i = 0; i < 2; i++) {
+        var direction = directions[i];
+        for (var clueNumber in clues[direction]) {
+            if (clues[direction].hasOwnProperty(clueNumber)) {
+                details = clues[direction][clueNumber];
+                clueX = details[0];
+                clueY = details[1];
+                clueLength = details[2];
+                if (cellInClue(clueX, clueY, clueLength, direction, x, y)) {
+                    if ((highlightedClue === null) || (!(highlightedClue[0] === direction && highlightedClue[1] === clueNumber))) {
+                        return [direction, clueNumber];
+                    }
+                }
+            }
         }
-        ctx.fillStyle = 'black';
-        drawNumber(ctx, cellSize, number, details[0], details[1]);
+    }
+    return null;
+}
+
+colorClue = function(ctx, cellSize, color, direction, x, y, length) {
+    if (direction === 'ac') {
+        for (var i = x; i < x + length; i++) {
+            fillSquare(ctx, cellSize, i, y, color);
+        }
     }
     if (direction === 'dn') {
-        for (var i = details[1]; i < details[1] + details[2]; i++) {
-            fillSquare(ctx, cellSize, details[0], i, color);
+        for (var i = y; i < y + length; i++) {
+            fillSquare(ctx, cellSize, x, i, color);
         }
-        ctx.fillStyle = 'black';
-        drawNumber(ctx, cellSize, number, details[0], details[1]);
     }
 }
 
 drawNumbers = function(ctx, cellSize) {
     /* Collect clues and write in numbers */
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = BLACK;
     var clueNumber = 1;
     var clues = {
         'ac': {},
@@ -149,13 +177,18 @@ drawNumbers = function(ctx, cellSize) {
     return clues;
 }
 
-unhighlightClue = function(ctx, cellSize, direction, number, details) {
-    colorClue(ctx, cellSize, 'white', direction, number, details);
+greyOutClue = function(ctx, cellSize, direction, x, y, length) {
+    colorClue(ctx, cellSize, GREYED, direction, details, x, y, length);
     drawNumbers(ctx, cellSize);
 }
 
-highlightClue = function(ctx, cellSize, direction, number, details) {
-    colorClue(ctx, cellSize, 'aqua', direction, number, details);
+unhighlightClue = function(ctx, cellSize, direction, x, y, length) {
+    colorClue(ctx, cellSize, WHITE, direction, x, y, length);
+    drawNumbers(ctx, cellSize);
+}
+
+highlightClue = function(ctx, cellSize, direction, x, y, length) {
+    colorClue(ctx, cellSize, 'aqua', direction, x, y, length);
     drawNumbers(ctx, cellSize);
 }
 
@@ -169,7 +202,7 @@ emitEvent = function(elt, direction, clueNumber) {
     elt.dispatchEvent(event);
 }
 
-drawGrid = function(canvas, eventTarget, clueJson) {
+drawGrid = function(canvas, eventTarget) {
     var ctx = canvas.getContext('2d');
     var width = 400;
     var height = 400;
@@ -179,20 +212,18 @@ drawGrid = function(canvas, eventTarget, clueJson) {
     canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
 
-    var xpos = canvas.offsetLeft;
-    var ypos = canvas.offsetTop;
     var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
     var width = cellSize * AC_SQUARES + 2;
     var height = cellSize * DN_SQUARES + 2;
-    ctx.fillStyle = 'black';
-    ctx.strokeStyle = 'black';
+    ctx.fillStyle = BLACK;
+    ctx.strokeStyle = BLACK;
     ctx.lineWidth = 2;
     ctx.fillRect(0, 0, width, height);
     /* Draw in the white squares. */
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
             if (cellInArray(WHITE_SQUARES, i, j)) {
-                fillSquare(ctx, cellSize, i, j, 'white');
+                fillSquare(ctx, cellSize, i, j, WHITE);
             }
         }
     }
@@ -201,75 +232,43 @@ drawGrid = function(canvas, eventTarget, clueJson) {
     /* Add click listener to react to events */
     var highlightedClue = null;
     canvas.addEventListener('click', function(event) {
-        var x = Math.floor((event.pageX - xpos - 2) / cellSize * window.devicePixelRatio);
-        var y = Math.floor((event.pageY - ypos - 2) / cellSize * window.devicePixelRatio);
+        var x = Math.floor((event.pageX - canvas.offsetLeft - 2) / cellSize * window.devicePixelRatio);
+        var y = Math.floor((event.pageY - canvas.offsetTop - 2) / cellSize * window.devicePixelRatio);
         done = false;
         if (cellInArray(WHITE_SQUARES, x, y)) {
+            /* Clear previous highlight */
             if (highlightedClue !== null) {
-                direction = highlightedClue[0];
-                number = highlightedClue[1];
-                unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
+                var direction = highlightedClue[0];
+                var clueNumber = highlightedClue[1];
+                var details = clues[direction][clueNumber];
+                var clueX = details[0];
+                var clueY = details[1];
+                var clueLength = details[2];
+                unhighlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
                 emitEvent(eventTarget, null, null);
             }
-            for (var clueNumber in clues['ac']) {
-                if (clues['ac'].hasOwnProperty(clueNumber)) {
-                    if (cellInClue(clues['ac'][clueNumber], 'ac', x, y)) {
-                        if ((highlightedClue === null) || (!(highlightedClue[0] === 'ac' && highlightedClue[1] === clueNumber))) {
-                            highlightClue(ctx, cellSize, 'ac', clueNumber, clues['ac'][clueNumber]);
-                            highlightedClue = ['ac', clueNumber];
-                            emitEvent(eventTarget, 'ac', clueNumber);
-                            done = true;
-                        }
-                    }
-                }
-            }
-            if (!done) {
-                for (var clueNumber in clues['dn']) {
-                    if (clues['dn'].hasOwnProperty(clueNumber)) {
-                        if (cellInClue(clues['dn'][clueNumber], 'dn', x, y)) {
-                            if ((highlightedClue === null) || (!(highlightedClue[0] === 'dn' && highlightedClue[1] === clueNumber))) {
-                                highlightClue(ctx, cellSize, 'dn', clueNumber, clues['dn'][clueNumber]);
-                                highlightedClue = ['dn', clueNumber];
-                                emitEvent(eventTarget, 'dn', clueNumber);
-                                done = true;
-                            }
-                        }
-                    }
-                }
-            }
-            if (!done) {
-                if (highlightedClue !== null) {
-                    direction = highlightedClue[0];
-                    number = highlightedClue[1];
-                    unhighlightClue(ctx, cellSize, direction, number, clues[direction][number]);
-                    emitEvent(eventTarget, null, null);
-                    highlightedClue = null;
-                }
+            var clue = checkForHighlight(clues, x, y, highlightedClue);
+            if (clue !== null) {
+                var direction = clue[0];
+                var clueNumber = clue[1];
+                var details = clues[direction][clueNumber];
+                var clueX = details[0];
+                var clueY = details[1];
+                var clueLength = details[2];
+                highlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
+                highlightedClue = clue;
+                emitEvent(eventTarget, clue[0], clue[1]);
+            } else if (highlightedClue !== null) {
+                var direction = highlightedClue[0];
+                var clueNumber = highlightedClue[1];
+                var details = clues[direction][clueNumber];
+                var clueX = details[0];
+                var clueY = details[1];
+                var clueLength = details[2];
+                unhighlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
+                emitEvent(eventTarget, null, null);
+                highlightedClue = null;
             }
         }
     });
-}
-
-window.onload = function() {
-    var canvas = document.getElementById('xwd');
-    var clueDiv = document.getElementById('cluediv');
-    var json = null;
-    loadJson(CLUE_FILE, function(response) {
-        console.log(response);
-        clue_json = JSON.parse(response);
-    });
-    clueDiv.addEventListener('clue-selected', function(event) {
-        if (event.detail.direction !== null) {
-            var clueName = event.detail.clueNumber + event.detail.direction;
-            if (clueName) {
-                var clue = clue_json[clueName];
-                clueDiv.textContent = clueName + ' ' + clue;
-            } else {
-                clueDiv.textContent = 'No clue data';
-            }
-        } else {
-            clueDiv.textContent = 'no clue selected';
-        }
-    });
-    drawGrid(canvas, clueDiv, clue_json);
 }

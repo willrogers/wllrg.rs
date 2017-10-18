@@ -8,4 +8,24 @@ extra_js:
   <canvas id="xwd"></canvas>
   <div id="cluediv">no clue selected</div>
 </div>
+<script>
+window.onload = function() {
+    var canvas = document.getElementById('xwd');
+    var clueDiv = document.getElementById('cluediv');
+    clueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            var clueName = event.detail.clueNumber + event.detail.direction;
+            if (clueName) {
+                var clue = CLUE_JSON[clueName];
+                clueDiv.textContent = clueName + ' ' + clue;
+            } else {
+                clueDiv.textContent = 'No clue data';
+            }
+        } else {
+            clueDiv.textContent = 'no clue selected';
+        }
+    });
+    drawGrid(canvas, clueDiv);
+}
+</script>
 
