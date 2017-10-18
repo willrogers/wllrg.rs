@@ -14,8 +14,8 @@ coord = function(x, y) {
     return {x: x, y: y};
 }
 
-clue = function(x, y, length) {
-    return {x: x, y: y, length: length};
+clue_seq = function(x, y, length, direction) {
+    return {x: x, y: y, length: length, direction: direction};
 }
 
 BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
@@ -106,11 +106,8 @@ checkForHighlight = function(clues, x, y, highlightedClue) {
         var direction = directions[i];
         for (var clueNumber in clues[direction]) {
             if (clues[direction].hasOwnProperty(clueNumber)) {
-                details = clues[direction][clueNumber];
-                clueX = details[0];
-                clueY = details[1];
-                clueLength = details[2];
-                if (cellInClue(clueX, clueY, clueLength, direction, x, y)) {
+                var clue = clues[direction][clueNumber];
+                if (cellInClue(clue.x, clue.y, clue.length, direction, x, y)) {
                     if ((highlightedClue === null) || (!(highlightedClue[0] === direction && highlightedClue[1] === clueNumber))) {
                         return [direction, clueNumber];
                     }
@@ -121,15 +118,15 @@ checkForHighlight = function(clues, x, y, highlightedClue) {
     return null;
 }
 
-colorClue = function(ctx, cellSize, color, direction, x, y, length) {
-    if (direction === 'ac') {
-        for (var i = x; i < x + length; i++) {
-            fillSquare(ctx, cellSize, coord(i, y), color);
+colorClue = function(ctx, cellSize, color, clue) {
+    if (clue.direction === 'ac') {
+        for (var i = clue.x; i < clue.x + clue.length; i++) {
+            fillSquare(ctx, cellSize, coord(i, clue.y), color);
         }
     }
-    if (direction === 'dn') {
-        for (var i = y; i < y + length; i++) {
-            fillSquare(ctx, cellSize, coord(x, i), color);
+    if (clue.direction === 'dn') {
+        for (var i = clue.y; i < clue.y + clue.length; i++) {
+            fillSquare(ctx, cellSize, coord(clue.x, i), color);
         }
     }
 }
@@ -160,7 +157,7 @@ drawNumbers = function(ctx, cellSize) {
                         }
                     }
                     if (acrossCount > 1) {
-                        clues['ac'][clueNumber] = [i, j, acrossCount];
+                        clues['ac'][clueNumber] = clue_seq(i, j, acrossCount, 'ac');
                     }
                 }
                 /* Start of down clue */
@@ -174,7 +171,7 @@ drawNumbers = function(ctx, cellSize) {
                         }
                     }
                     if (downCount > 1) {
-                        clues['dn'][clueNumber] = [i, j, downCount];
+                        clues['dn'][clueNumber] = clue_seq(i, j, downCount, 'dn');
                     }
                 }
                 if (acrossCount > 1 || downCount > 1) {
@@ -187,18 +184,18 @@ drawNumbers = function(ctx, cellSize) {
     return clues;
 }
 
-greyOutClue = function(ctx, cellSize, direction, x, y, length) {
-    colorClue(ctx, cellSize, GREYED, direction, details, x, y, length);
+greyOutClue = function(ctx, cellSize, clue) {
+    colorClue(ctx, cellSize, GREYED, clue);
     drawNumbers(ctx, cellSize);
 }
 
-unhighlightClue = function(ctx, cellSize, direction, x, y, length) {
-    colorClue(ctx, cellSize, WHITE, direction, x, y, length);
+unhighlightClue = function(ctx, cellSize, clue) {
+    colorClue(ctx, cellSize, WHITE, clue);
     drawNumbers(ctx, cellSize);
 }
 
-highlightClue = function(ctx, cellSize, direction, x, y, length) {
-    colorClue(ctx, cellSize, 'aqua', direction, x, y, length);
+highlightClue = function(ctx, cellSize, clue) {
+    colorClue(ctx, cellSize, 'aqua', clue);
     drawNumbers(ctx, cellSize);
 }
 
@@ -253,32 +250,23 @@ drawGrid = function(canvas, eventTarget) {
             if (highlightedClue !== null) {
                 var direction = highlightedClue[0];
                 var clueNumber = highlightedClue[1];
-                var details = clues[direction][clueNumber];
-                var clueX = details[0];
-                var clueY = details[1];
-                var clueLength = details[2];
-                unhighlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
+                var clue = clues[direction][clueNumber];
+                unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null, null);
             }
-            var clue = checkForHighlight(clues, x, y, highlightedClue);
-            if (clue !== null) {
-                var direction = clue[0];
-                var clueNumber = clue[1];
-                var details = clues[direction][clueNumber];
-                var clueX = details[0];
-                var clueY = details[1];
-                var clueLength = details[2];
-                highlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
-                highlightedClue = clue;
+            var hclue = checkForHighlight(clues, x, y, highlightedClue);
+            if (hclue !== null) {
+                var direction = hclue[0];
+                var clueNumber = hclue[1];
+                var clue = clues[direction][clueNumber];
+                highlightClue(ctx, cellSize, clue);
+                highlightedClue = hclue;
                 emitEvent(eventTarget, clue[0], clue[1]);
             } else if (highlightedClue !== null) {
                 var direction = highlightedClue[0];
                 var clueNumber = highlightedClue[1];
-                var details = clues[direction][clueNumber];
-                var clueX = details[0];
-                var clueY = details[1];
-                var clueLength = details[2];
-                unhighlightClue(ctx, cellSize, direction, clueX, clueY, clueLength);
+                var clue = clues[direction][clueNumber];
+                unhighlightClue(ctx, cellSize, clue);
                 emitEvent(eventTarget, null, null);
                 highlightedClue = null;
             }
