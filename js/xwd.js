@@ -23,6 +23,12 @@ coord = function(x, y) {
     return new Coord(x, y);
 }
 
+coordFromString = function(str) {
+    var x = str.charAt(0) - 0;
+    var y = str.charAt(2) - 0;
+    return coord(x, y);
+}
+
 clue_seq = function(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
@@ -100,11 +106,29 @@ Grid.prototype.drawNumbers = function(ctx) {
     }
 }
 
+Grid.prototype.drawLetters = function(ctx) {
+    ctx.fillStyle = BLACK;
+    console.log('drawing letters');
+    for (var key in this.letters) {
+        var letter = this.letters[key];
+        this.drawLetter(ctx,
+                        letter,
+                        coordFromString(key));
+    }
+}
+
 Grid.prototype.drawNumber = function(ctx, number, cell) {
     ctx.fillStyle = BLACK;
     ctx.font = '28px serif';
     ctx.textBaseline = 'hanging';
     ctx.fillText(number, this.cellSize * cell.x + 3, this.cellSize * cell.y + 3);
+}
+
+Grid.prototype.drawLetter = function(ctx, letter, cell) {
+    ctx.fillStyle = BLACK;
+    ctx.font = '52px sans';
+    ctx.textBaseline = 'hanging';
+    ctx.fillText(letter, this.cellSize * cell.x + 10, this.cellSize * cell.y + 10);
 }
 
 Grid.prototype.figureOutClues = function() {
@@ -172,6 +196,7 @@ Grid.prototype.draw = function(ctx) {
     this.highlightClue(ctx);
     this.highlightCell(ctx);
     this.drawNumbers(ctx);
+    this.drawLetters(ctx);
 }
 
 Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
@@ -186,26 +211,69 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
         if (selected !== null) {
             this.highlighted = selected;
             emitEvent(eventTarget, selected);
-        } else if (this.highlighted !== null) {
+        } /*else if (this.highlighted !== null) {
             var clue = this.clues[this.highlighted.direction][this.highlighted.number];
             emitEvent(eventTarget, null);
             this.highlighted = null;
-        }
+        }*/
     }
     this.draw(ctx);
 }
 
 Grid.prototype.selectNextCell = function() {
     console.log('selecting next cell from ' + this.selectedCell);
+    if (this.highlighted !== null) {
+        if (this.highlighted.direction === 'ac') {
+            var next = coord(this.selectedCell.x + 1, this.selectedCell.y);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        } else {
+            var next = coord(this.selectedCell.x, this.selectedCell.y + 1);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        }
+    }
+}
+
+function isLetter(str) {
+      return str.length === 1 && (str.match(/[a-z]/i) || str.match(/[A-Z]/i));
 }
 
 Grid.prototype.onPress = function(ctx, event) {
     if (this.selectedCell !== null) {
-        this.letters[this.selectedCell] = event.code;
-        console.log('the selected cell is ' + this.selectedCell);
-        this.selectNextCell();
-    } else {
-        console.log('no selected cell');
+        if (isLetter(event.key)) {
+            this.letters[this.selectedCell] = event.key.toUpperCase();
+            console.log('the selected cell is ' + this.selectedCell);
+            this.selectNextCell();
+        } else if (event.key === 'Backspace' || event.key === 'Delete') {
+            this.letters[this.selectedCell] = '';
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            var next = coord(this.selectedCell.x - 1, this.selectedCell.y);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            var next = coord(this.selectedCell.x + 1, this.selectedCell.y);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            var next = coord(this.selectedCell.x, this.selectedCell.y - 1);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        } else if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            var next = coord(this.selectedCell.x, this.selectedCell.y + 1);
+            if (cellInArray(this.whiteSquares, next)) {
+                this.selectedCell = next;
+            }
+        }
     }
     this.draw(ctx);
 }
@@ -284,12 +352,6 @@ colorClue = function(ctx, cellSize, color, clue) {
     }
 }
 
-
-greyOutClue = function(ctx, cellSize, clue) {
-    colorClue(ctx, cellSize, GREYED, clue);
-    drawNumbers(ctx, cellSize);
-}
-
 Grid.prototype.highlightClue = function(ctx) {
     if (this.highlighted !== null) {
         console.log(this.highlighted);
@@ -340,8 +402,8 @@ drawGrid = function(canvas, eventTarget) {
         grid.onClick(event, canvas, ctx, eventTarget);
     });
 
-    window.addEventListener('keydown', function(event) {
-        console.log('button pressed ' + event.code);
+    window.addEventListener('keypress', function(event) {
+        console.log('button pressed ' + event.key);
         grid.onPress(ctx, event);
     });
 }
