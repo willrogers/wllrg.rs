@@ -10,8 +10,17 @@ BLACK = 'black';
 HIGHLIGHT = 'aqua';
 GREYED = 'gainsboro';
 
+Coord = function(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+Coord.prototype.toString = function() {
+    return this.x + ',' + this.y;
+}
+
 coord = function(x, y) {
-    return {x: x, y: y};
+    return new Coord(x, y);
 }
 
 clue_seq = function(x, y, length, direction) {
@@ -36,18 +45,42 @@ BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [11, 6],
                  [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
 
+cellInArray = function(array, cell) {
+    for (var k = 0; k < array.length; k++) {
+        if (array[k][0] === cell.x && array[k][1] === cell.y) {
+            return true;
+        }
+    }
+    return false;
+}
 
-function Grid(width, height, cellSize, black_squares) {
+
+function Grid(width, height, cellSize, blackSquares) {
     this.width = width;
     this.height = height;
-    this.black_squares = black_squares;
+    this.blackSquares = blackSquares;
+    this.whiteSquares = [];
     this.cellSize = cellSize;
     this.clues = {
         'ac': {},
         'dn': {}
     };
+    this.letters = {};
     this.highlighted = null;
+    this.selectedCell = null;
+    this.figureOutWhiteSquares();
     this.figureOutClues();
+}
+
+Grid.prototype.figureOutWhiteSquares = function() {
+    for (var i = 0; i < AC_SQUARES; i++) {
+        for (var j = 0; j < DN_SQUARES; j++) {
+            cell = coord(i, j);
+            if (!cellInArray(this.blackSquares, cell)) {
+                this.whiteSquares.push([i, j]);
+            }
+        }
+    }
 }
 
 Grid.prototype.drawNumbers = function(ctx) {
@@ -68,6 +101,7 @@ Grid.prototype.drawNumbers = function(ctx) {
 }
 
 Grid.prototype.drawNumber = function(ctx, number, cell) {
+    ctx.fillStyle = BLACK;
     ctx.font = '28px serif';
     ctx.textBaseline = 'hanging';
     ctx.fillText(number, this.cellSize * cell.x + 3, this.cellSize * cell.y + 3);
@@ -82,12 +116,12 @@ Grid.prototype.figureOutClues = function() {
             var cell = coord(i, j);
             var acrossCount = 0;
             var downCount = 0;
-            if (cellInArray(WHITE_SQUARES, cell)) {
+            if (cellInArray(this.whiteSquares, cell)) {
                 /* Start of across clue */
-                if (i === 0 || !cellInArray(WHITE_SQUARES, coord(i - 1, j))) {
+                if (i === 0 || !cellInArray(this.whiteSquares, coord(i - 1, j))) {
                     acrossCount = 1;
                     for (var l = i + 1; l < AC_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, coord(l, j))) {
+                        if (cellInArray(this.whiteSquares, coord(l, j))) {
                             acrossCount += 1;
                         } else {
                             break;
@@ -98,10 +132,10 @@ Grid.prototype.figureOutClues = function() {
                     }
                 }
                 /* Start of down clue */
-                if (j === 0 || !cellInArray(WHITE_SQUARES, coord(i, j - 1))) {
+                if (j === 0 || !cellInArray(this.whiteSquares, coord(i, j - 1))) {
                     downCount = 1;
                     for (var l = j + 1; l < DN_SQUARES; l++) {
-                        if (cellInArray(WHITE_SQUARES, coord(i, l))) {
+                        if (cellInArray(this.whiteSquares, coord(i, l))) {
                             downCount += 1;
                         } else {
                             break;
@@ -130,12 +164,13 @@ Grid.prototype.draw = function(ctx) {
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
             var cell = coord(i, j);
-            if (cellInArray(WHITE_SQUARES, cell)) {
+            if (cellInArray(this.whiteSquares, cell)) {
                 fillSquare(ctx, this.cellSize, cell, WHITE);
             }
         }
     }
     this.highlightClue(ctx);
+    this.highlightCell(ctx);
     this.drawNumbers(ctx);
 }
 
@@ -145,7 +180,8 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
     var y = Math.floor((event.pageY - canvas.offsetTop - 2) /
             this.cellSize * window.devicePixelRatio);
     cell = coord(x, y);
-    if (cellInArray(WHITE_SQUARES, cell)) {
+    this.selectedCell = cell;
+    if (cellInArray(this.whiteSquares, cell)) {
         var selected = checkForHighlight(this.clues, cell, this.highlighted);
         if (selected !== null) {
             this.highlighted = selected;
@@ -159,23 +195,19 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
     this.draw(ctx);
 }
 
-cellInArray = function(array, cell) {
-    for (var k = 0; k < array.length; k++) {
-        if (array[k][0] === cell.x && array[k][1] === cell.y) {
-            return true;
-        }
-    }
-    return false;
+Grid.prototype.selectNextCell = function() {
+    console.log('selecting next cell from ' + this.selectedCell);
 }
 
-WHITE_SQUARES = []
-for (var i = 0; i < AC_SQUARES; i++) {
-    for (var j = 0; j < DN_SQUARES; j++) {
-        cell = coord(i, j);
-        if (!cellInArray(BLACK_SQUARES, cell)) {
-            WHITE_SQUARES.push([i, j]);
-        }
+Grid.prototype.onPress = function(ctx, event) {
+    if (this.selectedCell !== null) {
+        this.letters[this.selectedCell] = event.code;
+        console.log('the selected cell is ' + this.selectedCell);
+        this.selectNextCell();
+    } else {
+        console.log('no selected cell');
     }
+    this.draw(ctx);
 }
 
 loadJson = function(file, callback) {
@@ -267,6 +299,12 @@ Grid.prototype.highlightClue = function(ctx) {
     }
 }
 
+Grid.prototype.highlightCell = function(ctx) {
+    if (this.selectedCell !== null) {
+        fillSquare(ctx, this.cellSize, this.selectedCell, GREYED);
+    }
+}
+
 emitEvent = function(elt, clue) {
     if (clue === null) {
         clue = clue_name(null, null);
@@ -300,5 +338,10 @@ drawGrid = function(canvas, eventTarget) {
     /* Add click listener to react to events */
     canvas.addEventListener('click', function(event) {
         grid.onClick(event, canvas, ctx, eventTarget);
+    });
+
+    window.addEventListener('keydown', function(event) {
+        console.log('button pressed ' + event.code);
+        grid.onPress(ctx, event);
     });
 }
