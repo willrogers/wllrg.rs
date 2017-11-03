@@ -6,12 +6,14 @@ extra_js:
 <h1>Crossword</h1>
 <div>
   <canvas id="xwd"></canvas>
+  <input id="fake"></input>
   <div id="cluediv">no clue selected</div>
 </div>
 <script>
 window.onload = function() {
     var canvas = document.getElementById('xwd');
     var clueDiv = document.getElementById('cluediv');
+    var hiddenInput = document.getElementById('fake');
     clueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
             var clueName = event.detail.clueNumber + event.detail.direction;
@@ -25,7 +27,7 @@ window.onload = function() {
             clueDiv.textContent = 'no clue selected';
         }
     });
-    drawGrid(canvas, clueDiv);
+    drawGrid(canvas, clueDiv, hiddenInput);
 }
 </script>
 

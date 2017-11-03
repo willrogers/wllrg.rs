@@ -396,7 +396,7 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 }
 
-drawGrid = function(canvas, eventTarget) {
+drawGrid = function(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var width = 400;
     var height = 400;
@@ -416,6 +416,7 @@ drawGrid = function(canvas, eventTarget) {
     /* Add click listener to react to events */
     canvas.addEventListener('click', function(event) {
         grid.onClick(event, canvas, ctx, eventTarget);
+        hiddenInput.focus();
     });
 
     /* Add keypress listener to react to keyboard events */
