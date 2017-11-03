@@ -29,8 +29,9 @@ coord = function(x, y) {
 }
 
 coordFromString = function(str) {
-    var x = str.charAt(0) - 0;
-    var y = str.charAt(2) - 0;
+    var parts = str.split(',');
+    var x = parts[0] - 0;
+    var y = parts[1] - 0;
     return coord(x, y);
 }
 
