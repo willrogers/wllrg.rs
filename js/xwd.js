@@ -399,13 +399,11 @@ Grid.prototype.highlightCell = function(ctx) {
 
 drawGrid = function(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
-    var width = 400;
-    var height = 400;
+    var width = canvas.clientWidth;
+    var height = canvas.clientHeight;
     // Handle device scaling.
     canvas.width = width * window.devicePixelRatio;
     canvas.height = width * window.devicePixelRatio;
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
 
     var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
     var width = cellSize * AC_SQUARES + 2;

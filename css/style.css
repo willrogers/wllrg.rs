@@ -115,6 +115,16 @@ li.header-nav-item {
 
 #xwd {
     float: left;
+    height: 400px;
+    width: 400px;
+}
+
+@media (max-width: 400px) {
+    #xwd {
+        width: 90vw;
+        height: 90vw;
+    }
+
 }
 
 #cluediv {
@@ -139,6 +149,7 @@ li.header-nav-item {
   }
 
 }
+
 
 /* Probably a phone or tablet. Use the hamburger menu. */
 @media (max-width: 650px) {
