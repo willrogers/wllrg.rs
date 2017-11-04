@@ -11,6 +11,39 @@ var BLACK = 'black';
 var HIGHLIGHT = 'aqua';
 var GREYED = 'gainsboro';
 
+var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
+                 [1, 6],
+                 [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
+                 [3, 8],
+                 [4, 0], [4, 2], [4, 4], [4, 6], [4, 8], [4, 9], [4, 10], [4, 12],
+                 [5, 6],
+                 [6, 0], [6, 1], [6, 2], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 10], [6, 11], [6, 12],
+                 [7, 6],
+                 [8, 0], [8, 2], [8, 3], [8, 4], [8, 6], [8, 8], [8, 10], [8, 12],
+                 [9, 4],
+                 [10, 0], [10, 2], [10, 4], [10, 6], [10, 8], [10, 10], [10, 12],
+                 [11, 6],
+                 [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
+
+function loadJson(file, callback) {
+    // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', file, true);
+    xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+          }
+    };
+    xobj.send(null);
+}
+
+var CLUE_JSON = null;
+loadJson(CLUE_FILE, function(response) {
+    CLUE_JSON = JSON.parse(response);
+});
+
 function Coord(x, y) {
     this.x = x;
     this.y = y;
@@ -48,20 +81,6 @@ function isLetter(str) {
       return str.length === 1 && (str.match(/[a-z]/i) || str.match(/[A-Z]/i));
 }
 
-var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
-                 [1, 6],
-                 [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
-                 [3, 8],
-                 [4, 0], [4, 2], [4, 4], [4, 6], [4, 8], [4, 9], [4, 10], [4, 12],
-                 [5, 6],
-                 [6, 0], [6, 1], [6, 2], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 10], [6, 11], [6, 12],
-                 [7, 6],
-                 [8, 0], [8, 2], [8, 3], [8, 4], [8, 6], [8, 8], [8, 10], [8, 12],
-                 [9, 4],
-                 [10, 0], [10, 2], [10, 4], [10, 6], [10, 8], [10, 10], [10, 12],
-                 [11, 6],
-                 [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
-
 function cellInArray(array, cell) {
     for (var k = 0; k < array.length; k++) {
         if (array[k][0] === cell.x && array[k][1] === cell.y) {
@@ -84,6 +103,42 @@ function emitEvent(elt, clue) {
     elt.dispatchEvent(event);
 }
 
+function fillSquare(ctx, cellSize, cell, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
+            cellSize - 2, cellSize - 2);
+}
+
+function cellInClue(clue, cell) {
+    if (clue.direction === 'ac') {
+        for (var i = clue.x; i < clue.x + clue.length; i++) {
+            if (cell.x == i && cell.y == clue.y) {
+                return true;
+            }
+        }
+    }
+    if (clue.direction === 'dn') {
+        for (var i = clue.y; i < clue.y + clue.length; i++) {
+            if (cell.x == clue.x && cell.y == i) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function colorClue(ctx, cellSize, color, clue) {
+    if (clue.direction === 'ac') {
+        for (var i = clue.x; i < clue.x + clue.length; i++) {
+            fillSquare(ctx, cellSize, coord(i, clue.y), color);
+        }
+    }
+    if (clue.direction === 'dn') {
+        for (var i = clue.y; i < clue.y + clue.length; i++) {
+            fillSquare(ctx, cellSize, coord(clue.x, i), color);
+        }
+    }
+}
 
 function Grid(width, height, cellSize, blackSquares, eventTarget) {
     this.width = width;
@@ -290,49 +345,6 @@ Grid.prototype.onPress = function(ctx, event, eventTarget) {
     this.draw(ctx);
 }
 
-function loadJson(file, callback) {
-    // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType("application/json");
-    xobj.open('GET', file, true);
-    xobj.onreadystatechange = function () {
-          if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
-          }
-    };
-    xobj.send(null);
-}
-
-var CLUE_JSON = null;
-loadJson(CLUE_FILE, function(response) {
-    CLUE_JSON = JSON.parse(response);
-});
-
-function fillSquare(ctx, cellSize, cell, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
-            cellSize - 2, cellSize - 2);
-}
-
-function cellInClue(clue, cell) {
-    if (clue.direction === 'ac') {
-        for (var i = clue.x; i < clue.x + clue.length; i++) {
-            if (cell.x == i && cell.y == clue.y) {
-                return true;
-            }
-        }
-    }
-    if (clue.direction === 'dn') {
-        for (var i = clue.y; i < clue.y + clue.length; i++) {
-            if (cell.x == clue.x && cell.y == i) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 /** Highlight the clue containing the specified cell */
 Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     var cluesContainingCell = [];
@@ -372,19 +384,6 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     }
 }
 
-function colorClue(ctx, cellSize, color, clue) {
-    if (clue.direction === 'ac') {
-        for (var i = clue.x; i < clue.x + clue.length; i++) {
-            fillSquare(ctx, cellSize, coord(i, clue.y), color);
-        }
-    }
-    if (clue.direction === 'dn') {
-        for (var i = clue.y; i < clue.y + clue.length; i++) {
-            fillSquare(ctx, cellSize, coord(clue.x, i), color);
-        }
-    }
-}
-
 Grid.prototype.highlightClue = function(ctx) {
     if (this.highlighted !== null) {
         var clue = this.clues[this.highlighted.direction][this.highlighted.number];
@@ -398,6 +397,7 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 }
 
+/** The main entry point */
 function drawGrid(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var width = canvas.clientWidth;
