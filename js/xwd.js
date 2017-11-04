@@ -406,10 +406,10 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     canvas.height = width * window.devicePixelRatio;
 
     var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
-    var width = cellSize * AC_SQUARES + 2;
-    var height = cellSize * DN_SQUARES + 2;
+    var gridWidth = cellSize * AC_SQUARES + 2;
+    var gridHeight = cellSize * DN_SQUARES + 2;
 
-    var grid = new Grid(width, height, cellSize, BLACK_SQUARES, eventTarget);
+    var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES, eventTarget);
     grid.draw(ctx);
 
     /* Add click listener to react to events */
