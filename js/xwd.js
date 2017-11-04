@@ -11,7 +11,7 @@ var BLACK = 'black';
 var HIGHLIGHT = 'aqua';
 var GREYED = 'gainsboro';
 
-var Coord = function(x, y) {
+function Coord(x, y) {
     this.x = x;
     this.y = y;
 }
@@ -25,22 +25,22 @@ Coord.prototype.equals = function(other) {
 
 }
 
-var coord = function(x, y) {
+function coord(x, y) {
     return new Coord(x, y);
 }
 
-var coordFromString = function(str) {
+function coordFromString(str) {
     var parts = str.split(',');
     var x = parts[0] - 0;
     var y = parts[1] - 0;
     return coord(x, y);
 }
 
-var clue_seq = function(x, y, length, direction) {
+function clue_seq(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
 
-var clue_name = function(direction, number) {
+function clue_name(direction, number) {
     return {direction: direction, number: number};
 }
 
@@ -62,7 +62,7 @@ var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [11, 6],
                  [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
 
-var cellInArray = function(array, cell) {
+function cellInArray(array, cell) {
     for (var k = 0; k < array.length; k++) {
         if (array[k][0] === cell.x && array[k][1] === cell.y) {
             return true;
@@ -71,7 +71,7 @@ var cellInArray = function(array, cell) {
     return false;
 }
 
-var emitEvent = function(elt, clue) {
+function emitEvent(elt, clue) {
     if (clue === null) {
         clue = clue_name(null, null);
     }
@@ -290,7 +290,7 @@ Grid.prototype.onPress = function(ctx, event, eventTarget) {
     this.draw(ctx);
 }
 
-var loadJson = function(file, callback) {
+function loadJson(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -309,13 +309,13 @@ loadJson(CLUE_FILE, function(response) {
     CLUE_JSON = JSON.parse(response);
 });
 
-var fillSquare = function(ctx, cellSize, cell, color) {
+function fillSquare(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
     ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
             cellSize - 2, cellSize - 2);
 }
 
-var cellInClue = function(clue, cell) {
+function cellInClue(clue, cell) {
     if (clue.direction === 'ac') {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
             if (cell.x == i && cell.y == clue.y) {
@@ -372,7 +372,7 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     }
 }
 
-var colorClue = function(ctx, cellSize, color, clue) {
+function colorClue(ctx, cellSize, color, clue) {
     if (clue.direction === 'ac') {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
             fillSquare(ctx, cellSize, coord(i, clue.y), color);
@@ -398,7 +398,7 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 }
 
-var drawGrid = function(canvas, eventTarget, hiddenInput) {
+function drawGrid(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var width = canvas.clientWidth;
     var height = canvas.clientHeight;
