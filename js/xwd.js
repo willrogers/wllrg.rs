@@ -36,11 +36,11 @@ function coordFromString(str) {
     return coord(x, y);
 }
 
-function clue_seq(x, y, length, direction) {
+function clueSeq(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
 
-function clue_name(direction, number) {
+function clueName(direction, number) {
     return {direction: direction, number: number};
 }
 
@@ -73,7 +73,7 @@ function cellInArray(array, cell) {
 
 function emitEvent(elt, clue) {
     if (clue === null) {
-        clue = clue_name(null, null);
+        clue = clueName(null, null);
     }
     var event = new CustomEvent('clue-selected', { detail:
         {
@@ -175,7 +175,7 @@ Grid.prototype.figureOutClues = function() {
                         }
                     }
                     if (acrossCount > 1) {
-                        this.clues['ac'][clueNumber] = clue_seq(i, j, acrossCount, 'ac');
+                        this.clues['ac'][clueNumber] = clueSeq(i, j, acrossCount, 'ac');
                     }
                 }
                 /* Start of down clue */
@@ -189,7 +189,7 @@ Grid.prototype.figureOutClues = function() {
                         }
                     }
                     if (downCount > 1) {
-                        this.clues['dn'][clueNumber] = clue_seq(i, j, downCount, 'dn');
+                        this.clues['dn'][clueNumber] = clueSeq(i, j, downCount, 'dn');
                     }
                 }
                 if (acrossCount > 1 || downCount > 1) {
@@ -343,7 +343,7 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
             if (this.clues[direction].hasOwnProperty(clueNumber)) {
                 var clue = this.clues[direction][clueNumber];
                 if (cellInClue(clue, cell)) {
-                    cluesContainingCell.push(clue_name(direction, clueNumber));
+                    cluesContainingCell.push(clueName(direction, clueNumber));
                 }
             }
         }
