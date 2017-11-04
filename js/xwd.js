@@ -1,16 +1,17 @@
 /* Draw a crossword on an HTML canvas. */
+'use strict';
 
-AC_SQUARES = 13;
-DN_SQUARES = 13;
-LINE_WIDTH = 1;
-CLUE_FILE = '/static/clues.json';
+var AC_SQUARES = 13;
+var DN_SQUARES = 13;
+var LINE_WIDTH = 1;
+var CLUE_FILE = '/static/clues.json';
 
-WHITE = 'white';
-BLACK = 'black';
-HIGHLIGHT = 'aqua';
-GREYED = 'gainsboro';
+var WHITE = 'white';
+var BLACK = 'black';
+var HIGHLIGHT = 'aqua';
+var GREYED = 'gainsboro';
 
-Coord = function(x, y) {
+var Coord = function(x, y) {
     this.x = x;
     this.y = y;
 }
@@ -24,22 +25,22 @@ Coord.prototype.equals = function(other) {
 
 }
 
-coord = function(x, y) {
+var coord = function(x, y) {
     return new Coord(x, y);
 }
 
-coordFromString = function(str) {
+var coordFromString = function(str) {
     var parts = str.split(',');
     var x = parts[0] - 0;
     var y = parts[1] - 0;
     return coord(x, y);
 }
 
-clue_seq = function(x, y, length, direction) {
+var clue_seq = function(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
 
-clue_name = function(direction, number) {
+var clue_name = function(direction, number) {
     return {direction: direction, number: number};
 }
 
@@ -47,7 +48,7 @@ function isLetter(str) {
       return str.length === 1 && (str.match(/[a-z]/i) || str.match(/[A-Z]/i));
 }
 
-BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
+var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 6],
                  [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
                  [3, 8],
@@ -61,7 +62,7 @@ BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [11, 6],
                  [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
 
-cellInArray = function(array, cell) {
+var cellInArray = function(array, cell) {
     for (var k = 0; k < array.length; k++) {
         if (array[k][0] === cell.x && array[k][1] === cell.y) {
             return true;
@@ -70,7 +71,7 @@ cellInArray = function(array, cell) {
     return false;
 }
 
-emitEvent = function(elt, clue) {
+var emitEvent = function(elt, clue) {
     if (clue === null) {
         clue = clue_name(null, null);
     }
@@ -105,7 +106,7 @@ function Grid(width, height, cellSize, blackSquares, eventTarget) {
 Grid.prototype.figureOutWhiteSquares = function() {
     for (var i = 0; i < AC_SQUARES; i++) {
         for (var j = 0; j < DN_SQUARES; j++) {
-            cell = coord(i, j);
+            var cell = coord(i, j);
             if (!cellInArray(this.blackSquares, cell)) {
                 this.whiteSquares.push([i, j]);
             }
@@ -115,9 +116,9 @@ Grid.prototype.figureOutWhiteSquares = function() {
 
 Grid.prototype.drawNumbers = function(ctx) {
     ctx.fillStyle = BLACK;
-    directions = ['ac', 'dn'];
-    for (i = 0; i < 2; i++) {
-        direction = directions[i];
+    var directions = ['ac', 'dn'];
+    for (var i = 0; i < 2; i++) {
+        var direction = directions[i];
         for (var clueNumber in this.clues[direction]) {
             if (this.clues[direction].hasOwnProperty(clueNumber)) {
                 var clue = this.clues[direction][clueNumber];
@@ -230,7 +231,7 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
             this.cellSize * window.devicePixelRatio);
     var y = Math.floor((event.pageY - canvas.offsetTop - 2) /
             this.cellSize * window.devicePixelRatio);
-    cell = coord(x, y);
+    var cell = coord(x, y);
     if (cellInArray(this.whiteSquares, cell)) {
         this.selectCell(cell, true);
     }
@@ -289,7 +290,7 @@ Grid.prototype.onPress = function(ctx, event, eventTarget) {
     this.draw(ctx);
 }
 
-loadJson = function(file, callback) {
+var loadJson = function(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -303,18 +304,18 @@ loadJson = function(file, callback) {
     xobj.send(null);
 }
 
-CLUE_JSON = null;
+var CLUE_JSON = null;
 loadJson(CLUE_FILE, function(response) {
     CLUE_JSON = JSON.parse(response);
 });
 
-fillSquare = function(ctx, cellSize, cell, color) {
+var fillSquare = function(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
     ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
             cellSize - 2, cellSize - 2);
 }
 
-cellInClue = function(clue, cell) {
+var cellInClue = function(clue, cell) {
     if (clue.direction === 'ac') {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
             if (cell.x == i && cell.y == clue.y) {
@@ -371,7 +372,7 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     }
 }
 
-colorClue = function(ctx, cellSize, color, clue) {
+var colorClue = function(ctx, cellSize, color, clue) {
     if (clue.direction === 'ac') {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
             fillSquare(ctx, cellSize, coord(i, clue.y), color);
@@ -397,7 +398,7 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 }
 
-drawGrid = function(canvas, eventTarget, hiddenInput) {
+var drawGrid = function(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var width = canvas.clientWidth;
     var height = canvas.clientHeight;
@@ -409,7 +410,7 @@ drawGrid = function(canvas, eventTarget, hiddenInput) {
     var width = cellSize * AC_SQUARES + 2;
     var height = cellSize * DN_SQUARES + 2;
 
-    grid = new Grid(width, height, cellSize, BLACK_SQUARES, eventTarget);
+    var grid = new Grid(width, height, cellSize, BLACK_SQUARES, eventTarget);
     grid.draw(ctx);
 
     /* Add click listener to react to events */
