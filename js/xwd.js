@@ -3,7 +3,6 @@
 
 var AC_SQUARES = 13;
 var DN_SQUARES = 13;
-var LINE_WIDTH = 1;
 var CLUE_FILE = '/static/clues.json';
 
 var WHITE = 'white';
@@ -23,7 +22,7 @@ var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [9, 4],
                  [10, 0], [10, 2], [10, 4], [10, 6], [10, 8], [10, 10], [10, 12],
                  [11, 6],
-                 [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]]
+                 [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]];
 
 function loadJson(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
@@ -51,12 +50,12 @@ function Coord(x, y) {
 
 Coord.prototype.toString = function() {
     return this.x + ',' + this.y;
-}
+};
 
 Coord.prototype.equals = function(other) {
     return this.x === other.x && this.y === other.y;
 
-}
+};
 
 function coord(x, y) {
     return new Coord(x, y);
@@ -167,7 +166,7 @@ Grid.prototype.figureOutWhiteSquares = function() {
             }
         }
     }
-}
+};
 
 Grid.prototype.drawNumbers = function(ctx) {
     ctx.fillStyle = BLACK;
@@ -183,7 +182,7 @@ Grid.prototype.drawNumbers = function(ctx) {
             }
         }
     }
-}
+};
 
 Grid.prototype.drawLetters = function(ctx) {
     ctx.fillStyle = BLACK;
@@ -193,21 +192,21 @@ Grid.prototype.drawLetters = function(ctx) {
                         letter,
                         coordFromString(key));
     }
-}
+};
 
 Grid.prototype.drawNumber = function(ctx, number, cell) {
     ctx.fillStyle = BLACK;
     ctx.font = '28px serif';
     ctx.textBaseline = 'hanging';
     ctx.fillText(number, this.cellSize * cell.x + 3, this.cellSize * cell.y + 3);
-}
+};
 
 Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.fillStyle = BLACK;
     ctx.font = '52px sans';
     ctx.textBaseline = 'hanging';
     ctx.fillText(letter, this.cellSize * cell.x + 10, this.cellSize * cell.y + 10);
-}
+};
 
 Grid.prototype.figureOutClues = function() {
     /* Collect clues and write in numbers */
@@ -230,7 +229,7 @@ Grid.prototype.figureOutClues = function() {
                         }
                     }
                     if (acrossCount > 1) {
-                        this.clues['ac'][clueNumber] = clueSeq(i, j, acrossCount, 'ac');
+                        this.clues.ac[clueNumber] = clueSeq(i, j, acrossCount, 'ac');
                     }
                 }
                 /* Start of down clue */
@@ -244,7 +243,7 @@ Grid.prototype.figureOutClues = function() {
                         }
                     }
                     if (downCount > 1) {
-                        this.clues['dn'][clueNumber] = clueSeq(i, j, downCount, 'dn');
+                        this.clues.dn[clueNumber] = clueSeq(i, j, downCount, 'dn');
                     }
                 }
                 if (acrossCount > 1 || downCount > 1) {
@@ -254,7 +253,7 @@ Grid.prototype.figureOutClues = function() {
             }
         }
     }
-}
+};
 
 Grid.prototype.draw = function(ctx) {
     ctx.fillStyle = BLACK;
@@ -274,12 +273,12 @@ Grid.prototype.draw = function(ctx) {
     this.highlightCell(ctx);
     this.drawNumbers(ctx);
     this.drawLetters(ctx);
-}
+};
 
 Grid.prototype.selectCell = function(cell, toggle) {
     this.selectedCell = cell;
     this.highlightClueFromCell(cell, toggle);
-}
+};
 
 Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
     var x = Math.floor((event.pageX - canvas.offsetLeft - 2) /
@@ -291,7 +290,7 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
         this.selectCell(cell, true);
     }
     this.draw(ctx);
-}
+};
 
 Grid.prototype.selectNextCell = function(eventTarget) {
     if (this.highlighted !== null) {
@@ -307,7 +306,7 @@ Grid.prototype.selectNextCell = function(eventTarget) {
             }
         }
     }
-}
+};
 
 Grid.prototype.onPress = function(ctx, event, eventTarget) {
     if (this.selectedCell !== null) {
@@ -343,7 +342,7 @@ Grid.prototype.onPress = function(ctx, event, eventTarget) {
         }
     }
     this.draw(ctx);
-}
+};
 
 /** Highlight the clue containing the specified cell */
 Grid.prototype.highlightClueFromCell = function(cell, toggle) {
@@ -360,7 +359,7 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
             }
         }
     }
-    if (cluesContainingCell.length == 0) {
+    if (cluesContainingCell.length === 0) {
         console.log('cell in no clues?');
     } else if (cluesContainingCell.length == 1) {
         this.highlighted = cluesContainingCell[0];
@@ -382,20 +381,20 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
             }
         }
     }
-}
+};
 
 Grid.prototype.highlightClue = function(ctx) {
     if (this.highlighted !== null) {
         var clue = this.clues[this.highlighted.direction][this.highlighted.number];
         colorClue(ctx, this.cellSize, HIGHLIGHT, clue);
     }
-}
+};
 
 Grid.prototype.highlightCell = function(ctx) {
     if (this.selectedCell !== null) {
         fillSquare(ctx, this.cellSize, this.selectedCell, GREYED);
     }
-}
+};
 
 /** The main entry point */
 function drawGrid(canvas, eventTarget, hiddenInput) {
