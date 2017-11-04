@@ -114,23 +114,22 @@ li.header-nav-item {
 }
 
 #xwd {
-    float: left;
-    height: 400px;
-    width: 400px;
+  float: left;
+  height: 400px;
+  width: 400px;
 }
 
 @media (max-width: 400px) {
-    #xwd {
-        width: 90vw;
-        height: 90vw;
-    }
-
+  #xwd {
+    width: 90vw;
+    height: 90vw;
+  }
 }
 
 #cluediv {
-    padding-left: 20px;
-    padding-right: 20px;
-    float: left;
+  padding-left: 20px;
+  padding-right: 20px;
+  float: left;
 }
 
 /* Less wide than the default width of the content */
