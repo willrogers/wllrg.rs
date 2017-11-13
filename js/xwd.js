@@ -308,9 +308,15 @@ Grid.prototype.selectNextCell = function(eventTarget) {
     }
 };
 
-Grid.prototype.onPress = function(ctx, event, eventTarget) {
+Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
+    console.log('event.keyCode ' + event.keyCode);
+    console.log('event.key ' + event.key);
+    console.log('the char is ' + char);
     if (this.selectedCell !== null) {
-        if (isLetter(event.key)) {
+        if (event.keyCode === 229) {
+            this.letters[this.selectedCell] = char.toUpperCase();
+            this.selectNextCell(eventTarget);
+        } else if (isLetter(event.key)) {
             this.letters[this.selectedCell] = event.key.toUpperCase();
             this.selectNextCell(eventTarget);
         } else if (event.key === 'Backspace' || event.key === 'Delete') {
@@ -415,12 +421,41 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     /* Add click listener to react to events */
     canvas.addEventListener('click', function(event) {
         grid.onClick(event, canvas, ctx, eventTarget);
+        hiddenInput.style.position = 'absolute'
+        hiddenInput.style.left = event.pageX + 'px';
+        hiddenInput.style.height = '1px';
+        hiddenInput.style.width = '1px';
+        hiddenInput.style.top = event.pageY + 'px';
+        hiddenInput.style['z-index'] = -1;
         hiddenInput.focus();
+        console.log(hiddenInput.value);
     });
 
-    /* Add keypress listener to react to keyboard events */
+    hiddenInput.value = ' ';
     window.addEventListener('keypress', function(event) {
+        console.log('keypress');
+
+    });
+    window.addEventListener('keydown', function(event) {
+        console.log('keydown');
+
+    });
+    window.addEventListener('input', function(event) {
+        console.log('input');
+        console.log(event);
+
+    });
+    /* Add keypress listener to react to keyboard events */
+    hiddenInput.addEventListener('keyup', function(event) {
         console.log('button pressed ' + event.key);
-        grid.onPress(ctx, event, eventTarget);
+        console.log('hidden input val ' + hiddenInput.value);
+        var char = '';
+        if (hiddenInput.value === '') {
+            char = 'backspace';
+        } else {
+            char = hiddenInput.value.charAt(1);
+        }
+        grid.onPress(ctx, event, char, eventTarget);
+        hiddenInput.value = ' ';
     });
 }
