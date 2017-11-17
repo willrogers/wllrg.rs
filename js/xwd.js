@@ -417,9 +417,18 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var width = canvas.clientWidth;
     var height = canvas.clientHeight;
+
+    var canvasWidth = width;
+    var canvasHeight = height;
+    var canvasCssWidth = width;
+    var canvasCssHeight = height;
     // Handle device scaling.
-    canvas.width = width * window.devicePixelRatio;
-    canvas.height = width * window.devicePixelRatio;
+    canvas.setAttribute('width', canvasWidth * window.devicePixelRatio);
+    canvas.setAttribute('height', canvasHeight * window.devicePixelRatio);
+    //canvas.height = canvasHeight * window.devicePixelRatio;
+    canvas.style.width = canvasCssWidth;
+    canvas.style.height = canvasCssHeight;
+    //ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
     var gridWidth = cellSize * AC_SQUARES + 2;
