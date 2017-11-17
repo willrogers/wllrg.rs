@@ -292,15 +292,16 @@ Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
     this.draw(ctx);
 };
 
-Grid.prototype.selectNextCell = function(eventTarget) {
+Grid.prototype.selectNextCell = function(eventTarget, back) {
+    var step = back? -1: 1;
     if (this.highlighted !== null) {
         if (this.highlighted.direction === 'ac') {
-            var next = coord(this.selectedCell.x + 1, this.selectedCell.y);
+            var next = coord(this.selectedCell.x + step, this.selectedCell.y);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
         } else {
-            var next = coord(this.selectedCell.x, this.selectedCell.y + 1);
+            var next = coord(this.selectedCell.x, this.selectedCell.y + step);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
@@ -309,42 +310,51 @@ Grid.prototype.selectNextCell = function(eventTarget) {
 };
 
 Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
-    console.log('event.keyCode ' + event.keyCode);
-    console.log('event.key ' + event.key);
-    console.log('the char is ' + char);
+    var lastChar = null;
     if (this.selectedCell !== null) {
+        /* virtual keyboard; rely on passed char */
         if (event.keyCode === 229) {
-            this.letters[this.selectedCell] = char.toUpperCase();
-            this.selectNextCell(eventTarget);
+            if (char === 'backspace'){
+                lastChar = 'Backspace'
+            } else {
+                lastChar = char.toUpperCase();
+            }
         } else if (isLetter(event.key)) {
-            this.letters[this.selectedCell] = event.key.toUpperCase();
-            this.selectNextCell(eventTarget);
-        } else if (event.key === 'Backspace' || event.key === 'Delete') {
+            lastChar = event.key.toUpperCase();
+        } else {
+            lastChar = event.key;
+        }
+
+        if (lastChar === 'Backspace') {
             this.letters[this.selectedCell] = '';
-        } else if (event.key === 'ArrowLeft') {
+            this.selectNextCell(eventTarget, true);
+        } else if (lastChar === 'ArrowLeft') {
             event.preventDefault();
             var next = coord(this.selectedCell.x - 1, this.selectedCell.y);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
-        } else if (event.key === 'ArrowRight') {
+        } else if (lastChar === 'ArrowRight') {
             event.preventDefault();
             var next = coord(this.selectedCell.x + 1, this.selectedCell.y);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
-        } else if (event.key === 'ArrowUp') {
+        } else if (lastChar === 'ArrowUp') {
             event.preventDefault();
             var next = coord(this.selectedCell.x, this.selectedCell.y - 1);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
-        } else if (event.key === 'ArrowDown') {
+        } else if (lastChar === 'ArrowDown') {
             event.preventDefault();
             var next = coord(this.selectedCell.x, this.selectedCell.y + 1);
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
+        } else if (isLetter(lastChar)) {
+            this.letters[this.selectedCell] = event.key.toUpperCase();
+            this.selectNextCell(eventTarget, false);
         }
     }
     this.draw(ctx);
@@ -432,20 +442,9 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     });
 
     hiddenInput.value = ' ';
-    window.addEventListener('keypress', function(event) {
-        console.log('keypress');
-
-    });
-    window.addEventListener('keydown', function(event) {
-        console.log('keydown');
-
-    });
-    window.addEventListener('input', function(event) {
-        console.log('input');
-        console.log(event);
-
-    });
-    /* Add keypress listener to react to keyboard events */
+    /* Add keypress listener to react to keyboard events.
+     * Other possible events to listen for are keypress, keydown
+     * and input. */
     hiddenInput.addEventListener('keyup', function(event) {
         console.log('button pressed ' + event.key);
         console.log('hidden input val ' + hiddenInput.value);
