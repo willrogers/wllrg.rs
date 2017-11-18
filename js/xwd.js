@@ -439,12 +439,8 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
         grid.onClick(event, canvas, ctx, eventTarget);
         hiddenInput.style.position = 'absolute'
         hiddenInput.style.left = event.pageX + 'px';
-        hiddenInput.style.height = '1px';
-        hiddenInput.style.width = '1px';
         hiddenInput.style.top = event.pageY + 'px';
-        hiddenInput.style['z-index'] = -1;
         hiddenInput.focus();
-        console.log(hiddenInput.value);
     });
 
     hiddenInput.value = ' ';

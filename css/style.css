@@ -119,6 +119,13 @@ li.header-nav-item {
   width: 400px;
 }
 
+#hidden-input {
+    height: 1px;
+    width: 1px;
+    /* ensure it appears behind the crossword canvas */
+    z-index: -1;
+}
+
 @media (max-width: 400px) {
   #xwd {
     width: 90vw;
