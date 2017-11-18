@@ -196,16 +196,18 @@ Grid.prototype.drawLetters = function(ctx) {
 
 Grid.prototype.drawNumber = function(ctx, number, cell) {
     ctx.fillStyle = BLACK;
-    ctx.font = '14px serif';
+    var fontSize = Math.round(this.cellSize * 0.35);
+    ctx.font = fontSize + 'px serif';
     ctx.textBaseline = 'hanging';
-    ctx.fillText(number, this.cellSize * cell.x + 3, this.cellSize * cell.y + 3);
+    ctx.fillText(number, this.cellSize * (cell.x + 0.1), this.cellSize * (cell.y + 0.2));
 };
 
 Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.fillStyle = BLACK;
-    ctx.font = '26px sans';
+    var fontSize = Math.round(this.cellSize * 0.8);
+    ctx.font = fontSize + 'px sans';
     ctx.textBaseline = 'hanging';
-    ctx.fillText(letter, this.cellSize * cell.x + 5, this.cellSize * cell.y + 5);
+    ctx.fillText(letter, this.cellSize * (cell.x + 0.2), this.cellSize * (cell.y + 0.2));
 };
 
 Grid.prototype.figureOutClues = function() {
