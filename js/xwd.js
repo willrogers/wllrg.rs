@@ -104,8 +104,8 @@ function emitEvent(elt, clue) {
 
 function fillSquare(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
-    ctx.fillRect(cellSize * cell.x + 2, cellSize * cell.y + 2,
-            cellSize - 2, cellSize - 2);
+    ctx.fillRect(cellSize * cell.x + 1, cellSize * cell.y + 1,
+            cellSize - 1, cellSize - 1);
 }
 
 function cellInClue(clue, cell) {
@@ -213,7 +213,7 @@ Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.font = fontSize + 'px sans';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
-    ctx.fillText(letter, this.cellSize * (cell.x + 0.5), this.cellSize * (cell.y + 0.5));
+    ctx.fillText(letter, this.cellSize * (cell.x + 0.5) + 1, this.cellSize * (cell.y + 0.5) + 1);
 };
 
 Grid.prototype.figureOutClues = function() {
@@ -266,7 +266,6 @@ Grid.prototype.figureOutClues = function() {
 Grid.prototype.draw = function(ctx) {
     ctx.fillStyle = BLACK;
     ctx.strokeStyle = BLACK;
-    ctx.lineWidth = 2;
     ctx.fillRect(0, 0, this.width, this.height);
     /* Draw in the white squares. */
     for (var i = 0; i < AC_SQUARES; i++) {
@@ -437,8 +436,8 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     var cellSize = Math.floor(Math.min(pixelWidth / AC_SQUARES, pixelHeight / DN_SQUARES));
-    var gridWidth = cellSize * AC_SQUARES + 2;
-    var gridHeight = cellSize * DN_SQUARES + 2;
+    var gridWidth = cellSize * AC_SQUARES + 1;
+    var gridHeight = cellSize * DN_SQUARES + 1;
 
     var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES, eventTarget);
     grid.draw(ctx);
