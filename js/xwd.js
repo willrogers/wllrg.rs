@@ -150,7 +150,11 @@ function Grid(width, height, cellSize, blackSquares, eventTarget) {
         'ac': {},
         'dn': {}
     };
-    this.letters = {};
+    if (typeof Cookies.get('grid-state') === 'undefined') {
+        this.letters = {};
+    } else {
+        this.letters = JSON.parse(Cookies.get('grid-state'));
+    }
     this.highlighted = null;
     this.selectedCell = null;
     this.figureOutWhiteSquares();
@@ -359,6 +363,7 @@ Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
             this.selectNextCell(eventTarget, false);
         }
     }
+    Cookies.set('grid-state', JSON.stringify(this.letters));
     this.draw(ctx);
 };
 
