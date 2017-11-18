@@ -355,7 +355,7 @@ Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
                 this.selectCell(next, false);
             }
         } else if (isLetter(lastChar)) {
-            this.letters[this.selectedCell] = event.key.toUpperCase();
+            this.letters[this.selectedCell] = lastChar.toUpperCase();
             this.selectNextCell(eventTarget, false);
         }
     }
