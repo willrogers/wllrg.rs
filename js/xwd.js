@@ -196,16 +196,16 @@ Grid.prototype.drawLetters = function(ctx) {
 
 Grid.prototype.drawNumber = function(ctx, number, cell) {
     ctx.fillStyle = BLACK;
-    ctx.font = '28px serif';
+    ctx.font = '14px serif';
     ctx.textBaseline = 'hanging';
     ctx.fillText(number, this.cellSize * cell.x + 3, this.cellSize * cell.y + 3);
 };
 
 Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.fillStyle = BLACK;
-    ctx.font = '52px sans';
+    ctx.font = '26px sans';
     ctx.textBaseline = 'hanging';
-    ctx.fillText(letter, this.cellSize * cell.x + 10, this.cellSize * cell.y + 10);
+    ctx.fillText(letter, this.cellSize * cell.x + 5, this.cellSize * cell.y + 5);
 };
 
 Grid.prototype.figureOutClues = function() {
@@ -282,9 +282,9 @@ Grid.prototype.selectCell = function(cell, toggle) {
 
 Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
     var x = Math.floor((event.pageX - canvas.offsetLeft - 2) /
-            this.cellSize * window.devicePixelRatio);
+            this.cellSize);
     var y = Math.floor((event.pageY - canvas.offsetTop - 2) /
-            this.cellSize * window.devicePixelRatio);
+            this.cellSize);
     var cell = coord(x, y);
     if (cellInArray(this.whiteSquares, cell)) {
         this.selectCell(cell, true);
@@ -415,22 +415,19 @@ Grid.prototype.highlightCell = function(ctx) {
 /** The main entry point */
 function drawGrid(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
-    var width = canvas.clientWidth;
-    var height = canvas.clientHeight;
+    var pixelWidth = canvas.clientWidth;
+    var pixelHeight = canvas.clientHeight;
 
-    var canvasWidth = width;
-    var canvasHeight = height;
-    var canvasCssWidth = width;
-    var canvasCssHeight = height;
-    // Handle device scaling.
-    canvas.setAttribute('width', canvasWidth * window.devicePixelRatio);
-    canvas.setAttribute('height', canvasHeight * window.devicePixelRatio);
-    //canvas.height = canvasHeight * window.devicePixelRatio;
-    canvas.style.width = canvasCssWidth;
-    canvas.style.height = canvasCssHeight;
-    //ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    // Set canvas attributes to the correct number of pixels on the device.
+    canvas.setAttribute('width', pixelWidth * window.devicePixelRatio);
+    canvas.setAttribute('height', pixelHeight * window.devicePixelRatio);
+    // Ensure canvas size is correct according to CSS.
+    canvas.style.width = pixelWidth;
+    canvas.style.height = pixelHeight;
+    // Draw using the correct number of pixels by scaling the context.
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    var cellSize = Math.floor(Math.min(canvas.width / AC_SQUARES, canvas.height / DN_SQUARES));
+    var cellSize = Math.floor(Math.min(pixelWidth / AC_SQUARES, pixelHeight / DN_SQUARES));
     var gridWidth = cellSize * AC_SQUARES + 2;
     var gridHeight = cellSize * DN_SQUARES + 2;
 
