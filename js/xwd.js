@@ -203,15 +203,17 @@ Grid.prototype.drawNumber = function(ctx, number, cell) {
     var fontSize = Math.round(this.cellSize * 0.35);
     ctx.font = fontSize + 'px serif';
     ctx.textBaseline = 'hanging';
-    ctx.fillText(number, this.cellSize * (cell.x + 0.1), this.cellSize * (cell.y + 0.2));
+    ctx.textAlign = 'left';
+    ctx.fillText(number, this.cellSize * (cell.x + 0.1), this.cellSize * (cell.y + 0.1));
 };
 
 Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.fillStyle = BLACK;
-    var fontSize = Math.round(this.cellSize * 0.8);
+    var fontSize = Math.round(this.cellSize * 0.7);
     ctx.font = fontSize + 'px sans';
-    ctx.textBaseline = 'hanging';
-    ctx.fillText(letter, this.cellSize * (cell.x + 0.2), this.cellSize * (cell.y + 0.2));
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(letter, this.cellSize * (cell.x + 0.5), this.cellSize * (cell.y + 0.5));
 };
 
 Grid.prototype.figureOutClues = function() {
