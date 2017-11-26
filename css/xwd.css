@@ -19,8 +19,9 @@
 
 #selected-clue {
   padding: 20px;
-  padding-left: 20px;
+  padding-left: 40px;
   padding-right: 20px;
+  text-indent: -20px;
   display: block;
 }
 
@@ -64,9 +65,13 @@
   #xwd {
     width: 90vw;
     height: 90vw;
+    padding-left:5vw;
   }
   #all-clues {
     width: 90vw;
     height: 90vw;
+  }
+  #selected-clue {
+    width: 80vw;
   }
 }

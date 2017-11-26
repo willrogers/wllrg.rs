@@ -148,6 +148,7 @@ function Grid(width, height, cellSize, blackSquares, eventTarget) {
     this.whiteSquares = [];
     this.cellSize = cellSize;
     this.eventTarget = eventTarget;
+    /* each is a clueSeq */
     this.clues = {
         'ac': {},
         'dn': {}
@@ -430,7 +431,6 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 };
 
-/** The main entry point */
 function drawGrid(canvas, eventTarget, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var pixelWidth = canvas.clientWidth;
@@ -480,13 +480,28 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     return grid;
 }
 
+function isClueActive(clue) {
+    var dayOfMonth = new Date().getDate();
+    var month = new Date().getMonth();
+    var year = new Date().getFullYear();
+    console.log(year);
+    return (year > 2017 || (month === 11 && dayOfMonth >= clue[0]));
+}
+
+function clueToString(clue) {
+    if (isClueActive(clue)) {
+        return clue[1] + '\u00a0(' + clue[2] + ')';
+    } else {
+        return 'Released on ' + clue[0] + ' December';
+    }
+}
+
 function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var clueDivs = [];
     var Directions = ["Across", "Down"];
     var dirs = ["ac", "dn"];
     var dns = ["across", "down"];
-    var dayOfMonth = new Date().getDate();
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
         var dirDiv = document.createElement("div");
@@ -503,11 +518,7 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
             clueDiv.setAttribute("class", "clue-text");
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
-            if (dayOfMonth > clues[clueNum][0]) {
-                clueDiv.textContent = clueNum + '. ' + clues[clueNum][1];
-            } else {
-                clueDiv.textContent = clueNum + '. ' + 'Released on ' + clues[clueNum][0] + ' December';
-            }
+            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
             clueDiv.addEventListener('click', function(event) {
                 var targetDiv = event.target;
                 grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
@@ -524,4 +535,28 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
             console.log(clues[clueNum]);
         }
     }
+}
+
+/** The main entry point */
+function main() {
+    var canvas = document.getElementById('xwd');
+    var clueDiv = document.getElementById('selected-clue');
+    var hiddenInput = document.getElementById('hidden-input');
+    var allClues = document.getElementById('all-clues');
+    clueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            console.log(event.detail.direction);
+            if (CLUE_JSON[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
+                var direction = event.detail.direction === 'ac' ? 'across' : 'down';
+                clueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(CLUE_JSON[event.detail.direction][event.detail.clueNumber]);
+            } else {
+                clueDiv.textContent = 'No clue data';
+            }
+        } else {
+            clueDiv.textContent = 'No clue selected';
+        }
+    });
+    var grid = drawGrid(canvas, clueDiv, hiddenInput);
+    console.log('loading clues');
+    loadClues(grid, allClues, canvas, clueDiv, hiddenInput);
 }
