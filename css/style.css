@@ -113,31 +113,6 @@ li.header-nav-item {
   display: none;
 }
 
-#xwd {
-  float: left;
-  height: 400px;
-  width: 400px;
-}
-
-#hidden-input {
-    height: 1px;
-    width: 1px;
-    /* ensure it appears behind the crossword canvas */
-    z-index: -1;
-}
-
-@media (max-width: 400px) {
-  #xwd {
-    width: 90vw;
-    height: 90vw;
-  }
-}
-
-#cluediv {
-  padding-left: 20px;
-  padding-right: 20px;
-  float: left;
-}
 
 /* Less wide than the default width of the content */
 @media (max-width: 800px) {

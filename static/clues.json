@@ -1,4 +1,28 @@
 {
-     "1dn": "This is a clue (5)",
-     "2dn": "This is another clue (8)"
+    "ac" :
+    {
+        "7": [12, "Bother - Southern Shale collapses (6)"],
+        "8": [9, "Country loses first lady (6)"],
+        "9": [19, "Reviewing material and making changes (8)"],
+        "10": [3, "Brief time on satellite (4)"],
+        "11": [15, "Stones bruise badly (6)"],
+        "12": [7, "Comment on money no longer valid (6)"],
+        "14": [16, "Rodney's broken down over there (6)"],
+        "17": [4, "Many layers of one pudding's going back (6)"],
+        "22": [6, "Ego must retreat before calm can purify (6)"],
+        "23": [11, "Computers cut woman from particular type of script (6)"]
+    },
+    "dn":
+    {
+        "1": [13, "Entrance with Australian confection (6)"],
+        "3": [14, "Charges for drug stashed in jeans (6)"],
+        "4": [8, "Wonder about depressing experience (6)"],
+        "6": [17, "Set up our high standard (6)"],
+        "2": [5, "Became inflexible boss if I edged round this (8)"],
+        "5": [2, "Solid company (4)"],
+        "13": [10, "Average scientists contained in large circle (8)"],
+        "16": [20, "Tear into second half of race and make waves (6)"],
+        "17": [1, "Sibling born in autumn with bad infection? (6)"],
+        "20": [18, "Purloined from buffet, artisan cheese (4)"]
+    }
 }

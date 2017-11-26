@@ -5,6 +5,8 @@ var AC_SQUARES = 13;
 var DN_SQUARES = 13;
 var CLUE_FILE = '/static/clues.json';
 
+var DIRECTIONS = ['ac', 'dn'];
+
 var WHITE = 'white';
 var BLACK = 'black';
 var HIGHLIGHT = 'aqua';
@@ -174,9 +176,8 @@ Grid.prototype.figureOutWhiteSquares = function() {
 
 Grid.prototype.drawNumbers = function(ctx) {
     ctx.fillStyle = BLACK;
-    var directions = ['ac', 'dn'];
     for (var i = 0; i < 2; i++) {
-        var direction = directions[i];
+        var direction = DIRECTIONS[i];
         for (var clueNumber in this.clues[direction]) {
             if (this.clues[direction].hasOwnProperty(clueNumber)) {
                 var clue = this.clues[direction][clueNumber];
@@ -287,7 +288,7 @@ Grid.prototype.selectCell = function(cell, toggle) {
     this.highlightClueFromCell(cell, toggle);
 };
 
-Grid.prototype.onClick = function(event, canvas, ctx, eventTarget) {
+Grid.prototype.onClick = function(event, canvas, ctx) {
     var x = Math.floor((event.pageX - canvas.offsetLeft - 2) /
             this.cellSize);
     var y = Math.floor((event.pageY - canvas.offsetTop - 2) /
@@ -371,9 +372,8 @@ Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
 /** Highlight the clue containing the specified cell */
 Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     var cluesContainingCell = [];
-    var directions = ['ac', 'dn'];
     for (var i = 0; i < 2; i++) {
-        var direction = directions[i];
+        var direction = DIRECTIONS[i];
         for (var clueNumber in this.clues[direction]) {
             if (this.clues[direction].hasOwnProperty(clueNumber)) {
                 var clue = this.clues[direction][clueNumber];
@@ -407,7 +407,17 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     }
 };
 
+Grid.prototype.setHighlightedClue = function(direction, number) {
+    this.highlighted = clueName(direction, number);
+    var clue = this.clues[this.highlighted.direction][this.highlighted.number];
+    this.selectedCell = coord(clue.x, clue.y);
+    emitEvent(this.eventTarget, this.highlighted);
+
+}
+
 Grid.prototype.highlightClue = function(ctx) {
+    console.log('highlighting:');
+    console.log(this.highlighted);
     if (this.highlighted !== null) {
         var clue = this.clues[this.highlighted.direction][this.highlighted.number];
         colorClue(ctx, this.cellSize, HIGHLIGHT, clue);
@@ -467,4 +477,51 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
         grid.onPress(ctx, event, char, eventTarget);
         hiddenInput.value = ' ';
     });
+    return grid;
+}
+
+function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
+    var ctx = canvas.getContext('2d');
+    var clueDivs = [];
+    var Directions = ["Across", "Down"];
+    var dirs = ["ac", "dn"];
+    var dns = ["across", "down"];
+    var dayOfMonth = new Date().getDate();
+    for (var i = 0; i < DIRECTIONS.length; i++) {
+        var direction = DIRECTIONS[i];
+        var dirDiv = document.createElement("div");
+        dirDiv.setAttribute("class", "clue-container");
+        dirDiv.id = direction + "Div";
+        div.appendChild(dirDiv);
+        var titleDiv = document.createElement("div");
+        titleDiv.setAttribute("class", "clue-header");
+        titleDiv.textContent = Directions[i];
+        dirDiv.appendChild(titleDiv);
+        var clues = CLUE_JSON[direction];
+        for (var clueNum in clues) {
+            var clueDiv = document.createElement("div");
+            clueDiv.setAttribute("class", "clue-text");
+            clueDiv.setAttribute("clueNum", clueNum);
+            clueDiv.setAttribute("direction", direction);
+            if (dayOfMonth > clues[clueNum][0]) {
+                clueDiv.textContent = clueNum + '. ' + clues[clueNum][1];
+            } else {
+                clueDiv.textContent = clueNum + '. ' + 'Released on ' + clues[clueNum][0] + ' December';
+            }
+            clueDiv.addEventListener('click', function(event) {
+                var targetDiv = event.target;
+                grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
+                grid.draw(ctx);
+                hiddenInput.focus();
+                for (var i = 0; i < clueDivs.length; i++) {
+                    clueDivs[i].style.backgroundColor = WHITE;
+                }
+                targetDiv.style.backgroundColor = HIGHLIGHT;
+            });
+            clueDivs.push(clueDiv);
+            dirDiv.appendChild(clueDiv);
+            console.log(clueNum);
+            console.log(clues[clueNum]);
+        }
+    }
 }

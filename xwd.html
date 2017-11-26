@@ -3,32 +3,39 @@ layout: main
 extra_js:
  - /js/xwd.js
  - /js/cookies.min.js
+extra_css:
+ - /css/xwd.css
 ---
 <h1>Crossword</h1>
 <div>
-  <canvas id="xwd"></canvas>
+  <div><p>Don't miss the hidden message once you're done.</p></div>
   <div style="height:0;width:0;overflow:hidden"><input type="password" onfocus="this.removeAttribute('readonly');" id="hidden-input" autocomplete="off" readonly /></div>
-  <div id="cluediv">no clue selected</div>
+  <div id="selected-clue">No clue selected</div>
+  <canvas id="xwd"></canvas>
+  <div id="all-clues"></div>
 </div>
 <script>
 window.onload = function() {
     var canvas = document.getElementById('xwd');
-    var clueDiv = document.getElementById('cluediv');
+    var clueDiv = document.getElementById('selected-clue');
     var hiddenInput = document.getElementById('hidden-input');
+    var allClues = document.getElementById('all-clues');
     clueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
-            var clueName = event.detail.clueNumber + event.detail.direction;
-            if (clueName) {
-                var clue = CLUE_JSON[clueName];
-                clueDiv.textContent = clueName + ' ' + clue;
+            console.log(event.detail.direction);
+            if (CLUE_JSON[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
+                var clue = CLUE_JSON[event.detail.direction][event.detail.clueNumber][1];
+                clueDiv.textContent = event.detail.clueNumber + ' ' + event.detail.direction + ': ' + clue;
             } else {
                 clueDiv.textContent = 'No clue data';
             }
         } else {
-            clueDiv.textContent = 'no clue selected';
+            clueDiv.textContent = 'No clue selected';
         }
     });
-    drawGrid(canvas, clueDiv, hiddenInput);
+    var grid = drawGrid(canvas, clueDiv, hiddenInput);
+    console.log('loading clues');
+    loadClues(grid, allClues, canvas, clueDiv, hiddenInput);
 }
 </script>
 
