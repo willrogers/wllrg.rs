@@ -114,9 +114,10 @@ li.header-nav-item {
 }
 
 #xwd {
-  float: left;
   height: 400px;
   width: 400px;
+  display: inline-block;
+  float: left;
 }
 
 #hidden-input {
@@ -136,7 +137,24 @@ li.header-nav-item {
 #cluediv {
   padding-left: 20px;
   padding-right: 20px;
-  float: left;
+  display: block;
+}
+
+.clue-text {
+  cursor: pointer;
+}
+
+#all-clues {
+  display: block;
+}
+
+.clue-container {
+  width: 300px;
+  display: inline-block;
+}
+
+.clue-header {
+  border: 1px solid black;
 }
 
 /* Less wide than the default width of the content */
