@@ -8,15 +8,16 @@ extra_css:
 ---
 <h1>Crossword</h1>
 <div>
-  <canvas id="xwd"></canvas>
+  <div><p>Don't miss the hidden message once you're done.</p></div>
   <div style="height:0;width:0;overflow:hidden"><input type="password" onfocus="this.removeAttribute('readonly');" id="hidden-input" autocomplete="off" readonly /></div>
-  <div id="cluediv">No clue selected</div>
+  <div id="selected-clue">No clue selected</div>
+  <canvas id="xwd"></canvas>
   <div id="all-clues"></div>
 </div>
 <script>
 window.onload = function() {
     var canvas = document.getElementById('xwd');
-    var clueDiv = document.getElementById('cluediv');
+    var clueDiv = document.getElementById('selected-clue');
     var hiddenInput = document.getElementById('hidden-input');
     var allClues = document.getElementById('all-clues');
     clueDiv.addEventListener('clue-selected', function(event) {
