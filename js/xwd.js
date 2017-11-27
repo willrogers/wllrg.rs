@@ -365,6 +365,25 @@ Grid.prototype.onPress = function(ctx, event, char) {
             if (cellInArray(this.whiteSquares, next)) {
                 this.selectCell(next, false);
             }
+        } else if (lastChar === 'Tab') {
+            console.log(this.highlighted);
+            var matched = false;
+            for (var i = 0; i < 2; i++) {
+                var direction = DIRECTIONS[i];
+                for (var clue in this.clues[direction]) {
+                    if (this.clues[direction].hasOwnProperty(clue)) {
+                        if (matched) {
+                            this.setHighlightedClue(direction, clue);
+                            matched = false;
+                            break;
+                        } else {
+                            if (direction === this.highlighted.direction && clue === this.highlighted.number) {
+                                matched = true;
+                            }
+                        }
+                    }
+                }
+            }
         } else if (isLetter(lastChar)) {
             this.letters[this.selectedCell] = lastChar.toUpperCase();
             this.selectNextCell(false);
@@ -420,8 +439,6 @@ Grid.prototype.setHighlightedClue = function(direction, number) {
 }
 
 Grid.prototype.highlightClue = function(ctx) {
-    console.log('highlighting:');
-    console.log(this.highlighted);
     if (this.highlighted !== null) {
         var clue = this.clues[this.highlighted.direction][this.highlighted.number];
         colorClue(ctx, this.cellSize, HIGHLIGHT, clue);
@@ -468,7 +485,8 @@ function drawGrid(canvas, hiddenInput) {
     /* Add keypress listener to react to keyboard events.
      * Other possible events to listen for are keypress, keydown
      * and input. */
-    hiddenInput.addEventListener('keyup', function(event) {
+    hiddenInput.addEventListener('keydown', function(event) {
+        event.preventDefault();
         console.log('button pressed ' + event.key);
         console.log('hidden input val ' + hiddenInput.value);
         var char = '';
@@ -487,7 +505,6 @@ function isClueActive(clue) {
     var dayOfMonth = new Date().getDate();
     var month = new Date().getMonth();
     var year = new Date().getFullYear();
-    console.log(year);
     return (year > 2017 || (month === 11 && dayOfMonth >= clue[0]));
 }
 
@@ -525,10 +542,6 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
             clueDiv.addEventListener('clue-selected', function(event) {
                 if (event.detail.direction !== null) {
-                    console.log(event.detail.direction);
-                    console.log(event.detail.clueNumber);
-                    console.log(clueDiv.getAttribute("clueNum"));
-                    console.log(this.getAttribute("clueNum"));
                     if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
                         this.style.backgroundColor = HIGHLIGHT;
                     } else {
@@ -550,8 +563,6 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
             clueDivs.push(clueDiv);
             grid.addListener(clueDiv);
             dirDiv.appendChild(clueDiv);
-            console.log(clueNum);
-            console.log(clues[clueNum]);
         }
     }
 }
@@ -566,7 +577,6 @@ function main() {
     var allClues = document.getElementById('all-clues');
     clueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
-            console.log(event.detail.direction);
             if (CLUE_JSON[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
                 clueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(CLUE_JSON[event.detail.direction][event.detail.clueNumber]);
