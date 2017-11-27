@@ -91,7 +91,7 @@ function cellInArray(array, cell) {
     return false;
 }
 
-function emitEvent(elt, clue) {
+function emitEvent(listeners, clue) {
     if (clue === null) {
         clue = clueName(null, null);
     }
@@ -101,7 +101,9 @@ function emitEvent(elt, clue) {
             'clueNumber': clue.number
         }
     }, true, true);
-    elt.dispatchEvent(event);
+    for (var i = 0; i < listeners.length; i++) {
+        listeners[i].dispatchEvent(event);
+    }
 }
 
 function fillSquare(ctx, cellSize, cell, color) {
@@ -141,13 +143,13 @@ function colorClue(ctx, cellSize, color, clue) {
     }
 }
 
-function Grid(width, height, cellSize, blackSquares, eventTarget) {
+function Grid(width, height, cellSize, blackSquares, eventListeners) {
     this.width = width;
     this.height = height;
     this.blackSquares = blackSquares;
     this.whiteSquares = [];
     this.cellSize = cellSize;
-    this.eventTarget = eventTarget;
+    this.eventListeners = [];
     /* each is a clueSeq */
     this.clues = {
         'ac': {},
@@ -162,6 +164,10 @@ function Grid(width, height, cellSize, blackSquares, eventTarget) {
     this.selectedCell = null;
     this.figureOutWhiteSquares();
     this.figureOutClues();
+}
+
+Grid.prototype.addListener = function(listener) {
+    this.eventListeners.push(listener);
 }
 
 Grid.prototype.figureOutWhiteSquares = function() {
@@ -301,7 +307,7 @@ Grid.prototype.onClick = function(event, canvas, ctx) {
     this.draw(ctx);
 };
 
-Grid.prototype.selectNextCell = function(eventTarget, back) {
+Grid.prototype.selectNextCell = function(back) {
     var step = back? -1: 1;
     if (this.highlighted !== null) {
         if (this.highlighted.direction === 'ac') {
@@ -318,7 +324,7 @@ Grid.prototype.selectNextCell = function(eventTarget, back) {
     }
 };
 
-Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
+Grid.prototype.onPress = function(ctx, event, char) {
     var lastChar = null;
     if (this.selectedCell !== null) {
         /* virtual keyboard; rely on passed char */
@@ -336,7 +342,7 @@ Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
 
         if (lastChar === 'Backspace') {
             this.letters[this.selectedCell] = '';
-            this.selectNextCell(eventTarget, true);
+            this.selectNextCell(true);
         } else if (lastChar === 'ArrowLeft') {
             event.preventDefault();
             var next = coord(this.selectedCell.x - 1, this.selectedCell.y);
@@ -363,7 +369,7 @@ Grid.prototype.onPress = function(ctx, event, char, eventTarget) {
             }
         } else if (isLetter(lastChar)) {
             this.letters[this.selectedCell] = lastChar.toUpperCase();
-            this.selectNextCell(eventTarget, false);
+            this.selectNextCell(false);
         }
     }
     Cookies.set('grid-state', JSON.stringify(this.letters));
@@ -388,20 +394,20 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
         console.log('cell in no clues?');
     } else if (cluesContainingCell.length == 1) {
         this.highlighted = cluesContainingCell[0];
-        emitEvent(this.eventTarget, this.highlighted);
+        emitEvent(this.eventListeners, this.highlighted);
     } else {
         /* do we toggle? */
         if (this.highlighted === null) {
             this.highlighted = cluesContainingCell[0];
-            emitEvent(this.eventTarget, this.highlighted);
+            emitEvent(this.eventListeners, this.highlighted);
         } else {
             if (toggle) {
                 if (this.highlighted.direction === cluesContainingCell[0].direction && this.highlighted.number === cluesContainingCell[0].number) {
                     this.highlighted = cluesContainingCell[1];
-                    emitEvent(this.eventTarget, this.highlighted);
+                    emitEvent(this.eventListeners, this.highlighted);
                 } else {
                     this.highlighted = cluesContainingCell[0];
-                    emitEvent(this.eventTarget, this.highlighted);
+                    emitEvent(this.eventListeners, this.highlighted);
                 }
             }
         }
@@ -412,8 +418,7 @@ Grid.prototype.setHighlightedClue = function(direction, number) {
     this.highlighted = clueName(direction, number);
     var clue = this.clues[this.highlighted.direction][this.highlighted.number];
     this.selectedCell = coord(clue.x, clue.y);
-    emitEvent(this.eventTarget, this.highlighted);
-
+    emitEvent(this.eventListeners, this.highlighted);
 }
 
 Grid.prototype.highlightClue = function(ctx) {
@@ -431,7 +436,7 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 };
 
-function drawGrid(canvas, eventTarget, hiddenInput) {
+function drawGrid(canvas, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var pixelWidth = canvas.clientWidth;
     var pixelHeight = canvas.clientHeight;
@@ -449,12 +454,12 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
     var gridWidth = cellSize * AC_SQUARES + 1;
     var gridHeight = cellSize * DN_SQUARES + 1;
 
-    var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES, eventTarget);
+    var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES);
     grid.draw(ctx);
 
     /* Add click listener to react to events */
     canvas.addEventListener('click', function(event) {
-        grid.onClick(event, canvas, ctx, eventTarget);
+        grid.onClick(event, canvas, ctx);
         hiddenInput.style.position = 'absolute'
         hiddenInput.style.left = event.pageX + 'px';
         hiddenInput.style.top = event.pageY + 'px';
@@ -474,7 +479,7 @@ function drawGrid(canvas, eventTarget, hiddenInput) {
         } else {
             char = hiddenInput.value.charAt(1);
         }
-        grid.onPress(ctx, event, char, eventTarget);
+        grid.onPress(ctx, event, char);
         hiddenInput.value = ' ';
     });
     return grid;
@@ -515,10 +520,25 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
         var clues = CLUE_JSON[direction];
         for (var clueNum in clues) {
             var clueDiv = document.createElement("div");
+            clueDiv.id = clueNum + direction;
             clueDiv.setAttribute("class", "clue-text");
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
+            clueDiv.addEventListener('clue-selected', function(event) {
+                if (event.detail.direction !== null) {
+                    console.log(event.detail.direction);
+                    console.log(event.detail.clueNumber);
+                    console.log(clueDiv.getAttribute("clueNum"));
+                    console.log(this.getAttribute("clueNum"));
+                    if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
+                        this.style.backgroundColor = HIGHLIGHT;
+                    } else {
+                        this.style.backgroundColor = WHITE;
+                    }
+                }
+
+            });
             clueDiv.addEventListener('click', function(event) {
                 var targetDiv = event.target;
                 grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
@@ -530,6 +550,7 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
                 targetDiv.style.backgroundColor = HIGHLIGHT;
             });
             clueDivs.push(clueDiv);
+            grid.addListener(clueDiv);
             dirDiv.appendChild(clueDiv);
             console.log(clueNum);
             console.log(clues[clueNum]);
@@ -556,7 +577,7 @@ function main() {
             clueDiv.textContent = 'No clue selected';
         }
     });
-    var grid = drawGrid(canvas, clueDiv, hiddenInput);
-    console.log('loading clues');
+    var grid = drawGrid(canvas, hiddenInput);
+    grid.addListener(clueDiv);
     loadClues(grid, allClues, canvas, clueDiv, hiddenInput);
 }
