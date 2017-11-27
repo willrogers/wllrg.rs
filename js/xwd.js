@@ -12,6 +12,8 @@ var BLACK = 'black';
 var HIGHLIGHT = 'aqua';
 var GREYED = 'gainsboro';
 
+var CLUE_JSON = null;
+
 var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 6],
                  [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
@@ -40,10 +42,6 @@ function loadJson(file, callback) {
     xobj.send(null);
 }
 
-var CLUE_JSON = null;
-loadJson(CLUE_FILE, function(response) {
-    CLUE_JSON = JSON.parse(response);
-});
 
 function Coord(x, y) {
     this.x = x;
@@ -560,6 +558,8 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
 
 /** The main entry point */
 function main() {
+    loadJson(CLUE_FILE, function(response) {
+        CLUE_JSON = JSON.parse(response);
     var canvas = document.getElementById('xwd');
     var clueDiv = document.getElementById('selected-clue');
     var hiddenInput = document.getElementById('hidden-input');
@@ -580,4 +580,5 @@ function main() {
     var grid = drawGrid(canvas, hiddenInput);
     grid.addListener(clueDiv);
     loadClues(grid, allClues, canvas, clueDiv, hiddenInput);
+    });
 }
