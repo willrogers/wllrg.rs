@@ -12,8 +12,6 @@ var BLACK = 'black';
 var HIGHLIGHT = 'aqua';
 var GREYED = 'gainsboro';
 
-var CLUE_JSON = null;
-
 var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 6],
                  [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
@@ -516,7 +514,7 @@ function clueToString(clue) {
     }
 }
 
-function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
+function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var clueDivs = [];
     var Directions = ["Across", "Down"];
@@ -532,7 +530,7 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
         titleDiv.setAttribute("class", "clue-header");
         titleDiv.textContent = Directions[i];
         dirDiv.appendChild(titleDiv);
-        var clues = CLUE_JSON[direction];
+        var clues = clueJson[direction];
         for (var clueNum in clues) {
             var clueDiv = document.createElement("div");
             clueDiv.id = clueNum + direction;
@@ -570,25 +568,25 @@ function loadClues(grid, div, canvas, clueDiv, hiddenInput) {
 /** The main entry point */
 function main() {
     loadJson(CLUE_FILE, function(response) {
-        CLUE_JSON = JSON.parse(response);
-    var canvas = document.getElementById('xwd');
-    var clueDiv = document.getElementById('selected-clue');
-    var hiddenInput = document.getElementById('hidden-input');
-    var allClues = document.getElementById('all-clues');
-    clueDiv.addEventListener('clue-selected', function(event) {
-        if (event.detail.direction !== null) {
-            if (CLUE_JSON[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
-                var direction = event.detail.direction === 'ac' ? 'across' : 'down';
-                clueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(CLUE_JSON[event.detail.direction][event.detail.clueNumber]);
+        var clueJson = JSON.parse(response);
+        var canvas = document.getElementById('xwd');
+        var clueDiv = document.getElementById('selected-clue');
+        var hiddenInput = document.getElementById('hidden-input');
+        var allClues = document.getElementById('all-clues');
+        clueDiv.addEventListener('clue-selected', function(event) {
+            if (event.detail.direction !== null) {
+                if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
+                    var direction = event.detail.direction === 'ac' ? 'across' : 'down';
+                    clueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
+                } else {
+                    clueDiv.textContent = 'No clue data';
+                }
             } else {
-                clueDiv.textContent = 'No clue data';
+                clueDiv.textContent = 'No clue selected';
             }
-        } else {
-            clueDiv.textContent = 'No clue selected';
-        }
-    });
-    var grid = drawGrid(canvas, hiddenInput);
-    grid.addListener(clueDiv);
-    loadClues(grid, allClues, canvas, clueDiv, hiddenInput);
+        });
+        var grid = drawGrid(canvas, hiddenInput);
+        grid.addListener(clueDiv);
+        loadClues(grid, allClues, canvas, clueDiv, clueJson, hiddenInput);
     });
 }
