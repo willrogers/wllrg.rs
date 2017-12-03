@@ -486,7 +486,7 @@ function drawGrid(canvas, hiddenInput) {
     /* Add keypress listener to react to keyboard events.
      * Other possible events to listen for are keypress, keydown
      * and input. */
-    hiddenInput.addEventListener('keydown', function(event) {
+    hiddenInput.addEventListener('keyup', function(event) {
         event.preventDefault();
         console.log('button pressed ' + event.key);
         console.log('hidden input val ' + hiddenInput.value);
