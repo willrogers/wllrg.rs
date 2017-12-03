@@ -594,23 +594,26 @@ function main() {
     loadJson(CLUE_FILE, function(response) {
         var clueJson = JSON.parse(response);
         var canvas = document.getElementById('xwd');
-        var clueDiv = document.getElementById('selected-clue');
+        var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
-        clueDiv.addEventListener('clue-selected', function(event) {
+        clueText.addEventListener('clue-selected', function(event) {
             if (event.detail.direction !== null) {
                 if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                     var direction = event.detail.direction === 'ac' ? 'across' : 'down';
-                    clueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
+                    clueText.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
+                    clueText.style.backgroundColor = HIGHLIGHT;
                 } else {
-                    clueDiv.textContent = 'No clue data';
+                    clueText.textContent = 'No clue data';
+                    clueText.style.backgroundColor = WHITE;
                 }
             } else {
-                clueDiv.textContent = 'No clue selected';
+                clueText.textContent = 'No clue selected';
+                clueText.style.backgroundColor = WHITE;
             }
         });
         var grid = drawGrid(canvas, hiddenInput);
-        grid.addListener(clueDiv);
-        loadClues(grid, allClues, canvas, clueDiv, clueJson, hiddenInput);
+        grid.addListener(clueText);
+        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput);
     });
 }
