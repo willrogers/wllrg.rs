@@ -29,6 +29,7 @@
 #selected-clue-text {
   padding-right: 10px;
   padding-left: 10px;
+  border-radius: 2px;
 }
 
 #all-clues {
@@ -36,6 +37,8 @@
 }
 
 .clue-text {
+  margin: 2px;
+  border-radius: 2px;
   padding-left: 10px;
   padding-right: 10px;
   cursor: pointer;
