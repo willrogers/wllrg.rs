@@ -387,7 +387,7 @@ Grid.prototype.onPress = function(ctx, event, char) {
             this.selectNextCell(false);
         }
     }
-    Cookies.set('grid-state', JSON.stringify(this.letters));
+    Cookies.set('grid-state', JSON.stringify(this.letters), { expires: new Date(2018, 11, 31) } );
     this.draw(ctx);
 };
 
