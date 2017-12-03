@@ -9,8 +9,11 @@ var DIRECTIONS = ['ac', 'dn'];
 
 var WHITE = 'white';
 var BLACK = 'black';
-var HIGHLIGHT = 'aqua';
+var CELL_HIGHLIGHT = '#87d3ff';
+var HIGHLIGHT = '#d6f0ff';
 var GREYED = 'gainsboro';
+var UNRELEASED = 'lightgrey';
+
 
 var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
                  [1, 6],
@@ -445,7 +448,7 @@ Grid.prototype.highlightClue = function(ctx) {
 
 Grid.prototype.highlightCell = function(ctx) {
     if (this.selectedCell !== null) {
-        fillSquare(ctx, this.cellSize, this.selectedCell, GREYED);
+        fillSquare(ctx, this.cellSize, this.selectedCell, CELL_HIGHLIGHT);
     }
 };
 
@@ -538,24 +541,45 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
+            if (clueDiv.textContent.indexOf('Released') === -1) {
+                clueDiv.setAttribute('released', true);
+            } else {
+                clueDiv.style.backgroundColor = UNRELEASED;
+                clueDiv.setAttribute('released', false);
+            }
             clueDiv.addEventListener('clue-selected', function(event) {
                 if (event.detail.direction !== null) {
                     if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
                         this.style.backgroundColor = HIGHLIGHT;
                     } else {
-                        this.style.backgroundColor = WHITE;
+                        if (this.getAttribute('released') !== 'false') {
+                            this.style.backgroundColor = WHITE;
+                        } else {
+                            this.style.backgroundColor = UNRELEASED;
+                        }
                     }
                 }
+                grid.draw(ctx);
 
             });
             clueDiv.addEventListener('click', function(event) {
                 var targetDiv = event.target;
                 grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
+                if (this.getAttribute('released') !== 'false') {
+                    this.style.backgroundColor = WHITE;
+                } else {
+                    this.style.backgroundColor = UNRELEASED;
+                }
+                for (var i = 0; i < clueDivs.length; i++) {
+                    div = clueDivs[i];
+                    if (div.getAttribute('released') !== 'false') {
+                        this.style.backgroundColor = WHITE;
+                    } else {
+                        div.style.backgroundColor = UNRELEASED;
+                    }
+                }
                 grid.draw(ctx);
                 hiddenInput.focus();
-                for (var i = 0; i < clueDivs.length; i++) {
-                    clueDivs[i].style.backgroundColor = WHITE;
-                }
                 targetDiv.style.backgroundColor = HIGHLIGHT;
             });
             clueDivs.push(clueDiv);
