@@ -3,7 +3,6 @@
 
 var AC_SQUARES = 13;
 var DN_SQUARES = 13;
-var CLUE_FILE = '/static/clues2018.json';
 
 var DIRECTIONS = ['ac', 'dn'];
 
@@ -391,7 +390,7 @@ Grid.prototype.onPress = function(ctx, event, char) {
             this.selectNextCell(false);
         }
     }
-    Cookies.set('grid-state', JSON.stringify(this.letters), { expires: new Date(2018, 11, 31) } );
+    Cookies.set('grid-state', JSON.stringify(this.letters), { expires: new Date(2019, 11, 31) } );
     this.draw(ctx);
 };
 
@@ -503,22 +502,23 @@ function drawGrid(canvas, hiddenInput) {
     return grid;
 }
 
-function isClueActive(clue) {
+function isClueActive(clue, year) {
     var dayOfMonth = new Date().getDate();
-    var month = new Date().getMonth();
-    var year = new Date().getFullYear();
-    return (year > 2018 || (month === 11 && dayOfMonth >= clue[0]));
+    var currentMonth = new Date().getMonth();
+    var currentYear = new Date().getFullYear();
+    return (currentYear > year || (currentMonth === 11 && dayOfMonth >= clue[0]));
 }
 
-function clueToString(clue) {
-    if (isClueActive(clue)) {
-        return clue[1] + '\u00a0(' + clue[2] + ')';
+function clueToString(clue, year) {
+    if (isClueActive(clue, year)) {
+        // Template literals
+        return `${clue[1]}\u00a0(${clue[2]})`
     } else {
         return 'Released on ' + clue[0] + ' December';
     }
 }
 
-function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
+function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
     var ctx = canvas.getContext('2d');
     var clueDivs = [];
     var Directions = ["Across", "Down"];
@@ -541,7 +541,7 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
             clueDiv.setAttribute("class", "clue-text");
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
-            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
+            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum], year);
             if (clueDiv.textContent.indexOf('Released') === -1) {
                 clueDiv.setAttribute('released', true);
             } else {
@@ -592,7 +592,10 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
 
 /** The main entry point */
 function main() {
-    loadJson(CLUE_FILE, function(response) {
+    var canvas = document.getElementById('xwd');
+    var year = canvas.getAttribute('year');
+    var clueFile = '/static/clues' + year + '.json';
+    loadJson(clueFile, function(response) {
         var clueJson = JSON.parse(response);
         var canvas = document.getElementById('xwd');
         var clueText = document.getElementById('selected-clue-text');
@@ -615,6 +618,6 @@ function main() {
         });
         var grid = drawGrid(canvas, hiddenInput);
         grid.addListener(clueText);
-        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput);
+        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput, year);
     });
 }
