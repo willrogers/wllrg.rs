@@ -3,7 +3,7 @@
 
 var AC_SQUARES = 13;
 var DN_SQUARES = 13;
-var CLUE_FILE = '/static/clues.json';
+var CLUE_FILE = '/static/clues2018.json';
 
 var DIRECTIONS = ['ac', 'dn'];
 
@@ -15,19 +15,20 @@ var GREYED = 'gainsboro';
 var UNRELEASED = 'lightgrey';
 
 
-var BLACK_SQUARES = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12],
-                 [1, 6],
-                 [2, 0], [2, 2], [2, 4], [2, 6], [2, 8], [2, 10], [2, 12],
-                 [3, 8],
-                 [4, 0], [4, 2], [4, 4], [4, 6], [4, 8], [4, 9], [4, 10], [4, 12],
-                 [5, 6],
-                 [6, 0], [6, 1], [6, 2], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 10], [6, 11], [6, 12],
-                 [7, 6],
-                 [8, 0], [8, 2], [8, 3], [8, 4], [8, 6], [8, 8], [8, 10], [8, 12],
-                 [9, 4],
-                 [10, 0], [10, 2], [10, 4], [10, 6], [10, 8], [10, 10], [10, 12],
-                 [11, 6],
-                 [12, 0], [12, 2], [12, 4], [12, 6], [12, 8], [12, 10], [12, 12]];
+var BLACK_SQUARES = [[0, 5],
+                 [1, 1], [1, 3], [1, 5], [1, 7], [1, 9], [1, 11],
+                 [2, 7],
+                 [3, 1], [3, 3], [3, 5], [3, 7], [3, 9], [3, 11],
+                 [4, 5],
+                 [5, 0], [5, 1], [5, 3], [5, 4], [5, 5], [5, 7], [5, 9], [5, 10], [5, 11],
+                 [6, 6],
+                 [7, 1], [7, 2], [7, 3], [7, 5], [7, 7], [7, 8], [7, 9], [7, 11], [7, 12],
+                 [8, 7],
+                 [9, 1], [9, 3], [9, 5], [9, 7], [9, 9], [9, 11],
+                 [10, 5],
+                 [11, 1], [11, 3], [11, 5], [11, 7], [11, 9], [11, 11],
+                 [12, 7]]
+
 
 function loadJson(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
@@ -506,7 +507,7 @@ function isClueActive(clue) {
     var dayOfMonth = new Date().getDate();
     var month = new Date().getMonth();
     var year = new Date().getFullYear();
-    return (year > 2017 || (month === 11 && dayOfMonth >= clue[0]));
+    return (year > 2018 || (month === 11 && dayOfMonth >= clue[0]));
 }
 
 function clueToString(clue) {
