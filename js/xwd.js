@@ -6,10 +6,12 @@ var DN_SQUARES = 13;
 
 var DIRECTIONS = ['ac', 'dn'];
 
+/* Some of these are duplicated in xwd.css. */
 var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
 var HIGHLIGHT = '#d6f0ff';
+var TODAY_HIGHLIGHT = '#ffd6cc';
 var GREYED = 'gainsboro';
 var UNRELEASED = 'lightgrey';
 
@@ -159,8 +161,11 @@ function Grid(width, height, cellSize, blackSquares, eventListeners) {
     } else {
         this.letters = JSON.parse(Cookies.get('grid-state'));
     }
+    /* A clueName. */
     this.highlighted = null;
     this.selectedCell = null;
+    /* A list of clueNames. */
+    this.cluesForToday = [];
     this.figureOutWhiteSquares();
     this.figureOutClues();
 }
@@ -283,7 +288,10 @@ Grid.prototype.draw = function(ctx) {
             }
         }
     }
-    this.highlightClue(ctx);
+    this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
+    for (var i = 0; i < this.cluesForToday.length; i++) {
+        this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
+    }
     this.highlightCell(ctx);
     this.drawNumbers(ctx);
     this.drawLetters(ctx);
@@ -437,12 +445,16 @@ Grid.prototype.setHighlightedClue = function(direction, number) {
     var clue = this.clues[this.highlighted.direction][this.highlighted.number];
     this.selectedCell = coord(clue.x, clue.y);
     emitEvent(this.eventListeners, this.highlighted);
-}
+};
 
-Grid.prototype.highlightClue = function(ctx) {
-    if (this.highlighted !== null) {
-        var clue = this.clues[this.highlighted.direction][this.highlighted.number];
-        colorClue(ctx, this.cellSize, HIGHLIGHT, clue);
+Grid.prototype.setCluesForToday = function(clues) {
+    this.cluesForToday = clues;
+};
+
+Grid.prototype.highlightClue = function(ctx, clue, color) {
+    if (clue !== null) {
+        var clue = this.clues[clue.direction][clue.number];
+        colorClue(ctx, this.cellSize, color, clue);
     }
 };
 
@@ -509,13 +521,44 @@ function isClueActive(clue, year) {
     return (currentYear > year || (currentMonth === 11 && dayOfMonth >= clue[0]));
 }
 
+function isClueForToday(clue, year) {
+    var dayOfMonth = new Date().getDate();
+    var currentMonth = new Date().getMonth();
+    var currentYear = new Date().getFullYear();
+    return (currentYear === year || (currentMonth === 11 && dayOfMonth === clue[0]));
+}
+
 function clueToString(clue, year) {
+    // Use template literals
+    var clueString = '';
     if (isClueActive(clue, year)) {
-        // Template literals
-        return `${clue[1]}\u00a0(${clue[2]})`
+        clueString = `${clue[1]}\u00a0(${clue[2]})`;
+        if (isClueForToday(clue, year)) {
+            clueString = `(New) ${clueString}`;
+        }
     } else {
-        return 'Released on ' + clue[0] + ' December';
+        clueString = `Released on ${clue[0]} December`;
     }
+    return clueString;
+}
+
+function setReleased(element) {
+    element.classList.remove('unreleased');
+    element.classList.remove('highlighted');
+}
+
+function setToday(element) {
+    element.classList.add('today');
+}
+
+function setUnreleased(element) {
+    element.classList.add('unreleased');
+    element.classList.remove('highlighted');
+}
+
+function setHighlighted(element) {
+    element.classList.add('highlighted');
+    element.classList.remove('unreleased');
 }
 
 function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
@@ -524,6 +567,7 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
     var Directions = ["Across", "Down"];
     var dirs = ["ac", "dn"];
     var dns = ["across", "down"];
+    var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
         var dirDiv = document.createElement("div");
@@ -541,22 +585,26 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
             clueDiv.setAttribute("class", "clue-text");
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
+            if (isClueForToday(clues[clueNum], year)) {
+                cluesForToday.push(clueName(direction, clueNum));
+                setToday(clueDiv);
+            }
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum], year);
             if (clueDiv.textContent.indexOf('Released') === -1) {
                 clueDiv.setAttribute('released', true);
             } else {
-                clueDiv.style.backgroundColor = UNRELEASED;
                 clueDiv.setAttribute('released', false);
+                setUnreleased(clueDiv);
             }
             clueDiv.addEventListener('clue-selected', function(event) {
                 if (event.detail.direction !== null) {
                     if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
-                        this.style.backgroundColor = HIGHLIGHT;
+                        setHighlighted(this);
                     } else {
                         if (this.getAttribute('released') !== 'false') {
-                            this.style.backgroundColor = WHITE;
+                            setReleased(this);
                         } else {
-                            this.style.backgroundColor = UNRELEASED;
+                            setUnreleased(this);
                         }
                     }
                 }
@@ -567,27 +615,29 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
                 var targetDiv = event.target;
                 grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
                 if (this.getAttribute('released') !== 'false') {
-                    this.style.backgroundColor = WHITE;
+                    setReleased(this);
                 } else {
-                    this.style.backgroundColor = UNRELEASED;
+                    setUnreleased(this);
                 }
                 for (var i = 0; i < clueDivs.length; i++) {
                     div = clueDivs[i];
                     if (div.getAttribute('released') !== 'false') {
-                        this.style.backgroundColor = WHITE;
+                        setReleased(this);
                     } else {
-                        div.style.backgroundColor = UNRELEASED;
+                        setUnreleased(this);
                     }
                 }
                 grid.draw(ctx);
                 hiddenInput.focus();
-                targetDiv.style.backgroundColor = HIGHLIGHT;
+                setHighlighted(targetDiv);
             });
             clueDivs.push(clueDiv);
             grid.addListener(clueDiv);
             dirDiv.appendChild(clueDiv);
         }
     }
+    grid.setCluesForToday(cluesForToday);
+    grid.draw(ctx);
 }
 
 /** The main entry point */
@@ -606,14 +656,14 @@ function main() {
                 if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                     var direction = event.detail.direction === 'ac' ? 'across' : 'down';
                     clueText.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
-                    clueText.style.backgroundColor = HIGHLIGHT;
+                    clueText.classList.add('highlighted');
                 } else {
                     clueText.textContent = 'No clue data';
-                    clueText.style.backgroundColor = WHITE;
+                    clueText.classList.remove('highlighted');
                 }
             } else {
                 clueText.textContent = 'No clue selected';
-                clueText.style.backgroundColor = WHITE;
+                clueText.classList.remove('highlighted');
             }
         });
         var grid = drawGrid(canvas, hiddenInput);
