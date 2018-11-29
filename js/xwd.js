@@ -7,6 +7,8 @@ var DN_SQUARES = 13;
 var DIRECTIONS = ['ac', 'dn'];
 
 /* Some of these are duplicated in xwd.css. */
+var YEAR;
+var COOKIE_KEY;
 var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
@@ -156,10 +158,10 @@ function Grid(width, height, cellSize, blackSquares, eventListeners) {
         'ac': {},
         'dn': {}
     };
-    if (typeof Cookies.get('grid-state') === 'undefined') {
+    if (typeof Cookies.get(COOKIE_KEY) === 'undefined') {
         this.letters = {};
     } else {
-        this.letters = JSON.parse(Cookies.get('grid-state'));
+        this.letters = JSON.parse(Cookies.get(COOKIE_KEY));
     }
     /* A clueName. */
     this.highlighted = null;
@@ -398,7 +400,7 @@ Grid.prototype.onPress = function(ctx, event, char) {
             this.selectNextCell(false);
         }
     }
-    Cookies.set('grid-state', JSON.stringify(this.letters), { expires: new Date(2019, 11, 31) } );
+    Cookies.set(COOKIE_KEY, JSON.stringify(this.letters), { expires: new Date(YEAR + 1, 11, 31) } );
     this.draw(ctx);
 };
 
@@ -514,26 +516,26 @@ function drawGrid(canvas, hiddenInput) {
     return grid;
 }
 
-function isClueActive(clue, year) {
+function isClueActive(clue) {
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear > year || (currentMonth === 11 && dayOfMonth >= clue[0]));
+    return (currentYear > YEAR || (currentMonth === 11 && dayOfMonth >= clue[0]));
 }
 
-function isClueForToday(clue, year) {
+function isClueForToday(clue) {
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear === year || (currentMonth === 11 && dayOfMonth === clue[0]));
+    return (currentYear === YEAR || (currentMonth === 11 && dayOfMonth === clue[0]));
 }
 
-function clueToString(clue, year) {
+function clueToString(clue) {
     // Use template literals
     var clueString = '';
-    if (isClueActive(clue, year)) {
+    if (isClueActive(clue, YEAR)) {
         clueString = `${clue[1]}\u00a0(${clue[2]})`;
-        if (isClueForToday(clue, year)) {
+        if (isClueForToday(clue, YEAR)) {
             clueString = `(New) ${clueString}`;
         }
     } else {
@@ -557,7 +559,7 @@ function setHighlighted(element) {
     element.classList.remove('unreleased');
 }
 
-function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
+function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
     var ctx = canvas.getContext('2d');
     var clueDivs = [];
     var Directions = ["Across", "Down"];
@@ -581,11 +583,11 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
             clueDiv.setAttribute("class", "clue-text");
             clueDiv.setAttribute("clueNum", clueNum);
             clueDiv.setAttribute("direction", direction);
-            if (isClueForToday(clues[clueNum], year)) {
+            if (isClueForToday(clues[clueNum])) {
                 cluesForToday.push(clueName(direction, clueNum));
                 clueDiv.classList.add('today');
             }
-            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum], year);
+            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
             if (clueDiv.textContent.indexOf('Released') === -1) {
                 clueDiv.setAttribute('released', true);
             } else {
@@ -639,8 +641,9 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
 /** The main entry point */
 function main() {
     var canvas = document.getElementById('xwd');
-    var year = canvas.getAttribute('year');
-    var clueFile = '/static/clues' + year + '.json';
+    YEAR = canvas.getAttribute('year');
+    COOKIE_KEY = `grid-state-${YEAR}`;
+    var clueFile = `/static/clues${YEAR}.json`;
     loadJson(clueFile, function(response) {
         var clueJson = JSON.parse(response);
         var canvas = document.getElementById('xwd');
@@ -664,6 +667,6 @@ function main() {
         });
         var grid = drawGrid(canvas, hiddenInput);
         grid.addListener(clueText);
-        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput, year);
+        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput);
     });
 }
