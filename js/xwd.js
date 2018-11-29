@@ -288,10 +288,10 @@ Grid.prototype.draw = function(ctx) {
             }
         }
     }
-    this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
     for (var i = 0; i < this.cluesForToday.length; i++) {
         this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
     }
+    this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
     this.highlightCell(ctx);
     this.drawNumbers(ctx);
     this.drawLetters(ctx);
@@ -547,10 +547,6 @@ function setReleased(element) {
     element.classList.remove('highlighted');
 }
 
-function setToday(element) {
-    element.classList.add('today');
-}
-
 function setUnreleased(element) {
     element.classList.add('unreleased');
     element.classList.remove('highlighted');
@@ -587,7 +583,7 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput, year) {
             clueDiv.setAttribute("direction", direction);
             if (isClueForToday(clues[clueNum], year)) {
                 cluesForToday.push(clueName(direction, clueNum));
-                setToday(clueDiv);
+                clueDiv.classList.add('today');
             }
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum], year);
             if (clueDiv.textContent.indexOf('Released') === -1) {

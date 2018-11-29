@@ -58,13 +58,13 @@
   padding-right: 10px;
 }
 
-.highlighted {
-  background-color: #d6f0ff;
+.today {
+  background-color: #ffd6cc;
   font-weight: bold;
 }
 
-.today {
-  background-color: #ffd6cc;
+.highlighted {
+  background-color: #d6f0ff;
   font-weight: bold;
 }
 
