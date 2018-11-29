@@ -6,16 +6,18 @@ var DN_SQUARES = 13;
 
 var DIRECTIONS = ['ac', 'dn'];
 
-/* Some of these are duplicated in xwd.css. */
+/* Set on page load. */
 var YEAR;
 var COOKIE_KEY;
+/* Loaded dynamically from the CSS */
+var HIGHLIGHT;
+var TODAY_HIGHLIGHT;
+var UNRELEASED;
+/* Hard-coded */
 var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
-var HIGHLIGHT = '#d6f0ff';
-var TODAY_HIGHLIGHT = '#ffd6cc';
 var GREYED = 'gainsboro';
-var UNRELEASED = 'lightgrey';
 
 
 var BLACK_SQUARES = [[0, 5],
@@ -643,6 +645,10 @@ function main() {
     var canvas = document.getElementById('xwd');
     YEAR = canvas.getAttribute('year');
     COOKIE_KEY = `grid-state-${YEAR}`;
+    var style = getComputedStyle(document.body);
+    HIGHLIGHT = style.getPropertyValue('--highlight-color');
+    TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
+    UNRELEASED = style.getPropertyValue('--unreleased-color');
     var clueFile = `/static/clues${YEAR}.json`;
     loadJson(clueFile, function(response) {
         var clueJson = JSON.parse(response);

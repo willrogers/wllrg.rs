@@ -1,3 +1,9 @@
+/* CSS variables */
+:root {
+    --unreleased-color: lightgrey;
+    --today-color: #ffd6cc;
+    --highlight-color: #d6f0ff;
+}
 
 #content {
   width: 1100px;
@@ -59,17 +65,17 @@
 }
 
 .today {
-  background-color: #ffd6cc;
+  background-color: var(--today-color);
   font-weight: bold;
 }
 
 .highlighted {
-  background-color: #d6f0ff;
+  background-color: var(--highlight-color);
   font-weight: bold;
 }
 
 .unreleased {
-  background-color: lightgrey;
+  background-color: var(--unreleased-color);
 }
 
 @media (max-width: 1100px) {
