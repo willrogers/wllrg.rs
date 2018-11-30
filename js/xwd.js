@@ -1,9 +1,6 @@
 /* Draw a crossword on an HTML canvas. */
 'use strict';
 
-var AC_SQUARES = 13;
-var DN_SQUARES = 13;
-
 var DIRECTIONS = ['ac', 'dn'];
 
 /* Set on page load. */
@@ -13,26 +10,15 @@ var COOKIE_KEY;
 var HIGHLIGHT;
 var TODAY_HIGHLIGHT;
 var UNRELEASED;
+/* Loaded from JSON. */
+var AC_SQUARES;
+var DN_SQUARES;
+var BLACK_SQUARES;
 /* Hard-coded */
 var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
 var GREYED = 'gainsboro';
-
-
-var BLACK_SQUARES = [[0, 5],
-                 [1, 1], [1, 3], [1, 5], [1, 7], [1, 9], [1, 11],
-                 [2, 7],
-                 [3, 1], [3, 3], [3, 5], [3, 7], [3, 9], [3, 11],
-                 [4, 5],
-                 [5, 0], [5, 1], [5, 3], [5, 4], [5, 5], [5, 7], [5, 9], [5, 10], [5, 11],
-                 [6, 6],
-                 [7, 1], [7, 2], [7, 3], [7, 5], [7, 7], [7, 8], [7, 9], [7, 11], [7, 12],
-                 [8, 7],
-                 [9, 1], [9, 3], [9, 5], [9, 7], [9, 9], [9, 11],
-                 [10, 5],
-                 [11, 1], [11, 3], [11, 5], [11, 7], [11, 9], [11, 11],
-                 [12, 7]]
 
 
 function loadJson(file, callback) {
@@ -649,6 +635,13 @@ function main() {
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
     TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
     UNRELEASED = style.getPropertyValue('--unreleased-color');
+    var gridFile = `/static/grid${YEAR}.json`;
+    loadJson(gridFile, function(response) {
+        var gridJson = JSON.parse(response);
+        AC_SQUARES = gridJson["across-size"];
+        DN_SQUARES = gridJson["down-size"];
+        BLACK_SQUARES = gridJson["black-squares"];
+    });
     var clueFile = `/static/clues${YEAR}.json`;
     loadJson(clueFile, function(response) {
         var clueJson = JSON.parse(response);
