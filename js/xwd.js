@@ -28,7 +28,8 @@ function loadJson(file, callback) {
     xobj.open('GET', file, true);
     xobj.onreadystatechange = function () {
           if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            // Required use of an anonymous callback as .open will NOT return a
+            // value but simply returns undefined in asynchronous mode
             callback(xobj.responseText);
           }
     };
@@ -556,14 +557,23 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
     var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
-        var dirDiv = document.createElement("div");
-        dirDiv.setAttribute("class", "clue-container");
-        dirDiv.id = direction + "Div";
-        div.appendChild(dirDiv);
-        var titleDiv = document.createElement("div");
-        titleDiv.setAttribute("class", "clue-header");
-        titleDiv.textContent = Directions[i];
-        dirDiv.appendChild(titleDiv);
+        var dirDivId = direction + "Div";
+        /* Either create or remove children from dirDiv. */
+        var dirDiv = div.querySelector(`#${dirDivId}`);
+        if (dirDiv == null) {
+            dirDiv = document.createElement("div");
+            dirDiv.setAttribute("class", "clue-container");
+            dirDiv.id = direction + "Div";
+            div.appendChild(dirDiv);
+            var titleDiv = document.createElement("div");
+            titleDiv.setAttribute("class", "clue-header");
+            titleDiv.textContent = Directions[i];
+            dirDiv.appendChild(titleDiv);
+        } else {
+            dirDiv.querySelectorAll(".clue-text").forEach(el => {
+                dirDiv.removeChild(el);
+            });
+        }
         var clues = clueJson[direction];
         for (var clueNum in clues) {
             var clueDiv = document.createElement("div");
@@ -626,16 +636,8 @@ function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
     grid.draw(ctx);
 }
 
-/** The main entry point */
-function main() {
-    var canvas = document.getElementById('xwd');
-    YEAR = canvas.getAttribute('year');
-    COOKIE_KEY = `grid-state-${YEAR}`;
-    var style = getComputedStyle(document.body);
-    HIGHLIGHT = style.getPropertyValue('--highlight-color');
-    TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
-    UNRELEASED = style.getPropertyValue('--unreleased-color');
-    var dataFile = `/static/xwd${YEAR}.json`;
+
+function loadAll(dataFile) {
     loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
@@ -664,5 +666,21 @@ function main() {
         var grid = drawGrid(canvas, hiddenInput);
         grid.addListener(clueText);
         loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput);
+        /* Reload every minute to update without a reload. */
+        setTimeout(loadAll, 60 * 1000, dataFile);
     });
+
+}
+
+/** The main entry point */
+function main() {
+    var canvas = document.getElementById('xwd');
+    YEAR = canvas.getAttribute('year');
+    COOKIE_KEY = `grid-state-${YEAR}`;
+    var style = getComputedStyle(document.body);
+    HIGHLIGHT = style.getPropertyValue('--highlight-color');
+    TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
+    UNRELEASED = style.getPropertyValue('--unreleased-color');
+    var dataFile = `/static/xwd${YEAR}.json`;
+    loadAll(dataFile);
 }
