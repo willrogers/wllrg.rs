@@ -635,16 +635,13 @@ function main() {
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
     TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
     UNRELEASED = style.getPropertyValue('--unreleased-color');
-    var gridFile = `/static/grid${YEAR}.json`;
-    loadJson(gridFile, function(response) {
-        var gridJson = JSON.parse(response);
-        AC_SQUARES = gridJson["across-size"];
-        DN_SQUARES = gridJson["down-size"];
-        BLACK_SQUARES = gridJson["black-squares"];
-    });
-    var clueFile = `/static/clues${YEAR}.json`;
-    loadJson(clueFile, function(response) {
-        var clueJson = JSON.parse(response);
+    var dataFile = `/static/xwd${YEAR}.json`;
+    loadJson(dataFile, function(response) {
+        var dataJson = JSON.parse(response);
+        AC_SQUARES = dataJson["across-size"];
+        DN_SQUARES = dataJson["down-size"];
+        BLACK_SQUARES = dataJson["black-squares"];
+        var clueJson = dataJson["clues"];
         var canvas = document.getElementById('xwd');
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');

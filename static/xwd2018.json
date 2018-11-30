@@ -1,0 +1,55 @@
+{
+    "across-size": 13,
+    "down-size": 13,
+    "black-squares": [
+        [0, 5],
+        [1, 1], [1, 3], [1, 5], [1, 7], [1, 9], [1, 11],
+        [2, 7],
+        [3, 1], [3, 3], [3, 5], [3, 7], [3, 9], [3, 11],
+        [4, 5],
+        [5, 0], [5, 1], [5, 3], [5, 4], [5, 5], [5, 7], [5, 9], [5, 10], [5, 11],
+        [6, 6],
+        [7, 1], [7, 2], [7, 3], [7, 5], [7, 7], [7, 8], [7, 9], [7, 11], [7, 12],
+        [8, 7],
+        [9, 1], [9, 3], [9, 5], [9, 7], [9, 9], [9, 11],
+        [10, 5],
+        [11, 1], [11, 3], [11, 5], [11, 7], [11, 9], [11, 11],
+        [12, 7]
+    ],
+    "clues": {
+        "ac" :
+        {
+            "1": [2, "Vessel with broken oar? Thanks for that", 5],
+            "4": [9, "One preparing piece of furniture", 7],
+            "8": [1, "Deduce no serious fire 🔥", 7],
+            "9": [3, "Make like Edward and develop intellect", 5],
+            "10": [11, "Nothing to change for part of a woman's body", 5],
+            "11": [4, ".", 7],
+            "12": [22, ".", 7],
+            "14": [20, "Terrible prose about horse and frankly obscure Greek magistrates", 6],
+            "17": [8, ".", 7],
+            "19": [23, ".", 7],
+            "21": [14, ".", 7],
+            "22": [15, ".", 7],
+            "23": [4, ".", 7],
+            "24": [10, "Scorch French monkey 🐒", 5]
+        },
+        "dn":
+        {
+            "1": [5, ".", 5],
+            "2": [13, "Stop that umpire - bad weather", 7],
+            "3": [3, "A beam of light about right for an impressive display", 5],
+            "4": [6, "Pop right in: a household pet, a graduate and a footballer called Didier", 6],
+            "5": [18, ".", 5],
+            "6": [16, ".", 5],
+            "7": [7, "To start with, red-headed youngster tries her moves slowly in musical patterns", 7],
+            "12": [24, ".", 5],
+            "13": [17, ".", 5],
+            "15": [15, ".", 5],
+            "16": [9, ".", 5],
+            "18": [13, ".", 5],
+            "19": [20, ".", 5],
+            "20": [12, ".", 5]
+        }
+    }
+}
