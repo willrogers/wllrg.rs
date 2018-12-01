@@ -665,14 +665,10 @@ function loadAll(dataFile) {
                 clueText.classList.remove('highlighted');
             }
         });
-        /* Preserve highlighted clue over reloads. */
-        var highlighted = null;
-        if (typeof GRID !== 'undefined') {
-            highlighted = GRID.highlighted;
+        if (typeof GRID === 'undefined') {
+            GRID = drawGrid(canvas, hiddenInput);
+            GRID.addListener(clueText);
         }
-        GRID = drawGrid(canvas, hiddenInput);
-        GRID.highlighted = highlighted;
-        GRID.addListener(clueText);
         loadClues(GRID, allClues, canvas, clueText, clueJson, hiddenInput);
         /* Reload every minute to update without a page refresh. */
         setTimeout(loadAll, 60 * 1000, dataFile);
