@@ -3,8 +3,6 @@
 
 var DIRECTIONS = ['ac', 'dn'];
 
-/* The grid object. */
-var GRID;
 /* Set on page load. */
 var YEAR;
 var COOKIE_KEY;
@@ -457,55 +455,167 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 };
 
-function drawGrid(canvas, hiddenInput) {
-    var ctx = canvas.getContext('2d');
-    var pixelWidth = canvas.clientWidth;
-    var pixelHeight = canvas.clientHeight;
+function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) {
+    this.selectedClueDiv = selectedClueDiv;
+    this.allCluesDiv = allCluesDiv;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.clueJson = clueJson;
+    this.hiddenInput = hiddenInput;
+    selectedClueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
+                var direction = event.detail.direction === 'ac' ? 'across' : 'down';
+                selectedClueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]); selectedClueDiv.classList.add('highlighted');
+            } else {
+                selectedClueDiv.textContent = 'No clue data';
+                selectedClueDiv.classList.remove('highlighted');
+            }
+        } else {
+            selectedClueDiv.textContent = 'No clue selected';
+            selectedClueDiv.classList.remove('highlighted');
+        }
+    });
+}
 
-    // Set canvas attributes to the correct number of pixels on the device.
-    canvas.setAttribute('width', pixelWidth * window.devicePixelRatio);
-    canvas.setAttribute('height', pixelHeight * window.devicePixelRatio);
+Crossword.prototype.loadClues = function() {
+    var clueDivs = [];
+    var Directions = ["Across", "Down"];
+    var dirs = ["ac", "dn"];
+    var dns = ["across", "down"];
+    var cluesForToday = [];
+    for (var i = 0; i < DIRECTIONS.length; i++) {
+        var direction = DIRECTIONS[i];
+        var dirDivId = direction + "Div";
+        /* Either create or remove children from dirDiv. */
+        var dirDiv = this.allCluesDiv.querySelector(`#${dirDivId}`);
+        if (dirDiv == null) {
+            dirDiv = document.createElement("div");
+            dirDiv.setAttribute("class", "clue-container");
+            dirDiv.id = direction + "Div";
+            this.allCluesDiv.appendChild(dirDiv);
+            var titleDiv = document.createElement("div");
+            titleDiv.setAttribute("class", "clue-header");
+            titleDiv.textContent = Directions[i];
+            dirDiv.appendChild(titleDiv);
+        } else {
+            dirDiv.querySelectorAll(".clue-text").forEach(el => {
+                dirDiv.removeChild(el);
+            });
+        }
+        var clues = this.clueJson[direction];
+        for (var clueNum in clues) {
+            var clueDiv = document.createElement("div");
+            clueDiv.id = clueNum + direction;
+            clueDiv.setAttribute("class", "clue-text");
+            clueDiv.setAttribute("clueNum", clueNum);
+            clueDiv.setAttribute("direction", direction);
+            if (isClueForToday(clues[clueNum])) {
+                cluesForToday.push(clueName(direction, clueNum));
+                clueDiv.classList.add('today');
+            }
+            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
+            if (clueDiv.textContent.indexOf('Released') === -1) {
+                clueDiv.setAttribute('released', true);
+            } else {
+                clueDiv.setAttribute('released', false);
+                setUnreleased(clueDiv);
+            }
+            /* Get reference to Crossword object. */
+            var self = this;
+            clueDiv.addEventListener('clue-selected', function(event) {
+                if (event.detail.direction !== null) {
+                    if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
+                        setHighlighted(this);
+                    } else {
+                        if (this.getAttribute('released') !== 'false') {
+                            setReleased(this);
+                        } else {
+                            setUnreleased(this);
+                        }
+                    }
+                }
+                self.grid.draw(self.ctx);
+
+            });
+            clueDiv.addEventListener('click', function(event) {
+                var targetDiv = event.target;
+                self.grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
+                if (this.getAttribute('released') !== 'false') {
+                    setReleased(this);
+                } else {
+                    setUnreleased(this);
+                }
+                for (var i = 0; i < clueDivs.length; i++) {
+                    var div = clueDivs[i];
+                    if (div.getAttribute('released') !== 'false') {
+                        setReleased(this);
+                    } else {
+                        setUnreleased(this);
+                    }
+                }
+                self.grid.draw(self.ctx);
+                self.hiddenInput.focus();
+                setHighlighted(targetDiv);
+            });
+            clueDivs.push(clueDiv);
+            this.grid.addListener(clueDiv);
+            dirDiv.appendChild(clueDiv);
+        }
+    }
+    this.grid.setCluesForToday(cluesForToday);
+    this.grid.draw(this.ctx);
+};
+
+Crossword.prototype.drawGrid = function() {
+    var self = this;
+    var pixelWidth = this.canvas.clientWidth;
+    var pixelHeight = this.canvas.clientHeight;
+
+    // Set this.canvas attributes to the correct number of pixels on the device.
+    this.canvas.setAttribute('width', pixelWidth * window.devicePixelRatio);
+    this.canvas.setAttribute('height', pixelHeight * window.devicePixelRatio);
     // Ensure canvas size is correct according to CSS.
-    canvas.style.width = pixelWidth;
-    canvas.style.height = pixelHeight;
+    this.canvas.style.width = pixelWidth;
+    this.canvas.style.height = pixelHeight;
     // Draw using the correct number of pixels by scaling the context.
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     var cellSize = Math.floor(Math.min(pixelWidth / AC_SQUARES, pixelHeight / DN_SQUARES));
     var gridWidth = cellSize * AC_SQUARES + 1;
     var gridHeight = cellSize * DN_SQUARES + 1;
 
     var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES);
-    grid.draw(ctx);
+    grid.draw(this.ctx);
 
     /* Add click listener to react to events */
-    canvas.addEventListener('click', function(event) {
-        grid.onClick(event, canvas, ctx);
-        hiddenInput.style.position = 'absolute'
-        hiddenInput.style.left = event.pageX + 'px';
-        hiddenInput.style.top = event.pageY + 'px';
-        hiddenInput.focus();
+    this.canvas.addEventListener('click', function(event) {
+        grid.onClick(event, self.canvas, self.ctx);
+        self.hiddenInput.style.position = 'absolute'
+        self.hiddenInput.style.left = event.pageX + 'px';
+        self.hiddenInput.style.top = event.pageY + 'px';
+        self.hiddenInput.focus();
     });
 
-    hiddenInput.value = ' ';
+    this.hiddenInput.value = ' ';
     /* Add keypress listener to react to keyboard events.
      * Other possible events to listen for are keypress, keydown
      * and input. */
-    hiddenInput.addEventListener('keyup', function(event) {
+    this.hiddenInput.addEventListener('keyup', function(event) {
         event.preventDefault();
         console.log('button pressed ' + event.key);
-        console.log('hidden input val ' + hiddenInput.value);
+        console.log('hidden input val ' + self.hiddenInput.value);
         var char = '';
-        if (hiddenInput.value === '') {
+        if (self.hiddenInput.value === '') {
             char = 'backspace';
         } else {
-            char = hiddenInput.value.charAt(1);
+            char = self.hiddenInput.value.charAt(1);
         }
-        grid.onPress(ctx, event, char);
-        hiddenInput.value = ' ';
+        grid.onPress(self.ctx, event, char);
+        self.hiddenInput.value = ' ';
     });
-    return grid;
-}
+    this.grid = grid;
+};
 
 function isClueActive(clue) {
     var dayOfMonth = new Date().getDate();
@@ -550,94 +660,19 @@ function setHighlighted(element) {
     element.classList.remove('unreleased');
 }
 
-function loadClues(grid, div, canvas, clueDiv, clueJson, hiddenInput) {
-    var ctx = canvas.getContext('2d');
-    var clueDivs = [];
-    var Directions = ["Across", "Down"];
-    var dirs = ["ac", "dn"];
-    var dns = ["across", "down"];
-    var cluesForToday = [];
-    for (var i = 0; i < DIRECTIONS.length; i++) {
-        var direction = DIRECTIONS[i];
-        var dirDivId = direction + "Div";
-        /* Either create or remove children from dirDiv. */
-        var dirDiv = div.querySelector(`#${dirDivId}`);
-        if (dirDiv == null) {
-            dirDiv = document.createElement("div");
-            dirDiv.setAttribute("class", "clue-container");
-            dirDiv.id = direction + "Div";
-            div.appendChild(dirDiv);
-            var titleDiv = document.createElement("div");
-            titleDiv.setAttribute("class", "clue-header");
-            titleDiv.textContent = Directions[i];
-            dirDiv.appendChild(titleDiv);
-        } else {
-            dirDiv.querySelectorAll(".clue-text").forEach(el => {
-                dirDiv.removeChild(el);
-            });
-        }
-        var clues = clueJson[direction];
-        for (var clueNum in clues) {
-            var clueDiv = document.createElement("div");
-            clueDiv.id = clueNum + direction;
-            clueDiv.setAttribute("class", "clue-text");
-            clueDiv.setAttribute("clueNum", clueNum);
-            clueDiv.setAttribute("direction", direction);
-            if (isClueForToday(clues[clueNum])) {
-                cluesForToday.push(clueName(direction, clueNum));
-                clueDiv.classList.add('today');
-            }
-            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
-            if (clueDiv.textContent.indexOf('Released') === -1) {
-                clueDiv.setAttribute('released', true);
-            } else {
-                clueDiv.setAttribute('released', false);
-                setUnreleased(clueDiv);
-            }
-            clueDiv.addEventListener('clue-selected', function(event) {
-                if (event.detail.direction !== null) {
-                    if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
-                        setHighlighted(this);
-                    } else {
-                        if (this.getAttribute('released') !== 'false') {
-                            setReleased(this);
-                        } else {
-                            setUnreleased(this);
-                        }
-                    }
-                }
-                grid.draw(ctx);
 
-            });
-            clueDiv.addEventListener('click', function(event) {
-                var targetDiv = event.target;
-                grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
-                if (this.getAttribute('released') !== 'false') {
-                    setReleased(this);
-                } else {
-                    setUnreleased(this);
-                }
-                for (var i = 0; i < clueDivs.length; i++) {
-                    div = clueDivs[i];
-                    if (div.getAttribute('released') !== 'false') {
-                        setReleased(this);
-                    } else {
-                        setUnreleased(this);
-                    }
-                }
-                grid.draw(ctx);
-                hiddenInput.focus();
-                setHighlighted(targetDiv);
-            });
-            clueDivs.push(clueDiv);
-            grid.addListener(clueDiv);
-            dirDiv.appendChild(clueDiv);
-        }
-    }
-    grid.setCluesForToday(cluesForToday);
-    grid.draw(ctx);
+function loadData(dataFile, xwd) {
+    loadJson(dataFile, function(response) {
+        var dataJson = JSON.parse(response);
+        AC_SQUARES = dataJson["across-size"];
+        DN_SQUARES = dataJson["down-size"];
+        BLACK_SQUARES = dataJson["black-squares"];
+        clueJson = dataJson["clues"];
+    });
+    xwd.clueJson = clueJson;
+    /* Reload every minute to update without a page refresh. */
+    setTimeout(loadData, 60 * 1000, dataFile, xwd);
 }
-
 
 function loadAll(dataFile) {
     loadJson(dataFile, function(response) {
@@ -645,38 +680,21 @@ function loadAll(dataFile) {
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
         BLACK_SQUARES = dataJson["black-squares"];
-        var clueJson = dataJson["clues"];
+        clueJson = dataJson["clues"];
         var canvas = document.getElementById('xwd');
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
-        clueText.addEventListener('clue-selected', function(event) {
-            if (event.detail.direction !== null) {
-                if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
-                    var direction = event.detail.direction === 'ac' ? 'across' : 'down';
-                    clueText.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
-                    clueText.classList.add('highlighted');
-                } else {
-                    clueText.textContent = 'No clue data';
-                    clueText.classList.remove('highlighted');
-                }
-            } else {
-                clueText.textContent = 'No clue selected';
-                clueText.classList.remove('highlighted');
-            }
-        });
-        if (typeof GRID === 'undefined') {
-            GRID = drawGrid(canvas, hiddenInput);
-            GRID.addListener(clueText);
-        }
-        loadClues(GRID, allClues, canvas, clueText, clueJson, hiddenInput);
-        /* Reload every minute to update without a page refresh. */
-        setTimeout(loadAll, 60 * 1000, dataFile);
+        xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
+        xwd.drawGrid();
+        xwd.grid.addListener(clueText);
+        xwd.loadClues();
+        /* Start automatic reload. */
+        setTimeout(loadData, 60 * 1000, dataFile, xwd);
     });
-
 }
 
-/** The main entry point */
+/* The main entry point. */
 function main() {
     var canvas = document.getElementById('xwd');
     YEAR = canvas.getAttribute('year');
