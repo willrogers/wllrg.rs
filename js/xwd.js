@@ -688,7 +688,7 @@ function loadAll(dataFile) {
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
-        xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
+        var xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
         xwd.drawGrid();
         xwd.grid.addListener(clueText);
         xwd.loadClues();
