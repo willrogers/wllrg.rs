@@ -466,7 +466,10 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
         if (event.detail.direction !== null) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
-                selectedClueDiv.textContent = event.detail.clueNumber + ' ' + direction + ': ' + clueToString(clueJson[event.detail.direction][event.detail.clueNumber]); selectedClueDiv.classList.add('highlighted');
+                var clueString = clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
+                var clueText = `${event.detail.clueNumber} ${direction}: ${clueString}`;
+                selectedClueDiv.textContent = clueText;
+                selectedClueDiv.classList.add('highlighted');
             } else {
                 selectedClueDiv.textContent = 'No clue data';
                 selectedClueDiv.classList.remove('highlighted');
@@ -667,9 +670,9 @@ function loadData(dataFile, xwd) {
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
         BLACK_SQUARES = dataJson["black-squares"];
-        clueJson = dataJson["clues"];
+        var clueJson = dataJson["clues"];
+        xwd.clueJson = clueJson;
     });
-    xwd.clueJson = clueJson;
     /* Reload every minute to update without a page refresh. */
     setTimeout(loadData, 60 * 1000, dataFile, xwd);
 }
@@ -680,7 +683,7 @@ function loadAll(dataFile) {
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
         BLACK_SQUARES = dataJson["black-squares"];
-        clueJson = dataJson["clues"];
+        var clueJson = dataJson["clues"];
         var canvas = document.getElementById('xwd');
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
