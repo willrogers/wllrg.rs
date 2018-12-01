@@ -3,6 +3,8 @@
 
 var DIRECTIONS = ['ac', 'dn'];
 
+/* The grid object. */
+var GRID;
 /* Set on page load. */
 var YEAR;
 var COOKIE_KEY;
@@ -663,10 +665,16 @@ function loadAll(dataFile) {
                 clueText.classList.remove('highlighted');
             }
         });
-        var grid = drawGrid(canvas, hiddenInput);
-        grid.addListener(clueText);
-        loadClues(grid, allClues, canvas, clueText, clueJson, hiddenInput);
-        /* Reload every minute to update without a reload. */
+        /* Preserve highlighted clue over reloads. */
+        var highlighted = null;
+        if (typeof GRID !== 'undefined') {
+            highlighted = GRID.highlighted;
+        }
+        GRID = drawGrid(canvas, hiddenInput);
+        GRID.highlighted = highlighted;
+        GRID.addListener(clueText);
+        loadClues(GRID, allClues, canvas, clueText, clueJson, hiddenInput);
+        /* Reload every minute to update without a page refresh. */
         setTimeout(loadAll, 60 * 1000, dataFile);
     });
 
