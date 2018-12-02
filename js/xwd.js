@@ -18,7 +18,6 @@ var BLACK_SQUARES;
 var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
-var GREYED = 'gainsboro';
 
 
 function loadJson(file, callback) {
@@ -163,7 +162,7 @@ function Grid(width, height, cellSize, blackSquares, eventListeners) {
 
 Grid.prototype.addListener = function(listener) {
     this.eventListeners.push(listener);
-}
+};
 
 Grid.prototype.figureOutWhiteSquares = function() {
     for (var i = 0; i < AC_SQUARES; i++) {
@@ -328,7 +327,7 @@ Grid.prototype.onPress = function(ctx, event, char) {
         /* virtual keyboard; rely on passed char */
         if (event.keyCode === 229) {
             if (char === 'backspace'){
-                lastChar = 'Backspace'
+                lastChar = 'Backspace';
             } else {
                 lastChar = char.toUpperCase();
             }
@@ -484,8 +483,6 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
 Crossword.prototype.loadClues = function() {
     var clueDivs = [];
     var Directions = ["Across", "Down"];
-    var dirs = ["ac", "dn"];
-    var dns = ["across", "down"];
     var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
@@ -594,7 +591,7 @@ Crossword.prototype.drawGrid = function() {
     /* Add click listener to react to events */
     this.canvas.addEventListener('click', function(event) {
         grid.onClick(event, self.canvas, self.ctx);
-        self.hiddenInput.style.position = 'absolute'
+        self.hiddenInput.style.position = 'absolute';
         self.hiddenInput.style.left = event.pageX + 'px';
         self.hiddenInput.style.top = event.pageY + 'px';
         self.hiddenInput.focus();
