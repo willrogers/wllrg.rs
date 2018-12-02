@@ -480,6 +480,7 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
             selectedClueDiv.classList.remove('highlighted');
         }
     });
+    /* Create header divs for the clue columns. */
     for (var direction of DIRECTION_NAMES) {
         var dirDiv = document.createElement("div");
         dirDiv.setAttribute("class", "clue-container");
@@ -492,6 +493,7 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
     }
 }
 
+/* Run through all clue divs and make sure none are highlighted. */
 Crossword.prototype.clearSelectedDiv = function() {
     for (var direction of DIRECTIONS) {
         for (var i = 0; i < this.clueDivs.length; i++) {
@@ -502,13 +504,12 @@ Crossword.prototype.clearSelectedDiv = function() {
 }
 
 Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
+    var self = this;
     var clueDiv = document.createElement("div");
     clueDiv.id = clueNum + direction;
     clueDiv.setAttribute("class", "clue-text");
     clueDiv.setAttribute("clueNum", clueNum);
     clueDiv.setAttribute("direction", direction);
-    /* Get reference to Crossword object. */
-    var self = this;
     clueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
             if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
@@ -518,7 +519,6 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
             }
         }
         self.grid.draw(self.ctx);
-
     });
     clueDiv.addEventListener('click', function(event) {
         var targetDiv = event.target;
@@ -558,10 +558,7 @@ Crossword.prototype.loadClues = function() {
                 clueDiv.classList.add('today');
             }
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
-            if (clueDiv.textContent.indexOf('Released') === -1) {
-                clueDiv.setAttribute('released', true);
-            } else {
-                clueDiv.setAttribute('released', false);
+            if (clueDiv.textContent.indexOf('Released') !== -1) {
                 clueDiv.classList.add('unreleased');
             }
             this.clueDivs[direction].push(clueDiv);
