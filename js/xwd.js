@@ -2,6 +2,7 @@
 'use strict';
 
 var DIRECTIONS = ['ac', 'dn'];
+var DIRECTION_NAMES = ['Across', 'Down'];
 
 /* Set on page load. */
 var YEAR;
@@ -478,6 +479,16 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
             selectedClueDiv.classList.remove('highlighted');
         }
     });
+    for (var direction of DIRECTION_NAMES) {
+        var dirDiv = document.createElement("div");
+        dirDiv.setAttribute("class", "clue-container");
+        dirDiv.id = direction + "Div";
+        this.allCluesDiv.appendChild(dirDiv);
+        var titleDiv = document.createElement("div");
+        titleDiv.setAttribute("class", "clue-header");
+        titleDiv.textContent = direction;
+        dirDiv.appendChild(titleDiv);
+    }
 }
 
 Crossword.prototype.loadClues = function() {
@@ -486,23 +497,11 @@ Crossword.prototype.loadClues = function() {
     var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
-        var dirDivId = direction + "Div";
-        /* Either create or remove children from dirDiv. */
+        var dirDivId = DIRECTION_NAMES[i] + "Div";
         var dirDiv = this.allCluesDiv.querySelector(`#${dirDivId}`);
-        if (dirDiv == null) {
-            dirDiv = document.createElement("div");
-            dirDiv.setAttribute("class", "clue-container");
-            dirDiv.id = direction + "Div";
-            this.allCluesDiv.appendChild(dirDiv);
-            var titleDiv = document.createElement("div");
-            titleDiv.setAttribute("class", "clue-header");
-            titleDiv.textContent = Directions[i];
-            dirDiv.appendChild(titleDiv);
-        } else {
-            dirDiv.querySelectorAll(".clue-text").forEach(el => {
-                dirDiv.removeChild(el);
-            });
-        }
+        dirDiv.querySelectorAll(".clue-text").forEach(el => {
+            dirDiv.removeChild(el);
+        });
         var clues = this.clueJson[direction];
         for (var clueNum in clues) {
             var clueDiv = document.createElement("div");
