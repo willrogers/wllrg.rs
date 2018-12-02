@@ -491,6 +491,58 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
     }
 }
 
+Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
+    var clueDiv = document.createElement("div");
+    clueDiv.id = clueNum + direction;
+    clueDiv.setAttribute("class", "clue-text");
+    clueDiv.setAttribute("clueNum", clueNum);
+    clueDiv.setAttribute("direction", direction);
+    if (clueDiv.textContent.indexOf('Released') === -1) {
+        clueDiv.setAttribute('released', true);
+    } else {
+        clueDiv.setAttribute('released', false);
+        setUnreleased(clueDiv);
+    }
+    /* Get reference to Crossword object. */
+    var self = this;
+    clueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
+                setHighlighted(this);
+            } else {
+                if (this.getAttribute('released') !== 'false') {
+                    setReleased(this);
+                } else {
+                    setUnreleased(this);
+                }
+            }
+        }
+        self.grid.draw(self.ctx);
+
+    });
+    clueDiv.addEventListener('click', function(event) {
+        var targetDiv = event.target;
+        self.grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
+        if (this.getAttribute('released') !== 'false') {
+            setReleased(this);
+        } else {
+            setUnreleased(this);
+        }
+        for (var i = 0; i < clueDivs.length; i++) {
+            var div = clueDivs[i];
+            if (div.getAttribute('released') !== 'false') {
+                setReleased(this);
+            } else {
+                setUnreleased(this);
+            }
+        }
+        self.grid.draw(self.ctx);
+        self.hiddenInput.focus();
+        setHighlighted(targetDiv);
+    });
+    return clueDiv;
+}
+
 Crossword.prototype.loadClues = function() {
     var clueDivs = [];
     var Directions = ["Across", "Down"];
@@ -504,59 +556,17 @@ Crossword.prototype.loadClues = function() {
         });
         var clues = this.clueJson[direction];
         for (var clueNum in clues) {
-            var clueDiv = document.createElement("div");
-            clueDiv.id = clueNum + direction;
-            clueDiv.setAttribute("class", "clue-text");
-            clueDiv.setAttribute("clueNum", clueNum);
-            clueDiv.setAttribute("direction", direction);
-            if (isClueForToday(clues[clueNum])) {
+            var clueDivId = clueNum + direction;
+            var clueDiv = dirDiv.querySelector(`#${dirDivId}`);
+            var clue = clues[clueNum];
+            if (clueDiv === null) {
+                clueDiv = this.createClueDiv(clueNum, direction, clue);
+            }
+            if (isClueForToday(clue)) {
                 cluesForToday.push(clueName(direction, clueNum));
                 clueDiv.classList.add('today');
             }
             clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
-            if (clueDiv.textContent.indexOf('Released') === -1) {
-                clueDiv.setAttribute('released', true);
-            } else {
-                clueDiv.setAttribute('released', false);
-                setUnreleased(clueDiv);
-            }
-            /* Get reference to Crossword object. */
-            var self = this;
-            clueDiv.addEventListener('clue-selected', function(event) {
-                if (event.detail.direction !== null) {
-                    if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
-                        setHighlighted(this);
-                    } else {
-                        if (this.getAttribute('released') !== 'false') {
-                            setReleased(this);
-                        } else {
-                            setUnreleased(this);
-                        }
-                    }
-                }
-                self.grid.draw(self.ctx);
-
-            });
-            clueDiv.addEventListener('click', function(event) {
-                var targetDiv = event.target;
-                self.grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
-                if (this.getAttribute('released') !== 'false') {
-                    setReleased(this);
-                } else {
-                    setUnreleased(this);
-                }
-                for (var i = 0; i < clueDivs.length; i++) {
-                    var div = clueDivs[i];
-                    if (div.getAttribute('released') !== 'false') {
-                        setReleased(this);
-                    } else {
-                        setUnreleased(this);
-                    }
-                }
-                self.grid.draw(self.ctx);
-                self.hiddenInput.focus();
-                setHighlighted(targetDiv);
-            });
             clueDivs.push(clueDiv);
             this.grid.addListener(clueDiv);
             dirDiv.appendChild(clueDiv);
