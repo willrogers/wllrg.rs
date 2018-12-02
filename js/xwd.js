@@ -628,7 +628,7 @@ function isClueForToday(clue) {
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear === YEAR || (currentMonth === 11 && dayOfMonth === clue[0]));
+    return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[0]));
 }
 
 function clueToString(clue) {
@@ -697,7 +697,7 @@ function loadAll(dataFile) {
 /* The main entry point. */
 function main() {
     var canvas = document.getElementById('xwd');
-    YEAR = canvas.getAttribute('year');
+    YEAR = parseInt(canvas.getAttribute('year'));
     COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
