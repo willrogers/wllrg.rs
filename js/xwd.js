@@ -506,7 +506,7 @@ Crossword.prototype.clearSelectedDiv = function() {
 Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
     var self = this;
     var clueDiv = document.createElement("div");
-    clueDiv.id = clueNum + direction;
+    clueDiv.id = direction + clueNum;
     clueDiv.setAttribute("class", "clue-text");
     clueDiv.setAttribute("clueNum", clueNum);
     clueDiv.setAttribute("direction", direction);
@@ -542,28 +542,29 @@ Crossword.prototype.loadClues = function() {
         this.clueDivs[direction] = [];
         var dirDivId = DIRECTION_NAMES[i] + "Div";
         var dirDiv = this.allCluesDiv.querySelector(`#${dirDivId}`);
-        dirDiv.querySelectorAll(".clue-text").forEach(el => {
-            dirDiv.removeChild(el);
-        });
         var clues = this.clueJson[direction];
         for (var clueNum in clues) {
-            var clueDivId = clueNum + direction;
-            var clueDiv = dirDiv.querySelector(`#${dirDivId}`);
+            var clueDivId = direction + clueNum;
+            var clueDiv = dirDiv.querySelector(`#${clueDivId}`);
             var clue = clues[clueNum];
             if (clueDiv === null) {
                 clueDiv = this.createClueDiv(clueNum, direction, clue);
+                dirDiv.appendChild(clueDiv);
+                this.grid.addListener(clueDiv);
             }
             if (isClueForToday(clue)) {
                 cluesForToday.push(clueName(direction, clueNum));
                 clueDiv.classList.add('today');
+            } else {
+                clueDiv.classList.remove('today');
             }
-            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
+            clueDiv.textContent = `${clueNum}. ${clueToString(clues[clueNum])}`;
             if (clueDiv.textContent.indexOf('Released') !== -1) {
                 clueDiv.classList.add('unreleased');
+            } else {
+                clueDiv.classList.remove('unreleased');
             }
             this.clueDivs[direction].push(clueDiv);
-            this.grid.addListener(clueDiv);
-            dirDiv.appendChild(clueDiv);
         }
     }
     this.grid.setCluesForToday(cluesForToday);
@@ -656,6 +657,7 @@ function loadData(dataFile, xwd) {
         BLACK_SQUARES = dataJson["black-squares"];
         var clueJson = dataJson["clues"];
         xwd.clueJson = clueJson;
+        xwd.loadClues();
     });
     /* Reload every minute to update without a page refresh. */
     setTimeout(loadData, 60 * 1000, dataFile, xwd);
