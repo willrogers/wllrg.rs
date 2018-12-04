@@ -2,6 +2,7 @@
 'use strict';
 
 var DIRECTIONS = ['ac', 'dn'];
+var DIRECTION_NAMES = ['Across', 'Down'];
 
 /* Set on page load. */
 var YEAR;
@@ -461,6 +462,7 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
     this.ctx = canvas.getContext('2d');
     this.clueJson = clueJson;
     this.hiddenInput = hiddenInput;
+    this.clueDivs = {'ac': [], 'dn': []};
     selectedClueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
@@ -478,89 +480,91 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
             selectedClueDiv.classList.remove('highlighted');
         }
     });
+    /* Create header divs for the clue columns. */
+    for (var direction of DIRECTION_NAMES) {
+        var dirDiv = document.createElement("div");
+        dirDiv.setAttribute("class", "clue-container");
+        dirDiv.id = direction + "Div";
+        this.allCluesDiv.appendChild(dirDiv);
+        var titleDiv = document.createElement("div");
+        titleDiv.setAttribute("class", "clue-header");
+        titleDiv.textContent = direction;
+        dirDiv.appendChild(titleDiv);
+    }
+}
+
+/* Run through all clue divs and make sure none are highlighted. */
+Crossword.prototype.clearSelectedDiv = function() {
+    for (var direction of DIRECTIONS) {
+        for (var i = 0; i < this.clueDivs.length; i++) {
+            var div = this.clueDivs[direction][i];
+            div.classList.remove('highlighted');
+        }
+    }
+}
+
+Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
+    var self = this;
+    var clueDiv = document.createElement("div");
+    clueDiv.id = direction + clueNum;
+    clueDiv.setAttribute("class", "clue-text");
+    clueDiv.setAttribute("clueNum", clueNum);
+    clueDiv.setAttribute("direction", direction);
+    clueDiv.addEventListener('clue-selected', function(event) {
+        if (event.detail.direction !== null) {
+            if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
+                this.classList.add('highlighted');
+            } else {
+                this.classList.remove('highlighted');
+            }
+        }
+        self.grid.draw(self.ctx);
+    });
+    clueDiv.addEventListener('click', function(event) {
+        var targetDiv = event.target;
+        self.grid.setHighlightedClue(
+            targetDiv.getAttribute('direction'),
+            targetDiv.getAttribute('clueNum')
+        );
+        self.clearSelectedDiv();
+        self.grid.draw(self.ctx);
+        self.hiddenInput.focus();
+        targetDiv.classList.add('highlighted');
+    });
+    return clueDiv;
 }
 
 Crossword.prototype.loadClues = function() {
-    var clueDivs = [];
     var Directions = ["Across", "Down"];
     var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
-        var dirDivId = direction + "Div";
-        /* Either create or remove children from dirDiv. */
+        this.clueDivs[direction] = [];
+        var dirDivId = DIRECTION_NAMES[i] + "Div";
         var dirDiv = this.allCluesDiv.querySelector(`#${dirDivId}`);
-        if (dirDiv == null) {
-            dirDiv = document.createElement("div");
-            dirDiv.setAttribute("class", "clue-container");
-            dirDiv.id = direction + "Div";
-            this.allCluesDiv.appendChild(dirDiv);
-            var titleDiv = document.createElement("div");
-            titleDiv.setAttribute("class", "clue-header");
-            titleDiv.textContent = Directions[i];
-            dirDiv.appendChild(titleDiv);
-        } else {
-            dirDiv.querySelectorAll(".clue-text").forEach(el => {
-                dirDiv.removeChild(el);
-            });
-        }
         var clues = this.clueJson[direction];
         for (var clueNum in clues) {
-            var clueDiv = document.createElement("div");
-            clueDiv.id = clueNum + direction;
-            clueDiv.setAttribute("class", "clue-text");
-            clueDiv.setAttribute("clueNum", clueNum);
-            clueDiv.setAttribute("direction", direction);
-            if (isClueForToday(clues[clueNum])) {
+            var clueDivId = direction + clueNum;
+            var clueDiv = dirDiv.querySelector(`#${clueDivId}`);
+            var clue = clues[clueNum];
+            if (clueDiv === null) {
+                clueDiv = this.createClueDiv(clueNum, direction, clue);
+                dirDiv.appendChild(clueDiv);
+                this.grid.addListener(clueDiv);
+            }
+            if (isClueForToday(clue)) {
                 cluesForToday.push(clueName(direction, clueNum));
                 clueDiv.classList.add('today');
-            }
-            clueDiv.textContent = clueNum + '. ' + clueToString(clues[clueNum]);
-            if (clueDiv.textContent.indexOf('Released') === -1) {
-                clueDiv.setAttribute('released', true);
             } else {
-                clueDiv.setAttribute('released', false);
-                setUnreleased(clueDiv);
+                clueDiv.classList.remove('today');
             }
-            /* Get reference to Crossword object. */
-            var self = this;
-            clueDiv.addEventListener('clue-selected', function(event) {
-                if (event.detail.direction !== null) {
-                    if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
-                        setHighlighted(this);
-                    } else {
-                        if (this.getAttribute('released') !== 'false') {
-                            setReleased(this);
-                        } else {
-                            setUnreleased(this);
-                        }
-                    }
-                }
-                self.grid.draw(self.ctx);
-
-            });
-            clueDiv.addEventListener('click', function(event) {
-                var targetDiv = event.target;
-                self.grid.setHighlightedClue(targetDiv.getAttribute('direction'), targetDiv.getAttribute('clueNum'));
-                if (this.getAttribute('released') !== 'false') {
-                    setReleased(this);
-                } else {
-                    setUnreleased(this);
-                }
-                for (var i = 0; i < clueDivs.length; i++) {
-                    var div = clueDivs[i];
-                    if (div.getAttribute('released') !== 'false') {
-                        setReleased(this);
-                    } else {
-                        setUnreleased(this);
-                    }
-                }
-                self.grid.draw(self.ctx);
-                self.hiddenInput.focus();
-                setHighlighted(targetDiv);
-            });
-            clueDivs.push(clueDiv);
-            this.grid.addListener(clueDiv);
-            dirDiv.appendChild(clueDiv);
+            clueDiv.textContent = `${clueNum}. ${clueToString(clues[clueNum])}`;
+            if (clueDiv.textContent.indexOf('Released') !== -1) {
+                clueDiv.classList.add('unreleased');
+            } else {
+                clueDiv.classList.remove('unreleased');
+            }
+            this.clueDivs[direction].push(clueDiv);
         }
     }
     this.grid.setCluesForToday(cluesForToday);
@@ -645,22 +649,6 @@ function clueToString(clue) {
     return clueString;
 }
 
-function setReleased(element) {
-    element.classList.remove('unreleased');
-    element.classList.remove('highlighted');
-}
-
-function setUnreleased(element) {
-    element.classList.add('unreleased');
-    element.classList.remove('highlighted');
-}
-
-function setHighlighted(element) {
-    element.classList.add('highlighted');
-    element.classList.remove('unreleased');
-}
-
-
 function loadData(dataFile, xwd) {
     loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
@@ -669,6 +657,7 @@ function loadData(dataFile, xwd) {
         BLACK_SQUARES = dataJson["black-squares"];
         var clueJson = dataJson["clues"];
         xwd.clueJson = clueJson;
+        xwd.loadClues();
     });
     /* Reload every minute to update without a page refresh. */
     setTimeout(loadData, 60 * 1000, dataFile, xwd);

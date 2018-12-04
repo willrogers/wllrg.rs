@@ -68,13 +68,13 @@
   background-color: var(--today-color);
 }
 
+.unreleased {
+  background-color: var(--unreleased-color);
+}
+
 .highlighted {
   background-color: var(--highlight-color);
   font-weight: bold;
-}
-
-.unreleased {
-  background-color: var(--unreleased-color);
 }
 
 @media (max-width: 1100px) {
