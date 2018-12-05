@@ -25,10 +25,12 @@
 }
 
 #selected-clue {
-  padding: 20px;
+  padding: 15px;
   padding-left: 40px;
   padding-right: 20px;
   text-indent: -20px;
+  /* Stop jittering from tall character. */
+  min-height: 40px;
   display: block;
 }
 
