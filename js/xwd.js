@@ -223,14 +223,16 @@ Grid.prototype.isClueFilled = function(clueNum, direction) {
     var clue = this.clues[direction][clueNum];
     if (direction === "ac") {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
-            if (this.letters[coord(i, clue.y)] === "") {
+            var crd = coord(i, clue.y);
+            if (!(crd in this.letters) || this.letters[crd] === "") {
                 return false;
             }
         }
         return true;
     } else {
         for (var j = clue.y; j < clue.y + clue.length; j++) {
-            if (this.letters[coord(clue.x, j)] === "") {
+            var crd = coord(clue.x, j);
+            if (!(crd in this.letters) || this.letters[crd] === "") {
                 return false;
             }
         }
