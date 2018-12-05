@@ -44,12 +44,25 @@
   display: inline-block;
 }
 
-.clue-text {
+.clue-wrapper {
   margin: 2px;
   border-radius: 2px;
   padding-left: 10px;
   padding-right: 10px;
   cursor: pointer;
+}
+
+.clue-number {
+    float: left;
+    padding-right: 10px;
+}
+
+.clue-number.solved {
+    text-decoration: line-through;
+}
+
+.clue-text {
+    padding-left: 20px;
 }
 
 .clue-container {

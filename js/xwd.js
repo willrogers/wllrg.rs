@@ -219,6 +219,25 @@ Grid.prototype.drawLetter = function(ctx, letter, cell) {
     ctx.fillText(letter, this.cellSize * (cell.x + 0.5) + 1, this.cellSize * (cell.y + 0.5) + 1);
 };
 
+Grid.prototype.isClueFilled = function(clueNum, direction) {
+    var clue = this.clues[direction][clueNum];
+    if (direction === "ac") {
+        for (var i = clue.x; i < clue.x + clue.length; i++) {
+            if (this.letters[coord(i, clue.y)] === "") {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        for (var j = clue.y; j < clue.y + clue.length; j++) {
+            if (this.letters[coord(clue.x, j)] === "") {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 Grid.prototype.figureOutClues = function() {
     /* Collect clues and write in numbers */
     var clueNumber = 1;
@@ -506,8 +525,12 @@ Crossword.prototype.clearSelectedDiv = function() {
 Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
     var self = this;
     var clueDiv = document.createElement("div");
+    var numberDiv = document.createElement("div");
+    numberDiv.setAttribute("class", "clue-number");
+    var clueTextDiv = document.createElement("div");
+    clueTextDiv.setAttribute("class", "clue-text");
     clueDiv.id = direction + clueNum;
-    clueDiv.setAttribute("class", "clue-text");
+    clueDiv.setAttribute("class", "clue-wrapper");
     clueDiv.setAttribute("clueNum", clueNum);
     clueDiv.setAttribute("direction", direction);
     clueDiv.addEventListener('clue-selected', function(event) {
@@ -521,7 +544,7 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
         self.grid.draw(self.ctx);
     });
     clueDiv.addEventListener('click', function(event) {
-        var targetDiv = event.target;
+        var targetDiv = event.currentTarget;
         self.grid.setHighlightedClue(
             targetDiv.getAttribute('direction'),
             targetDiv.getAttribute('clueNum')
@@ -531,6 +554,8 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
         self.hiddenInput.focus();
         targetDiv.classList.add('highlighted');
     });
+    clueDiv.appendChild(numberDiv);
+    clueDiv.appendChild(clueTextDiv);
     return clueDiv;
 }
 
@@ -547,6 +572,7 @@ Crossword.prototype.loadClues = function() {
             var clueDivId = direction + clueNum;
             var clueDiv = dirDiv.querySelector(`#${clueDivId}`);
             var clue = clues[clueNum];
+            /* Create div if it doesn't exist. */
             if (clueDiv === null) {
                 clueDiv = this.createClueDiv(clueNum, direction, clue);
                 dirDiv.appendChild(clueDiv);
@@ -558,7 +584,14 @@ Crossword.prototype.loadClues = function() {
             } else {
                 clueDiv.classList.remove('today');
             }
-            clueDiv.textContent = `${clueNum}. ${clueToString(clues[clueNum])}`;
+            /* Fill in text. */
+            var clueNumDiv = clueDiv.querySelector('.clue-number');
+            clueNumDiv.textContent = `${clueNum}.`;
+            if (this.grid.isClueFilled(clueNum, direction)) {
+                clueNumDiv.classList.add('solved');
+            }
+            var clueTextDiv = clueDiv.querySelector('.clue-text');
+            clueTextDiv.textContent = `${clueToString(clues[clueNum])}`;
             if (clueDiv.textContent.indexOf('Released') !== -1) {
                 clueDiv.classList.add('unreleased');
             } else {
