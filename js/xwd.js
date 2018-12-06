@@ -83,7 +83,7 @@ function cellInArray(array, cell) {
     return false;
 }
 
-function emitEvent(listeners, clue) {
+function emitSelectedEvent(listeners, clue) {
     if (clue === null) {
         clue = clueName(null, null);
     }
@@ -93,6 +93,13 @@ function emitEvent(listeners, clue) {
             'clueNumber': clue.number
         }
     }, true, true);
+    for (var i = 0; i < listeners.length; i++) {
+        listeners[i].dispatchEvent(event);
+    }
+}
+
+function emitTypingEvent(listeners) {
+    var event = new CustomEvent('letter-entered');
     for (var i = 0; i < listeners.length; i++) {
         listeners[i].dispatchEvent(event);
     }
@@ -431,20 +438,20 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
         console.log('cell in no clues?');
     } else if (cluesContainingCell.length == 1) {
         this.highlighted = cluesContainingCell[0];
-        emitEvent(this.eventListeners, this.highlighted);
+        emitSelectedEvent(this.eventListeners, this.highlighted);
     } else {
         /* do we toggle? */
         if (this.highlighted === null) {
             this.highlighted = cluesContainingCell[0];
-            emitEvent(this.eventListeners, this.highlighted);
+            emitSelectedEvent(this.eventListeners, this.highlighted);
         } else {
             if (toggle) {
                 if (this.highlighted.direction === cluesContainingCell[0].direction && this.highlighted.number === cluesContainingCell[0].number) {
                     this.highlighted = cluesContainingCell[1];
-                    emitEvent(this.eventListeners, this.highlighted);
+                    emitSelectedEvent(this.eventListeners, this.highlighted);
                 } else {
                     this.highlighted = cluesContainingCell[0];
-                    emitEvent(this.eventListeners, this.highlighted);
+                    emitSelectedEvent(this.eventListeners, this.highlighted);
                 }
             }
         }
@@ -455,7 +462,7 @@ Grid.prototype.setHighlightedClue = function(direction, number) {
     this.highlighted = clueName(direction, number);
     var clue = this.clues[this.highlighted.direction][this.highlighted.number];
     this.selectedCell = coord(clue.x, clue.y);
-    emitEvent(this.eventListeners, this.highlighted);
+    emitSelectedEvent(this.eventListeners, this.highlighted);
 };
 
 Grid.prototype.setCluesForToday = function(clues) {
@@ -511,6 +518,7 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
         titleDiv.textContent = direction;
         dirDiv.appendChild(titleDiv);
     }
+    this.allCluesDiv.addEventListener('letter-entered', this.loadClues);
 }
 
 /* Run through all clue divs and make sure none are highlighted. */
@@ -561,7 +569,6 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
 }
 
 Crossword.prototype.loadClues = function() {
-    var Directions = ["Across", "Down"];
     var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
@@ -590,6 +597,8 @@ Crossword.prototype.loadClues = function() {
             clueNumDiv.textContent = `${clueNum}.`;
             if (this.grid.isClueFilled(clueNum, direction)) {
                 clueNumDiv.classList.add('solved');
+            } else {
+                clueNumDiv.classList.remove('solved');
             }
             var clueTextDiv = clueDiv.querySelector('.clue-text');
             clueTextDiv.textContent = `${clueToString(clues[clueNum])}`;
@@ -602,10 +611,9 @@ Crossword.prototype.loadClues = function() {
         }
     }
     this.grid.setCluesForToday(cluesForToday);
-    this.grid.draw(this.ctx);
 };
 
-Crossword.prototype.drawGrid = function() {
+Crossword.prototype.createGrid = function() {
     var self = this;
     var pixelWidth = this.canvas.clientWidth;
     var pixelHeight = this.canvas.clientHeight;
@@ -690,6 +698,7 @@ function loadData(dataFile, xwd) {
         var clueJson = dataJson["clues"];
         xwd.clueJson = clueJson;
         xwd.loadClues();
+        xwd.grid.draw(xwd.ctx);
     });
     /* Reload every minute to update without a page refresh. */
     setTimeout(loadData, 60 * 1000, dataFile, xwd);
@@ -707,9 +716,10 @@ function loadAll(dataFile) {
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
         var xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
-        xwd.drawGrid();
+        xwd.createGrid();
         xwd.grid.addListener(clueText);
         xwd.loadClues();
+        xwd.grid.draw(xwd.ctx);
         /* Start automatic reload. */
         setTimeout(loadData, 60 * 1000, dataFile, xwd);
     });
