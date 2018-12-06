@@ -387,7 +387,6 @@ Grid.prototype.onPress = function(ctx, event, char) {
                 this.selectCell(next, false);
             }
         } else if (lastChar === 'Tab') {
-            console.log(this.highlighted);
             var matched = false;
             for (var i = 0; i < 2; i++) {
                 var direction = DIRECTIONS[i];
@@ -642,8 +641,6 @@ Crossword.prototype.drawGrid = function() {
      * and input. */
     this.hiddenInput.addEventListener('keyup', function(event) {
         event.preventDefault();
-        console.log('button pressed ' + event.key);
-        console.log('hidden input val ' + self.hiddenInput.value);
         var char = '';
         if (self.hiddenInput.value === '') {
             char = 'backspace';
