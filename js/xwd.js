@@ -5,12 +5,10 @@ var DIRECTIONS = ['ac', 'dn'];
 var DIRECTION_NAMES = ['Across', 'Down'];
 
 /* Set on page load. */
-var YEAR;
+var KEY;
 var COOKIE_KEY;
 /* Loaded dynamically from the CSS */
 var HIGHLIGHT;
-var TODAY_HIGHLIGHT;
-var UNRELEASED;
 /* Loaded from JSON. */
 var AC_SQUARES;
 var DN_SQUARES;
@@ -162,8 +160,6 @@ function Grid(width, height, cellSize, blackSquares, eventListeners) {
     /* A clueName. */
     this.highlighted = null;
     this.selectedCell = null;
-    /* A list of clueNames. */
-    this.cluesForToday = [];
     this.figureOutWhiteSquares();
     this.figureOutClues();
 }
@@ -228,6 +224,9 @@ Grid.prototype.drawLetter = function(ctx, letter, cell) {
 
 Grid.prototype.isClueFilled = function(clueNum, direction) {
     var clue = this.clues[direction][clueNum];
+    if (clue == null) {
+        return;
+    }
     if (direction === "ac") {
         for (var i = clue.x; i < clue.x + clue.length; i++) {
             var crd = coord(i, clue.y);
@@ -306,9 +305,6 @@ Grid.prototype.draw = function(ctx) {
                 fillSquare(ctx, this.cellSize, cell, WHITE);
             }
         }
-    }
-    for (var i = 0; i < this.cluesForToday.length; i++) {
-        this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
     }
     this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
     this.highlightCell(ctx);
@@ -416,7 +412,7 @@ Grid.prototype.onPress = function(ctx, event, char) {
             this.selectNextCell(false);
         }
     }
-    Cookies.set(COOKIE_KEY, JSON.stringify(this.letters), { expires: new Date(YEAR + 1, 11, 31) } );
+    Cookies.set(COOKIE_KEY, JSON.stringify(this.letters));
     this.draw(ctx);
 };
 
@@ -461,17 +457,19 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
 Grid.prototype.setHighlightedClue = function(direction, number) {
     this.highlighted = clueName(direction, number);
     var clue = this.clues[this.highlighted.direction][this.highlighted.number];
+    if (clue == null) {
+        return;
+    }
     this.selectedCell = coord(clue.x, clue.y);
     emitSelectedEvent(this.eventListeners, this.highlighted);
-};
-
-Grid.prototype.setCluesForToday = function(clues) {
-    this.cluesForToday = clues;
 };
 
 Grid.prototype.highlightClue = function(ctx, clue, color) {
     if (clue !== null) {
         var clue = this.clues[clue.direction][clue.number];
+        if (clue == null) {
+            return;
+        }
         colorClue(ctx, this.cellSize, color, clue);
     }
 };
@@ -569,7 +567,6 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
 }
 
 Crossword.prototype.loadClues = function() {
-    var cluesForToday = [];
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
         this.clueDivs[direction] = [];
@@ -585,12 +582,6 @@ Crossword.prototype.loadClues = function() {
                 clueDiv = this.createClueDiv(clueNum, direction, clue);
                 dirDiv.appendChild(clueDiv);
                 this.grid.addListener(clueDiv);
-            }
-            if (isClueForToday(clue)) {
-                cluesForToday.push(clueName(direction, clueNum));
-                clueDiv.classList.add('today');
-            } else {
-                clueDiv.classList.remove('today');
             }
             /* Fill in text. */
             var clueNumDiv = clueDiv.querySelector('.clue-number');
@@ -610,11 +601,9 @@ Crossword.prototype.loadClues = function() {
             this.clueDivs[direction].push(clueDiv);
         }
     }
-    this.grid.setCluesForToday(cluesForToday);
 };
 
-Crossword.prototype.createGrid = function() {
-    var self = this;
+Crossword.prototype.setupCanvas = function() {
     var pixelWidth = this.canvas.clientWidth;
     var pixelHeight = this.canvas.clientHeight;
 
@@ -627,16 +616,21 @@ Crossword.prototype.createGrid = function() {
     // Draw using the correct number of pixels by scaling the context.
     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    var cellSize = Math.floor(Math.min(pixelWidth / AC_SQUARES, pixelHeight / DN_SQUARES));
-    var gridWidth = cellSize * AC_SQUARES + 1;
-    var gridHeight = cellSize * DN_SQUARES + 1;
+    this.cellSize = Math.floor(Math.min(pixelWidth / AC_SQUARES, pixelHeight / DN_SQUARES));
+    this.gridWidth = this.cellSize * AC_SQUARES + 1;
+    this.gridHeight = this.cellSize * DN_SQUARES + 1;
+};
 
-    var grid = new Grid(gridWidth, gridHeight, cellSize, BLACK_SQUARES);
-    grid.draw(this.ctx);
+Crossword.prototype.createGrid = function() {
+    this.grid = new Grid(this.gridWidth, this.gridHeight, this.cellSize, BLACK_SQUARES);
+    this.grid.draw(this.ctx);
+};
 
+Crossword.prototype.setupGrid = function() {
+    var self = this;
     /* Add click listener to react to events */
     this.canvas.addEventListener('click', function(event) {
-        grid.onClick(event, self.canvas, self.ctx);
+        self.grid.onClick(event, self.canvas, self.ctx);
         self.hiddenInput.style.position = 'absolute';
         self.hiddenInput.style.left = event.pageX + 'px';
         self.hiddenInput.style.top = event.pageY + 'px';
@@ -655,38 +649,15 @@ Crossword.prototype.createGrid = function() {
         } else {
             char = self.hiddenInput.value.charAt(1);
         }
-        grid.onPress(self.ctx, event, char);
+        self.grid.onPress(self.ctx, event, char);
         self.hiddenInput.value = ' ';
     });
-    this.grid = grid;
 };
 
-function isClueActive(clue) {
-    var dayOfMonth = new Date().getDate();
-    var currentMonth = new Date().getMonth();
-    var currentYear = new Date().getFullYear();
-    return (currentYear > YEAR || (currentMonth === 11 && dayOfMonth >= clue[0]));
-}
-
-function isClueForToday(clue) {
-    var dayOfMonth = new Date().getDate();
-    var currentMonth = new Date().getMonth();
-    var currentYear = new Date().getFullYear();
-    return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[0]));
-}
 
 function clueToString(clue) {
     // Use template literals
-    var clueString = '';
-    if (isClueActive(clue, YEAR)) {
-        clueString = `${clue[1]}\u00a0(${clue[2]})`;
-        if (isClueForToday(clue, YEAR)) {
-            clueString = `(New) ${clueString}`;
-        }
-    } else {
-        clueString = `Released on ${clue[0]} December`;
-    }
-    return clueString;
+    return `${clue[1]}\u00a0(${clue[2]})`;
 }
 
 function loadData(dataFile, xwd) {
@@ -701,7 +672,7 @@ function loadData(dataFile, xwd) {
         xwd.grid.draw(xwd.ctx);
     });
     /* Reload every minute to update without a page refresh. */
-    setTimeout(loadData, 60 * 1000, dataFile, xwd);
+    setTimeout(loadData, 5 * 1000, dataFile, xwd);
 }
 
 function loadAll(dataFile) {
@@ -716,24 +687,24 @@ function loadAll(dataFile) {
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
         var xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
+        xwd.setupCanvas();
         xwd.createGrid();
+        xwd.setupGrid();
         xwd.grid.addListener(clueText);
         xwd.loadClues();
         xwd.grid.draw(xwd.ctx);
         /* Start automatic reload. */
-        setTimeout(loadData, 60 * 1000, dataFile, xwd);
+        setTimeout(loadData, 5 * 1000, dataFile, xwd);
     });
 }
 
 /* The main entry point. */
 function main() {
     var canvas = document.getElementById('xwd');
-    YEAR = parseInt(canvas.getAttribute('year'));
-    COOKIE_KEY = `grid-state-${YEAR}`;
+    KEY = canvas.getAttribute('key');
+    COOKIE_KEY = `grid-state-${KEY}`;
     var style = getComputedStyle(document.body);
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
-    TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
-    UNRELEASED = style.getPropertyValue('--unreleased-color');
-    var dataFile = `/static/xwd${YEAR}.json`;
+    var dataFile = `/static/xwd${KEY}.json`;
     loadAll(dataFile);
 }
