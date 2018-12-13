@@ -103,6 +103,13 @@ function emitTypingEvent(listeners) {
     }
 }
 
+function emitFinishedEvent(listeners) {
+    var event = new CustomEvent('xwd-finished');
+    for (var i = 0; i < listeners.length; i++) {
+        listeners[i].dispatchEvent(event);
+    }
+}
+
 function fillSquare(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
     ctx.fillRect(cellSize * cell.x + 1, cellSize * cell.y + 1,
@@ -157,6 +164,7 @@ function Grid(width, height, cellSize, blackSquares, eventListeners) {
     } else {
         this.letters = JSON.parse(Cookies.get(COOKIE_KEY));
     }
+    this.highlight = true;
     /* A clueName. */
     this.highlighted = null;
     this.selectedCell = null;
@@ -203,6 +211,14 @@ Grid.prototype.drawLetters = function(ctx) {
                         coordFromString(key));
     }
 };
+
+Grid.prototype.lettersToString = function() {
+    var letterString = '';
+    for (var key in this.letters) {
+        letterString += this.letters[key];
+    }
+    return letterString;
+}
 
 Grid.prototype.drawNumber = function(ctx, number, cell) {
     ctx.fillStyle = BLACK;
@@ -306,8 +322,10 @@ Grid.prototype.draw = function(ctx) {
             }
         }
     }
-    this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
-    this.highlightCell(ctx);
+    if (this.highlight) {
+        this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
+        this.highlightCell(ctx);
+    }
     this.drawNumbers(ctx);
     this.drawLetters(ctx);
 };

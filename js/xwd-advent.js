@@ -8,20 +8,46 @@ var TODAY_HIGHLIGHT;
 var UNRELEASED;
 
 
+/* See https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript */
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr;
+  if (this.length === 0) return hash;
+  for (i = 0; i < this.length; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+
 /* Customised grid with extra highlighting for today's clues. */
 function AdventGrid(width, height, cellSize, blackSquares, eventListeners) {
     Grid.call(this, width, height, cellSize, blackSquares, eventListeners);
     this.cluesForToday = [];
+    this.correctAnswer = 1834138129;
+    this.highlight = true;
+    this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
+                           [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
+    this.correctlyClicked = 0;
 }
 var adventGridProto = Object.create(Grid.prototype);
 
 adventGridProto.draw = function(ctx) {
     Grid.prototype.draw.call(this, ctx);
-    for (var i = 0; i < this.cluesForToday.length; i++) {
-        this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
+    if (this.highlight) {
+        for (var i = 0; i < this.cluesForToday.length; i++) {
+            this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
+        }
+        this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
+        this.highlightCell(ctx);
+    } else {
+        for (var i = 0; i < this.correctlyClicked; i++) {
+            var messageSquare = this.messageSquares[i];
+            var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
+            fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
+        }
     }
-    this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
-    this.highlightCell(ctx);
     this.drawNumbers(ctx);
     this.drawLetters(ctx);
 };
@@ -30,19 +56,92 @@ adventGridProto.setCluesForToday = function(clues) {
     this.cluesForToday = clues;
 };
 
+adventGridProto.isCorrect = function() {
+    return this.lettersToString().hashCode() === this.correctAnswer;
+}
+
+adventGridProto.selectCell = function(cell, toggle) {
+    if (this.highlight === true) {
+        Grid.prototype.onClick.call(self, cell, toggle);
+    } else {
+        var messageSquare = this.messageSquares[this.correctlyClicked];
+        var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
+        if (msgSqCoord.equals(cell)) {
+            console.log('Matched! ' + messageSquare);
+            this.correctlyClicked += 1;
+            if (this.correctlyClicked === this.messageSquares.length) {
+                console.log('correct!');
+                emitFinishedEvent(this.eventListeners);
+                return;
+            }
+        } else {
+            this.correctlyClicked = 0;
+        }
+    }
+
+}
+
+adventGridProto.unfinish = function() {
+    this.correctlyClicked = 0;
+    this.highlight = true;
+}
+
 AdventGrid.prototype = adventGridProto;
 
 
 /* Customised crossword able to withhold clues and highlight today's. */
-function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) {
+function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent) {
     Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput);
+    this.checkButton = checkButton;
+    this.allContent = allContent;
+    self = this;
+    checkButton.onclick = function() {
+        console.log('clicked');
+        console.log('correct? ' + self.grid.isCorrect());
+        if (self.grid.isCorrect()) {
+            self.grid.highlight = false;
+            self.grid.draw(self.ctx);
+        }
+    }
+    checkButton.addEventListener('xwd-finished', function(event) {
+        console.log('xwd selected');
+        if (self.grid.isCorrect()) {
+            self.allContent.classList.add('completed');
+            setTimeout(self.finished, 2000);
+        }
+    });
 }
 
 var adventCrosswordProto = Object.create(Crossword.prototype);
 
+adventCrosswordProto.finished = function() {
+    console.log('finished');
+    var parent = self.allContent.parentElement;
+    //self.allContent.classList.add('removed');
+    var finalDiv = document.createElement('div');
+    finalDiv.id = 'final-div';
+    finalDiv.style['min-height'] = self.allContent.clientHeight + 'px';
+    parent.appendChild(finalDiv);
+    parent.removeChild(self.allContent);
+    var backButton = document.createElement('a');
+    backButton.textContent = 'back';
+    backButton.onclick = function() {
+        parent.removeChild(finalDiv);
+        self.allContent.classList.remove('completed');
+        self.grid.unfinish();
+        parent.appendChild(self.allContent);
+        parent.removeChild(this);
+    }
+    finalDiv.appendChild(backButton);
+    finalDiv.textContent = 'Happy Christmas!';
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+
+}
+
 adventCrosswordProto.createGrid = function() {
     this.grid = new AdventGrid(this.gridWidth, this.gridHeight, this.cellSize, BLACK_SQUARES);
     this.grid.draw(this.ctx);
+    this.grid.addListener(this.checkButton);
 }
 
 /* Run through all clue divs and make sure none are highlighted. */
@@ -57,6 +156,7 @@ adventCrosswordProto.clearSelectedDiv = function() {
 
 adventCrosswordProto.loadClues = function() {
     var cluesForToday = [];
+    var complete = true;
     for (var i = 0; i < DIRECTIONS.length; i++) {
         var direction = DIRECTIONS[i];
         this.clueDivs[direction] = [];
@@ -86,6 +186,7 @@ adventCrosswordProto.loadClues = function() {
                 clueNumDiv.classList.add('solved');
             } else {
                 clueNumDiv.classList.remove('solved');
+                complete = false;
             }
             var clueTextDiv = clueDiv.querySelector('.clue-text');
             clueTextDiv.textContent = `${clueToString(clues[clueNum])}`;
@@ -98,7 +199,18 @@ adventCrosswordProto.loadClues = function() {
         }
     }
     this.grid.setCluesForToday(cluesForToday);
+    if (complete) {
+        console.log('complete');
+        this.onComplete();
+    } else {
+        console.log('incomplete');
+        this.checkButton.classList.add('hidden');
+    }
 };
+
+adventCrosswordProto.onComplete = function() {
+    this.checkButton.classList.remove('hidden');
+}
 
 AdventCrossword.prototype = adventCrosswordProto;
 
@@ -156,7 +268,9 @@ function loadAll(dataFile) {
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
-        var xwd = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput);
+        var checkButton = document.getElementById('check-button');
+        var allContent = document.getElementById('crossword-content');
+        var xwd = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent);
         xwd.setupCanvas();
         xwd.createGrid();
         xwd.setupGrid();
