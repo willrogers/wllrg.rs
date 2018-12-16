@@ -1,3 +1,6 @@
+/* IIFE */
+var adventXwd = (function adventXwdModule() {
+
 /* Draw a crossword on an HTML canvas. */
 'use strict';
 
@@ -10,14 +13,14 @@ var UNRELEASED;
 
 /* Customised grid with extra highlighting for today's clues. */
 function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, eventListeners) {
-    Grid.call(this, width, height, cellSize, blackSquares, correctAnswer, eventListeners);
+    xwd.Grid.call(this, width, height, cellSize, blackSquares, correctAnswer, eventListeners);
     this.cluesForToday = [];
     this.highlight = true;
     this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
                            [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
     this.correctlyClicked = 0;
 }
-var adventGridProto = Object.create(Grid.prototype);
+var adventGridProto = Object.create(xwd.Grid.prototype);
 
 adventGridProto.draw = function(ctx) {
     Grid.prototype.draw.call(this, ctx);
@@ -73,7 +76,7 @@ AdventGrid.prototype = adventGridProto;
 
 
 /* Customised crossword able to withhold clues and highlight today's. */
-var adventCrosswordProto = Object.create(Crossword.prototype);
+var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 
 adventCrosswordProto.finished = function() {
     console.log('finished');
@@ -244,7 +247,7 @@ function loadAll(dataFile) {
 }
 
 /* The main entry point. */
-function loadAdventXwd() {
+function main() {
     var canvas = document.getElementById('xwd');
     YEAR = parseInt(canvas.getAttribute('key'));
     COOKIE_KEY = `grid-state-${YEAR}`;
@@ -255,3 +258,7 @@ function loadAdventXwd() {
     var dataFile = `/static/xwd${YEAR}.json`;
     loadAll(dataFile);
 }
+
+return {"AdventGrid": AdventGrid, "AdventCrossword": AdventCrossword, "main": main};
+
+}());

@@ -1,5 +1,7 @@
+/* IIFE */
+var xwd = (function xwdModule() {
+
 /* Draw a crossword on an HTML canvas. */
-'use strict';
 
 var DIRECTIONS = ['ac', 'dn'];
 var DIRECTION_NAMES = ['Across', 'Down'];
@@ -783,3 +785,8 @@ function main() {
     var dataFile = `/static/xwd${KEY}.json`;
     loadAll(dataFile);
 }
+
+/* Exports */
+return {"Grid": Grid, "Crossword": Crossword, "main": main};
+
+}());
