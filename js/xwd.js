@@ -19,6 +19,19 @@ var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
 
 
+/* See https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript */
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr;
+  if (this.length === 0) return hash;
+  for (i = 0; i < this.length; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+
 function loadJson(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
@@ -147,12 +160,15 @@ function colorClue(ctx, cellSize, color, clue) {
     }
 }
 
-function Grid(width, height, cellSize, blackSquares, eventListeners) {
+function Grid(
+    width, height, cellSize, blackSquares, correctAnswer, eventListeners
+) {
     this.width = width;
     this.height = height;
     this.blackSquares = blackSquares;
     this.whiteSquares = [];
     this.cellSize = cellSize;
+    this.correctAnswer = correctAnswer;
     this.eventListeners = [];
     /* each is a clueSeq */
     this.clues = {
@@ -498,7 +514,19 @@ Grid.prototype.highlightCell = function(ctx) {
     }
 };
 
-function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) {
+Grid.prototype.isCorrect = function() {
+    return this.lettersToString().hashCode() === this.correctAnswer;
+}
+
+function Crossword(
+    canvas,
+    selectedClueDiv,
+    allCluesDiv,
+    clueJson,
+    hiddenInput,
+    checkButton,
+    allContent)
+{
     this.selectedClueDiv = selectedClueDiv;
     this.allCluesDiv = allCluesDiv;
     this.canvas = canvas;
@@ -506,6 +534,24 @@ function Crossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput) 
     this.clueJson = clueJson;
     this.hiddenInput = hiddenInput;
     this.clueDivs = {'ac': [], 'dn': []};
+    this.checkButton = checkButton;
+    this.allContent = allContent;
+    self = this;
+    checkButton.onclick = function() {
+        console.log('clicked');
+        console.log('correct? ' + self.grid.isCorrect());
+        if (self.grid.isCorrect()) {
+            self.grid.highlight = false;
+            self.grid.draw(self.ctx);
+        }
+    }
+    checkButton.addEventListener('xwd-finished', function(event) {
+        console.log('xwd selected');
+        if (self.grid.isCorrect()) {
+            self.allContent.classList.add('completed');
+            setTimeout(self.finished, 2000);
+        }
+    });
     selectedClueDiv.addEventListener('clue-selected', function(event) {
         if (event.detail.direction !== null) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
@@ -700,11 +746,22 @@ function loadAll(dataFile) {
         DN_SQUARES = dataJson["down-size"];
         BLACK_SQUARES = dataJson["black-squares"];
         var clueJson = dataJson["clues"];
+        var correctAnswer = dataJson["correct-answer"];
         var canvas = document.getElementById('xwd');
         var clueText = document.getElementById('selected-clue-text');
         var hiddenInput = document.getElementById('hidden-input');
         var allClues = document.getElementById('all-clues');
-        var xwd = new Crossword(canvas, clueText, allClues, clueJson, hiddenInput);
+        var checkButton = document.getElementById('check-button');
+        var allContent = document.getElementById('crossword-content');
+        var xwd = new Crossword(
+            canvas,
+            clueText,
+            allClues,
+            clueJson,
+            hiddenInput,
+            checkButton,
+            allContent
+        );
         xwd.setupCanvas();
         xwd.createGrid();
         xwd.setupGrid();

@@ -8,24 +8,10 @@ var TODAY_HIGHLIGHT;
 var UNRELEASED;
 
 
-/* See https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript */
-String.prototype.hashCode = function() {
-  var hash = 0, i, chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
-
-
 /* Customised grid with extra highlighting for today's clues. */
-function AdventGrid(width, height, cellSize, blackSquares, eventListeners) {
-    Grid.call(this, width, height, cellSize, blackSquares, eventListeners);
+function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, eventListeners) {
+    Grid.call(this, width, height, cellSize, blackSquares, correctAnswer, eventListeners);
     this.cluesForToday = [];
-    this.correctAnswer = 1834138129;
     this.highlight = true;
     this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
                            [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
@@ -56,9 +42,6 @@ adventGridProto.setCluesForToday = function(clues) {
     this.cluesForToday = clues;
 };
 
-adventGridProto.isCorrect = function() {
-    return this.lettersToString().hashCode() === this.correctAnswer;
-}
 
 adventGridProto.selectCell = function(cell, toggle) {
     if (this.highlight === true) {
@@ -90,28 +73,6 @@ AdventGrid.prototype = adventGridProto;
 
 
 /* Customised crossword able to withhold clues and highlight today's. */
-function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent) {
-    Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput);
-    this.checkButton = checkButton;
-    this.allContent = allContent;
-    self = this;
-    checkButton.onclick = function() {
-        console.log('clicked');
-        console.log('correct? ' + self.grid.isCorrect());
-        if (self.grid.isCorrect()) {
-            self.grid.highlight = false;
-            self.grid.draw(self.ctx);
-        }
-    }
-    checkButton.addEventListener('xwd-finished', function(event) {
-        console.log('xwd selected');
-        if (self.grid.isCorrect()) {
-            self.allContent.classList.add('completed');
-            setTimeout(self.finished, 2000);
-        }
-    });
-}
-
 var adventCrosswordProto = Object.create(Crossword.prototype);
 
 adventCrosswordProto.finished = function() {

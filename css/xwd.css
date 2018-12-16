@@ -39,14 +39,15 @@
 }
 
 #check-button {
-    foreground-color: white;
-    background-color: red;
-    padding: 10px;
+    background-color: var(--highlight-color);
+    padding-left: 8px;
+    padding-right: 8px;
     cursor: pointer;
     text-decoration: none;
 }
 #check-button:hover{
-    background-color: blue;
+    background-color: var(--unreleased-color);
+    color: black;
 }
 
 #check-button.hidden {
