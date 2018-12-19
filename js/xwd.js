@@ -557,7 +557,7 @@ function Crossword(
         if (event.detail.direction !== null) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
-                var clueString = clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
+                var clueString = self.clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
                 var clueText = `${event.detail.clueNumber} ${direction}: ${clueString}`;
                 selectedClueDiv.textContent = clueText;
                 selectedClueDiv.classList.add('highlighted');
@@ -582,6 +582,11 @@ function Crossword(
         dirDiv.appendChild(titleDiv);
     }
     this.allCluesDiv.addEventListener('letter-entered', this.loadClues);
+}
+
+Crossword.prototype.clueToString = function(clue) {
+    // Use template literals
+    return `${clue[1]}\u00a0(${clue[2]})`;
 }
 
 /* Run through all clue divs and make sure none are highlighted. */
@@ -657,7 +662,7 @@ Crossword.prototype.loadClues = function() {
                 clueNumDiv.classList.remove('solved');
             }
             var clueTextDiv = clueDiv.querySelector('.clue-text');
-            clueTextDiv.textContent = `${clueToString(clues[clueNum])}`;
+            clueTextDiv.textContent = `${this.clueToString(clues[clueNum])}`;
             if (clueDiv.textContent.indexOf('Released') !== -1) {
                 clueDiv.classList.add('unreleased');
             } else {
@@ -720,10 +725,6 @@ Crossword.prototype.setupGrid = function() {
 };
 
 
-function clueToString(clue) {
-    // Use template literals
-    return `${clue[1]}\u00a0(${clue[2]})`;
-}
 
 function loadData(dataFile, xwd) {
     loadJson(dataFile, function(response) {

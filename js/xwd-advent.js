@@ -1,5 +1,5 @@
 /* IIFE */
-var adventXwd = (function adventXwdModule(xwd) {
+var adventXwd = (function adventXwdModule(xwdModule) {
 /* Draw a crossword on an HTML canvas. */
 'use strict';
 
@@ -19,15 +19,15 @@ function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, eventL
                            [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
     this.correctlyClicked = 0;
 }
-var adventGridProto = Object.create(xwd.Grid.prototype);
+var adventGridProto = Object.create(xwdModule.Grid.prototype);
 
 adventGridProto.draw = function(ctx) {
-    xwd.Grid.prototype.draw.call(this, ctx);
+    xwdModule.Grid.prototype.draw.call(this, ctx);
     if (this.highlight) {
         for (var i = 0; i < this.cluesForToday.length; i++) {
-            this.highlightClue(ctx, this.cluesForToday[i], xwd.TODAY_HIGHLIGHT);
+            this.highlightClue(ctx, this.cluesForToday[i], xwdModule.TODAY_HIGHLIGHT);
         }
-        this.highlightClue(ctx, this.highlighted, xwd.HIGHLIGHT);
+        this.highlightClue(ctx, this.highlighted, xwdModule.HIGHLIGHT);
         this.highlightCell(ctx);
     } else {
         for (var i = 0; i < this.correctlyClicked; i++) {
@@ -47,7 +47,7 @@ adventGridProto.setCluesForToday = function(clues) {
 
 adventGridProto.selectCell = function(cell, toggle) {
     if (this.highlight === true) {
-        xwd.Grid.prototype.selectCell.call(this, cell, toggle);
+        xwdModule.Grid.prototype.selectCell.call(this, cell, toggle);
     } else {
         var messageSquare = this.messageSquares[this.correctlyClicked];
         var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
@@ -75,11 +75,11 @@ AdventGrid.prototype = adventGridProto;
 
 
 function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent) {
-    xwd.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent);
+    xwdModule.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent);
 }
 
 /* Customised crossword able to withhold clues and highlight today's. */
-var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
+var adventCrosswordProto = Object.create(xwdModule.Crossword.prototype);
 
 adventCrosswordProto.finished = function() {
     console.log('finished');
@@ -141,7 +141,7 @@ adventCrosswordProto.loadClues = function() {
                 this.grid.addListener(clueDiv);
             }
             if (isClueForToday(clue)) {
-                cluesForToday.push(xwd.clueName(direction, clueNum));
+                cluesForToday.push(xwdModule.clueName(direction, clueNum));
                 clueDiv.classList.add('today');
             } else {
                 clueDiv.classList.remove('today');
@@ -156,7 +156,7 @@ adventCrosswordProto.loadClues = function() {
                 complete = false;
             }
             var clueTextDiv = clueDiv.querySelector('.clue-text');
-            clueTextDiv.textContent = `${clueToString(clues[clueNum])}`;
+            clueTextDiv.textContent = `${this.clueToString(clues[clueNum])}`;
             if (clueDiv.textContent.indexOf('Released') !== -1) {
                 clueDiv.classList.add('unreleased');
             } else {
@@ -179,6 +179,20 @@ adventCrosswordProto.onComplete = function() {
     this.checkButton.classList.remove('hidden');
 }
 
+adventCrosswordProto.clueToString = function(clue) {
+    // Use template literals
+    var clueString = '';
+    if (isClueActive(clue, YEAR)) {
+        clueString = `${clue[1]}\u00a0(${clue[2]})`;
+        if (isClueForToday(clue, YEAR)) {
+            clueString = `(New) ${clueString}`;
+        }
+    } else {
+        clueString = `Released on ${clue[0]} December`;
+    }
+    return clueString;
+}
+
 AdventCrossword.prototype = adventCrosswordProto;
 
 function isClueActive(clue) {
@@ -195,19 +209,6 @@ function isClueForToday(clue) {
     return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[0]));
 }
 
-function clueToString(clue) {
-    // Use template literals
-    var clueString = '';
-    if (isClueActive(clue, YEAR)) {
-        clueString = `${clue[1]}\u00a0(${clue[2]})`;
-        if (isClueForToday(clue, YEAR)) {
-            clueString = `(New) ${clueString}`;
-        }
-    } else {
-        clueString = `Released on ${clue[0]} December`;
-    }
-    return clueString;
-}
 
 function loadData(dataFile, xwd, xwdModule) {
     xwdModule.loadJson(dataFile, function(response) {
@@ -225,7 +226,7 @@ function loadData(dataFile, xwd, xwdModule) {
 }
 
 function loadAll(dataFile, xwdModule) {
-    xwd.loadJson(dataFile, function(response) {
+    xwdModule.loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
@@ -253,13 +254,13 @@ function loadAll(dataFile, xwdModule) {
 function main() {
     var canvas = document.getElementById('xwd');
     YEAR = parseInt(canvas.getAttribute('key'));
-    xwd.COOKIE_KEY = `grid-state-${YEAR}`;
+    xwdModule.COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
-    xwd.HIGHLIGHT = style.getPropertyValue('--highlight-color');
-    xwd.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
-    xwd.UNRELEASED = style.getPropertyValue('--unreleased-color');
+    xwdModule.HIGHLIGHT = style.getPropertyValue('--highlight-color');
+    xwdModule.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
+    xwdModule.UNRELEASED = style.getPropertyValue('--unreleased-color');
     var dataFile = `/static/xwd${YEAR}.json`;
-    loadAll(dataFile, xwd);
+    loadAll(dataFile, xwdModule);
 }
 
 /* Exports */
