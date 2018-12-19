@@ -1,6 +1,5 @@
 /* IIFE */
-var adventXwd = (function adventXwdModule() {
-
+var adventXwd = (function adventXwdModule(xwd) {
 /* Draw a crossword on an HTML canvas. */
 'use strict';
 
@@ -23,12 +22,12 @@ function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, eventL
 var adventGridProto = Object.create(xwd.Grid.prototype);
 
 adventGridProto.draw = function(ctx) {
-    Grid.prototype.draw.call(this, ctx);
+    xwd.Grid.prototype.draw.call(this, ctx);
     if (this.highlight) {
         for (var i = 0; i < this.cluesForToday.length; i++) {
-            this.highlightClue(ctx, this.cluesForToday[i], TODAY_HIGHLIGHT);
+            this.highlightClue(ctx, this.cluesForToday[i], xwd.TODAY_HIGHLIGHT);
         }
-        this.highlightClue(ctx, this.highlighted, HIGHLIGHT);
+        this.highlightClue(ctx, this.highlighted, xwd.HIGHLIGHT);
         this.highlightCell(ctx);
     } else {
         for (var i = 0; i < this.correctlyClicked; i++) {
@@ -48,7 +47,7 @@ adventGridProto.setCluesForToday = function(clues) {
 
 adventGridProto.selectCell = function(cell, toggle) {
     if (this.highlight === true) {
-        Grid.prototype.onClick.call(self, cell, toggle);
+        xwd.Grid.prototype.selectCell.call(this, cell, toggle);
     } else {
         var messageSquare = this.messageSquares[this.correctlyClicked];
         var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
@@ -74,6 +73,10 @@ adventGridProto.unfinish = function() {
 
 AdventGrid.prototype = adventGridProto;
 
+
+function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent) {
+    xwd.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent);
+}
 
 /* Customised crossword able to withhold clues and highlight today's. */
 var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
@@ -138,7 +141,7 @@ adventCrosswordProto.loadClues = function() {
                 this.grid.addListener(clueDiv);
             }
             if (isClueForToday(clue)) {
-                cluesForToday.push(clueName(direction, clueNum));
+                cluesForToday.push(xwd.clueName(direction, clueNum));
                 clueDiv.classList.add('today');
             } else {
                 clueDiv.classList.remove('today');
@@ -206,8 +209,8 @@ function clueToString(clue) {
     return clueString;
 }
 
-function loadData(dataFile, xwd) {
-    loadJson(dataFile, function(response) {
+function loadData(dataFile, xwd, xwdModule) {
+    xwdModule.loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
@@ -218,11 +221,11 @@ function loadData(dataFile, xwd) {
         xwd.grid.draw(xwd.ctx);
     });
     /* Reload every minute to update without a page refresh. */
-    setTimeout(loadData, 5 * 1000, dataFile, xwd);
+    setTimeout(loadData, 5 * 1000, dataFile, xwd, xwdModule);
 }
 
-function loadAll(dataFile) {
-    loadJson(dataFile, function(response) {
+function loadAll(dataFile, xwdModule) {
+    xwd.loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
@@ -242,7 +245,7 @@ function loadAll(dataFile) {
         xwd.loadClues();
         xwd.grid.draw(xwd.ctx);
         /* Start automatic reload. */
-        setTimeout(loadData, 5 * 1000, dataFile, xwd);
+        setTimeout(loadData, 5 * 1000, dataFile, xwd, xwdModule);
     });
 }
 
@@ -250,15 +253,16 @@ function loadAll(dataFile) {
 function main() {
     var canvas = document.getElementById('xwd');
     YEAR = parseInt(canvas.getAttribute('key'));
-    COOKIE_KEY = `grid-state-${YEAR}`;
+    xwd.COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
-    HIGHLIGHT = style.getPropertyValue('--highlight-color');
-    TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
-    UNRELEASED = style.getPropertyValue('--unreleased-color');
+    xwd.HIGHLIGHT = style.getPropertyValue('--highlight-color');
+    xwd.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
+    xwd.UNRELEASED = style.getPropertyValue('--unreleased-color');
     var dataFile = `/static/xwd${YEAR}.json`;
-    loadAll(dataFile);
+    loadAll(dataFile, xwd);
 }
 
+/* Exports */
 return {"AdventGrid": AdventGrid, "AdventCrossword": AdventCrossword, "main": main};
 
-}());
+}(xwd));

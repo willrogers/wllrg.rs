@@ -1,8 +1,3 @@
-/* IIFE */
-var xwd = (function xwdModule() {
-
-/* Draw a crossword on an HTML canvas. */
-
 var DIRECTIONS = ['ac', 'dn'];
 var DIRECTION_NAMES = ['Across', 'Down'];
 
@@ -20,6 +15,10 @@ var WHITE = 'white';
 var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
 
+/* IIFE */
+var xwd = (function xwdModule() {
+
+/* Draw a crossword on an HTML canvas. */
 
 /* See https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript */
 String.prototype.hashCode = function() {
@@ -787,6 +786,11 @@ function main() {
 }
 
 /* Exports */
-return {"Grid": Grid, "Crossword": Crossword, "main": main};
+return {
+    "Grid": Grid,
+    "Crossword": Crossword,
+    "loadJson": loadJson,
+    "clueName": clueName,
+    "main": main};
 
 }());
