@@ -11,8 +11,8 @@ var UNRELEASED;
 
 
 /* Customised grid with extra highlighting for today's clues. */
-function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, eventListeners) {
-    xwd.Grid.call(this, width, height, cellSize, blackSquares, correctAnswer, eventListeners);
+function AdventGrid(width, height, cellSize, blackSquares, correctAnswer) {
+    xwd.Grid.call(this, width, height, cellSize, blackSquares, correctAnswer);
     this.cluesForToday = [];
     this.highlight = true;
     this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
@@ -32,8 +32,8 @@ adventGridProto.draw = function(ctx) {
     } else {
         for (var i = 0; i < this.correctlyClicked; i++) {
             var messageSquare = this.messageSquares[i];
-            var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
-            fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
+            var msgSqCoord = xwdModule.coord(messageSquare[0], messageSquare[1]);
+            xwdModule.fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
         }
     }
     this.drawNumbers(ctx);
@@ -50,13 +50,13 @@ adventGridProto.selectCell = function(cell, toggle) {
         xwdModule.Grid.prototype.selectCell.call(this, cell, toggle);
     } else {
         var messageSquare = this.messageSquares[this.correctlyClicked];
-        var msgSqCoord = coord(messageSquare[0], messageSquare[1]);
+        var msgSqCoord = xwdModule.coord(messageSquare[0], messageSquare[1]);
         if (msgSqCoord.equals(cell)) {
             console.log('Matched! ' + messageSquare);
             this.correctlyClicked += 1;
             if (this.correctlyClicked === this.messageSquares.length) {
                 console.log('correct!');
-                emitFinishedEvent(this.eventListeners);
+                xwdModule.emitFinishedEvent(this.eventListeners);
                 return;
             }
         } else {
@@ -66,16 +66,17 @@ adventGridProto.selectCell = function(cell, toggle) {
 
 }
 
-adventGridProto.unfinish = function() {
+adventGridProto.unfinish = function(ctx) {
     this.correctlyClicked = 0;
     this.highlight = true;
+    this.draw(ctx);
 }
 
 AdventGrid.prototype = adventGridProto;
 
 
-function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent) {
-    xwdModule.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent);
+function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer) {
+    xwdModule.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
 }
 
 /* Customised crossword able to withhold clues and highlight today's. */
@@ -85,28 +86,31 @@ adventCrosswordProto.finished = function() {
     console.log('finished');
     var parent = self.allContent.parentElement;
     //self.allContent.classList.add('removed');
-    var finalDiv = document.createElement('div');
-    finalDiv.id = 'final-div';
-    finalDiv.style['min-height'] = self.allContent.clientHeight + 'px';
-    parent.appendChild(finalDiv);
+    self.finalDiv = document.createElement('div');
+    self.finalDiv.id = 'final-div';
+    self.finalDiv.style['min-height'] = self.allContent.clientHeight + 'px';
+    parent.appendChild(self.finalDiv);
     parent.removeChild(self.allContent);
     var backButton = document.createElement('a');
+    backButton.id = 'final-back';
     backButton.textContent = 'back';
     backButton.onclick = function() {
-        parent.removeChild(finalDiv);
+        parent.removeChild(self.finalDiv);
         self.allContent.classList.remove('completed');
-        self.grid.unfinish();
+        self.grid.unfinish(self.ctx);
         parent.appendChild(self.allContent);
         parent.removeChild(this);
     }
-    finalDiv.appendChild(backButton);
-    finalDiv.textContent = 'Happy Christmas!';
+    var msg = document.createElement('p');
+    msg.textContent = 'Happy Christmas!';
+    self.finalDiv.appendChild(msg);
+    self.finalDiv.appendChild(backButton);
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
 
 }
 
 adventCrosswordProto.createGrid = function() {
-    this.grid = new AdventGrid(this.gridWidth, this.gridHeight, this.cellSize, BLACK_SQUARES);
+    this.grid = new AdventGrid(this.gridWidth, this.gridHeight, this.cellSize, BLACK_SQUARES, this.correctAnswer);
     this.grid.draw(this.ctx);
     this.grid.addListener(this.checkButton);
 }
@@ -238,7 +242,8 @@ function loadAll(dataFile, xwdModule) {
         var allClues = document.getElementById('all-clues');
         var checkButton = document.getElementById('check-button');
         var allContent = document.getElementById('crossword-content');
-        var xwd = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent);
+        var correctAnswer = dataJson["correct-answer"];
+        var xwd = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
         xwd.setupCanvas();
         xwd.createGrid();
         xwd.setupGrid();
@@ -254,7 +259,7 @@ function loadAll(dataFile, xwdModule) {
 function main() {
     var canvas = document.getElementById('xwd');
     YEAR = parseInt(canvas.getAttribute('key'));
-    xwdModule.COOKIE_KEY = `grid-state-${YEAR}`;
+    COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
     xwdModule.HIGHLIGHT = style.getPropertyValue('--highlight-color');
     xwdModule.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');

@@ -135,6 +135,13 @@
     padding-top: 100px;
 }
 
+#final-back {
+    cursor: pointer;
+}
+#final-back:hover {
+    color: black;
+}
+
 @media (max-width: 1100px) {
   #dnDiv {
     display: block;
