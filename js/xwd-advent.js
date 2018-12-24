@@ -18,6 +18,7 @@ function AdventGrid(width, height, cellSize, blackSquares, correctAnswer) {
     this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
                            [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
     this.correctlyClicked = 0;
+    this.messageSquares = [[0, 1]];
 }
 var adventGridProto = Object.create(xwdModule.Grid.prototype);
 
@@ -69,6 +70,7 @@ adventGridProto.selectCell = function(cell, toggle) {
 adventGridProto.unfinish = function(ctx) {
     this.correctlyClicked = 0;
     this.highlight = true;
+    xwdModule.emitSelectedEvent(this.eventListeners, null, null);
     this.draw(ctx);
 }
 
@@ -83,7 +85,8 @@ function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenI
 var adventCrosswordProto = Object.create(xwdModule.Crossword.prototype);
 
 adventCrosswordProto.finished = function() {
-    console.log('finished');
+    console.log(`finished ${self}`);
+    console.log(self);
     var parent = self.allContent.parentElement;
     //self.allContent.classList.add('removed');
     self.finalDiv = document.createElement('div');
@@ -99,14 +102,14 @@ adventCrosswordProto.finished = function() {
         self.allContent.classList.remove('completed');
         self.grid.unfinish(self.ctx);
         parent.appendChild(self.allContent);
-        parent.removeChild(this);
+        console.log(parent);
+        console.log(self.finalDiv);
     }
     var msg = document.createElement('p');
     msg.textContent = 'Happy Christmas!';
     self.finalDiv.appendChild(msg);
     self.finalDiv.appendChild(backButton);
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
-
+    xwdModule.scrollToTop();
 }
 
 adventCrosswordProto.createGrid = function() {

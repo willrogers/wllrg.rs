@@ -33,6 +33,11 @@ String.prototype.hashCode = function() {
 };
 
 
+function scrollToTop() {
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+}
+
+
 function loadJson(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
@@ -104,12 +109,15 @@ function emitSelectedEvent(listeners, clue, message) {
                 'clueNumber': clue.number
             }
         }, true, true);
-    } else {
+    } else if (message !== null) {
         event = new CustomEvent('clue-selected', { detail:
             {
                 'message': message
             },
         }, true, true);
+    } else {
+        event = new CustomEvent('clue-selected', {'detail': {}}, true, true);
+
     }
     for (var i = 0; i < listeners.length; i++) {
         listeners[i].dispatchEvent(event);
@@ -174,12 +182,14 @@ function Grid(width, height, cellSize, blackSquares, correctAnswer) {
     this.whiteSquares = [];
     this.cellSize = cellSize;
     this.correctAnswer = correctAnswer;
+    console.log(`grid constructor: ${this.correctAnswer}`);
     this.eventListeners = [];
     /* each is a clueSeq */
     this.clues = {
         'ac': {},
         'dn': {}
     };
+    console.log(`cookie key ${COOKIE_KEY}`);
     if (typeof Cookies.get(COOKIE_KEY) === 'undefined') {
         this.letters = {};
     } else {
@@ -525,6 +535,9 @@ Grid.prototype.highlightCell = function(ctx) {
 };
 
 Grid.prototype.isCorrect = function() {
+    console.log(`${this.lettersToString()}`);
+    console.log(`${this.lettersToString().hashCode()}`);
+    console.log(`${this.correctAnswer}`);
     return this.lettersToString().hashCode() === this.correctAnswer;
 }
 
@@ -556,9 +569,13 @@ function Crossword(
         if (self.grid.isCorrect()) {
             self.grid.highlight = false;
             self.grid.draw(self.ctx);
-            emitSelectedEvent(self.grid.eventListeners, null, 'Now highlight the hidden message');
+            emitSelectedEvent(self.grid.eventListeners, null, 'Now highlight the hidden message.');
+        } else {
+            emitSelectedEvent(self.grid.eventListeners, null, 'Grid is not correct.');
         }
+        scrollToTop();
     }
+
     checkButton.addEventListener('xwd-finished', function(event) {
         console.log('xwd selected');
         if (self.grid.isCorrect()) {
@@ -569,7 +586,7 @@ function Crossword(
     selectedClueDiv.addEventListener('clue-selected', function(event) {
         console.log(event.detail);
         console.log(event.detail.direction);
-        if (direction in event.detail) {
+        if ('direction' in event.detail) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
                 var clueString = self.clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
@@ -799,6 +816,7 @@ function main() {
     var canvas = document.getElementById('xwd');
     KEY = canvas.getAttribute('key');
     COOKIE_KEY = `grid-state-${KEY}`;
+    console.log(`cookie key ${COOKIE_KEY}`);
     var style = getComputedStyle(document.body);
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
     var dataFile = `/static/xwd${KEY}.json`;
@@ -807,6 +825,7 @@ function main() {
 
 /* Exports */
 return {
+    "scrollToTop": scrollToTop,
     "coord": coord,
     "fillSquare": fillSquare,
     "emitFinishedEvent": emitFinishedEvent,
