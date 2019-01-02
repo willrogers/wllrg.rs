@@ -418,7 +418,8 @@ Grid.prototype.onPress = function(ctx, event, char) {
             this.selectNextCell(false);
         }
     }
-    Cookies.set(COOKIE_KEY, JSON.stringify(this.letters), { expires: new Date(YEAR + 1, 11, 31) } );
+    /* Let's keep the cookies forever. */
+    Cookies.set(COOKIE_KEY, JSON.stringify(this.letters), { expires: new Date(9999, 11, 31) } );
     this.draw(ctx);
 };
 
