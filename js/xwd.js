@@ -16,7 +16,11 @@ var BLACK = 'black';
 var CELL_HIGHLIGHT = '#87d3ff';
 
 /* IIFE */
-var xwd = (function xwdModule() {
+(function xwdModule(global) {
+
+'use strict';
+
+var xwd = {};
 
 /* Draw a crossword on an HTML canvas. */
 
@@ -33,12 +37,12 @@ String.prototype.hashCode = function() {
 };
 
 
-function scrollToTop() {
+var scrollToTop = function() {
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
 }
 
 
-function loadJson(file, callback) {
+var loadJson = function(file, callback) {
     // see https://laracasts.com/discuss/channels/general-discussion/load-json-file-from-javascript
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -68,7 +72,7 @@ Coord.prototype.equals = function(other) {
 
 };
 
-function coord(x, y) {
+var coord = function(x, y) {
     return new Coord(x, y);
 }
 
@@ -83,7 +87,7 @@ function clueSeq(x, y, length, direction) {
     return {x: x, y: y, length: length, direction: direction};
 }
 
-function clueName(direction, number) {
+var clueName = function(direction, number) {
     return {direction: direction, number: number};
 }
 
@@ -100,7 +104,7 @@ function cellInArray(array, cell) {
     return false;
 }
 
-function emitSelectedEvent(listeners, clue, message) {
+var emitSelectedEvent = function(listeners, clue, message) {
     var event = null;
     if (clue !== null) {
         event = new CustomEvent('clue-selected', { detail:
@@ -131,14 +135,14 @@ function emitTypingEvent(listeners) {
     }
 }
 
-function emitFinishedEvent(listeners) {
+var emitFinishedEvent = function(listeners) {
     var event = new CustomEvent('xwd-finished');
     for (var i = 0; i < listeners.length; i++) {
         listeners[i].dispatchEvent(event);
     }
 }
 
-function fillSquare(ctx, cellSize, cell, color) {
+var fillSquare = function(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
     ctx.fillRect(cellSize * cell.x + 1, cellSize * cell.y + 1,
             cellSize - 1, cellSize - 1);
@@ -175,7 +179,7 @@ function colorClue(ctx, cellSize, color, clue) {
     }
 }
 
-function Grid(width, height, cellSize, blackSquares, correctAnswer) {
+var Grid = function(width, height, cellSize, blackSquares, correctAnswer) {
     this.width = width;
     this.height = height;
     this.blackSquares = blackSquares;
@@ -541,7 +545,7 @@ Grid.prototype.isCorrect = function() {
     return this.lettersToString().hashCode() === this.correctAnswer;
 }
 
-function Crossword(
+var Crossword = function(
     canvas,
     selectedClueDiv,
     allCluesDiv,
@@ -812,7 +816,7 @@ function loadAll(dataFile) {
 }
 
 /* The main entry point. */
-function main() {
+xwd.main = function() {
     var canvas = document.getElementById('xwd');
     KEY = canvas.getAttribute('key');
     COOKIE_KEY = `grid-state-${KEY}`;
@@ -824,16 +828,13 @@ function main() {
 }
 
 /* Exports */
-return {
-    "scrollToTop": scrollToTop,
-    "coord": coord,
-    "fillSquare": fillSquare,
-    "emitFinishedEvent": emitFinishedEvent,
-    "emitSelectedEvent": emitSelectedEvent,
-    "Grid": Grid,
-    "Crossword": Crossword,
-    "loadJson": loadJson,
-    "clueName": clueName,
-    "main": main};
+xwd.coord = coord;
+xwd.fillSquare = fillSquare;
+xwd.loadJson = loadJson;
+xwd.emitSelectedEvent = emitSelectedEvent;
+xwd.Grid = Grid;
+xwd.Crossword = Crossword;
+global.xwd = xwd;
 
-}());
+/* Only support browsers. */
+}(window));

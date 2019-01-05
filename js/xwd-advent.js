@@ -1,5 +1,5 @@
 /* IIFE */
-var adventXwd = (function adventXwdModule(xwdModule) {
+(function adventXwdModule(global) {
 /* Draw a crossword on an HTML canvas. */
 'use strict';
 
@@ -20,21 +20,21 @@ function AdventGrid(width, height, cellSize, blackSquares, correctAnswer) {
     this.correctlyClicked = 0;
     this.messageSquares = [[0, 1]];
 }
-var adventGridProto = Object.create(xwdModule.Grid.prototype);
+var adventGridProto = Object.create(xwd.Grid.prototype);
 
 adventGridProto.draw = function(ctx) {
-    xwdModule.Grid.prototype.draw.call(this, ctx);
+    xwd.Grid.prototype.draw.call(this, ctx);
     if (this.highlight) {
         for (var i = 0; i < this.cluesForToday.length; i++) {
-            this.highlightClue(ctx, this.cluesForToday[i], xwdModule.TODAY_HIGHLIGHT);
+            this.highlightClue(ctx, this.cluesForToday[i], xwd.TODAY_HIGHLIGHT);
         }
-        this.highlightClue(ctx, this.highlighted, xwdModule.HIGHLIGHT);
+        this.highlightClue(ctx, this.highlighted, xwd.HIGHLIGHT);
         this.highlightCell(ctx);
     } else {
         for (var i = 0; i < this.correctlyClicked; i++) {
             var messageSquare = this.messageSquares[i];
-            var msgSqCoord = xwdModule.coord(messageSquare[0], messageSquare[1]);
-            xwdModule.fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
+            var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
+            xwd.fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
         }
     }
     this.drawNumbers(ctx);
@@ -48,16 +48,16 @@ adventGridProto.setCluesForToday = function(clues) {
 
 adventGridProto.selectCell = function(cell, toggle) {
     if (this.highlight === true) {
-        xwdModule.Grid.prototype.selectCell.call(this, cell, toggle);
+        xwd.Grid.prototype.selectCell.call(this, cell, toggle);
     } else {
         var messageSquare = this.messageSquares[this.correctlyClicked];
-        var msgSqCoord = xwdModule.coord(messageSquare[0], messageSquare[1]);
+        var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
         if (msgSqCoord.equals(cell)) {
             console.log('Matched! ' + messageSquare);
             this.correctlyClicked += 1;
             if (this.correctlyClicked === this.messageSquares.length) {
                 console.log('correct!');
-                xwdModule.emitFinishedEvent(this.eventListeners);
+                xwd.emitFinishedEvent(this.eventListeners);
                 return;
             }
         } else {
@@ -70,7 +70,7 @@ adventGridProto.selectCell = function(cell, toggle) {
 adventGridProto.unfinish = function(ctx) {
     this.correctlyClicked = 0;
     this.highlight = true;
-    xwdModule.emitSelectedEvent(this.eventListeners, null, null);
+    xwd.emitSelectedEvent(this.eventListeners, null, null);
     this.draw(ctx);
 }
 
@@ -78,11 +78,11 @@ AdventGrid.prototype = adventGridProto;
 
 
 function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer) {
-    xwdModule.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
+    xwd.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
 }
 
 /* Customised crossword able to withhold clues and highlight today's. */
-var adventCrosswordProto = Object.create(xwdModule.Crossword.prototype);
+var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 
 adventCrosswordProto.finished = function() {
     console.log(`finished ${self}`);
@@ -109,7 +109,7 @@ adventCrosswordProto.finished = function() {
     msg.textContent = 'Happy Christmas!';
     self.finalDiv.appendChild(msg);
     self.finalDiv.appendChild(backButton);
-    xwdModule.scrollToTop();
+    xwd.scrollToTop();
 }
 
 adventCrosswordProto.createGrid = function() {
@@ -148,7 +148,7 @@ adventCrosswordProto.loadClues = function() {
                 this.grid.addListener(clueDiv);
             }
             if (isClueForToday(clue)) {
-                cluesForToday.push(xwdModule.clueName(direction, clueNum));
+                cluesForToday.push(xwd.clueName(direction, clueNum));
                 clueDiv.classList.add('today');
             } else {
                 clueDiv.classList.remove('today');
@@ -217,23 +217,23 @@ function isClueForToday(clue) {
 }
 
 
-function loadData(dataFile, xwd, xwdModule) {
-    xwdModule.loadJson(dataFile, function(response) {
+function loadData(dataFile, xwdObj) {
+    xwd.loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
         BLACK_SQUARES = dataJson["black-squares"];
         var clueJson = dataJson["clues"];
-        xwd.clueJson = clueJson;
-        xwd.loadClues();
-        xwd.grid.draw(xwd.ctx);
+        xwdObj.clueJson = clueJson;
+        xwdObj.loadClues();
+        xwdObj.grid.draw(xwd.ctx);
     });
     /* Reload every minute to update without a page refresh. */
-    setTimeout(loadData, 5 * 1000, dataFile, xwd, xwdModule);
+    setTimeout(loadData, 5 * 1000, dataFile, xwd, xwd);
 }
 
-function loadAll(dataFile, xwdModule) {
-    xwdModule.loadJson(dataFile, function(response) {
+function loadAll(dataFile) {
+    xwd.loadJson(dataFile, function(response) {
         var dataJson = JSON.parse(response);
         AC_SQUARES = dataJson["across-size"];
         DN_SQUARES = dataJson["down-size"];
@@ -246,15 +246,15 @@ function loadAll(dataFile, xwdModule) {
         var checkButton = document.getElementById('check-button');
         var allContent = document.getElementById('crossword-content');
         var correctAnswer = dataJson["correct-answer"];
-        var xwd = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
-        xwd.setupCanvas();
-        xwd.createGrid();
-        xwd.setupGrid();
-        xwd.grid.addListener(clueText);
-        xwd.loadClues();
-        xwd.grid.draw(xwd.ctx);
+        var xwdObj = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
+        xwdObj.setupCanvas();
+        xwdObj.createGrid();
+        xwdObj.setupGrid();
+        xwdObj.grid.addListener(clueText);
+        xwdObj.loadClues();
+        xwdObj.grid.draw(xwdObj.ctx);
         /* Start automatic reload. */
-        setTimeout(loadData, 5 * 1000, dataFile, xwd, xwdModule);
+        setTimeout(loadData, 5 * 1000, dataFile, xwdObj);
     });
 }
 
@@ -264,14 +264,18 @@ function main() {
     YEAR = parseInt(canvas.getAttribute('key'));
     COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
-    xwdModule.HIGHLIGHT = style.getPropertyValue('--highlight-color');
-    xwdModule.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
-    xwdModule.UNRELEASED = style.getPropertyValue('--unreleased-color');
+    xwd.HIGHLIGHT = style.getPropertyValue('--highlight-color');
+    xwd.TODAY_HIGHLIGHT = style.getPropertyValue('--today-color');
+    xwd.UNRELEASED = style.getPropertyValue('--unreleased-color');
     var dataFile = `/static/xwd${YEAR}.json`;
-    loadAll(dataFile, xwdModule);
+    loadAll(dataFile);
 }
 
 /* Exports */
-return {"AdventGrid": AdventGrid, "AdventCrossword": AdventCrossword, "main": main};
+var adventXwd = {};
+adventXwd.AdventGrid = AdventGrid;
+adventXwd.AdventCrossword = AdventCrossword;
+adventXwd.main = main;
+global.adventXwd = adventXwd;
 
-}(xwd));
+}(window));
