@@ -231,7 +231,7 @@ function loadData(dataFile, xwdObj) {
         var clueJson = dataJson["clues"];
         xwdObj.clueJson = clueJson;
         xwdObj.loadClues();
-        xwdObj.grid.draw(xwd.ctx);
+        xwdObj.grid.draw(xwdObj.ctx);
     });
     /* Reload every minute to update without a page refresh. */
     setTimeout(loadData, 5 * 1000, dataFile, xwd, xwd);
