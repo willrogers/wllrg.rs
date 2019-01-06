@@ -104,44 +104,6 @@ function cellInArray(array, cell) {
     return false;
 }
 
-var emitSelectedEvent = function(listeners, clue, message) {
-    var event = null;
-    if (clue !== null) {
-        event = new CustomEvent('clue-selected', { detail:
-            {
-                'direction': clue.direction,
-                'clueNumber': clue.number
-            }
-        }, true, true);
-    } else if (message !== null) {
-        event = new CustomEvent('clue-selected', { detail:
-            {
-                'message': message
-            },
-        }, true, true);
-    } else {
-        event = new CustomEvent('clue-selected', {'detail': {}}, true, true);
-
-    }
-    for (var i = 0; i < listeners.length; i++) {
-        listeners[i].dispatchEvent(event);
-    }
-}
-
-function emitTypingEvent(listeners) {
-    var event = new CustomEvent('letter-entered');
-    for (var i = 0; i < listeners.length; i++) {
-        listeners[i].dispatchEvent(event);
-    }
-}
-
-var emitFinishedEvent = function(listeners) {
-    var event = new CustomEvent('xwd-finished');
-    for (var i = 0; i < listeners.length; i++) {
-        listeners[i].dispatchEvent(event);
-    }
-}
-
 var fillSquare = function(ctx, cellSize, cell, color) {
     ctx.fillStyle = color;
     ctx.fillRect(cellSize * cell.x + 1, cellSize * cell.y + 1,
@@ -210,6 +172,13 @@ var Grid = function(width, height, cellSize, blackSquares, correctAnswer) {
 Grid.prototype.addListener = function(listener) {
     this.eventListeners.push(listener);
 };
+
+Grid.prototype.emitEvent = function(name, detail) {
+    var event = new CustomEvent(name, detail, true, true);
+    for (var i = 0; i < this.eventListeners.length; i++) {
+        this.eventListeners[i].dispatchEvent(event);
+    }
+}
 
 Grid.prototype.figureOutWhiteSquares = function() {
     for (var i = 0; i < AC_SQUARES; i++) {
@@ -474,6 +443,15 @@ Grid.prototype.onPress = function(ctx, event, char) {
     this.draw(ctx);
 };
 
+Grid.prototype.emitSelectedEvent = function() {
+    this.emitEvent('clue-selected', { 'detail':
+        {
+            'direction': this.highlighted.direction,
+            'clueNumber': this.highlighted.number
+        }
+    });
+};
+
 /** Highlight the clue containing the specified cell */
 Grid.prototype.highlightClueFromCell = function(cell, toggle) {
     var cluesContainingCell = [];
@@ -492,20 +470,20 @@ Grid.prototype.highlightClueFromCell = function(cell, toggle) {
         console.log('cell in no clues?');
     } else if (cluesContainingCell.length == 1) {
         this.highlighted = cluesContainingCell[0];
-        emitSelectedEvent(this.eventListeners, this.highlighted, null);
+        this.emitSelectedEvent();
     } else {
         /* do we toggle? */
         if (this.highlighted === null) {
             this.highlighted = cluesContainingCell[0];
-            emitSelectedEvent(this.eventListeners, this.highlighted, null);
+            this.emitSelectedEvent();
         } else {
             if (toggle) {
                 if (this.highlighted.direction === cluesContainingCell[0].direction && this.highlighted.number === cluesContainingCell[0].number) {
                     this.highlighted = cluesContainingCell[1];
-                    emitSelectedEvent(this.eventListeners, this.highlighted, null);
+                    this.emitSelectedEvent();
                 } else {
                     this.highlighted = cluesContainingCell[0];
-                    emitSelectedEvent(this.eventListeners, this.highlighted, null);;
+                    this.emitSelectedEvent();
                 }
             }
         }
@@ -519,7 +497,7 @@ Grid.prototype.setHighlightedClue = function(direction, number) {
         return;
     }
     this.selectedCell = coord(clue.x, clue.y);
-    emitSelectedEvent(this.eventListeners, this.highlighted, null);
+    this.emitSelectedEvent();
 };
 
 Grid.prototype.highlightClue = function(ctx, clue, color) {
@@ -573,7 +551,7 @@ var Crossword = function(
         if (self.grid.isCorrect()) {
             self.onComplete();
         } else {
-            emitSelectedEvent(self.grid.eventListeners, null, 'Grid is not correct.');
+            self.emitEvent('clue-selected', {'detail': {'message': 'Grid is not correct.'}});
         }
         scrollToTop();
     }
@@ -833,7 +811,6 @@ xwd.main = function() {
 xwd.coord = coord;
 xwd.fillSquare = fillSquare;
 xwd.loadJson = loadJson;
-xwd.emitSelectedEvent = emitSelectedEvent;
 xwd.Grid = Grid;
 xwd.Crossword = Crossword;
 global.xwd = xwd;

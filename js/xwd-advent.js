@@ -57,7 +57,7 @@ adventGridProto.selectCell = function(cell, toggle) {
             this.correctlyClicked += 1;
             if (this.correctlyClicked === this.messageSquares.length) {
                 console.log('correct!');
-                xwd.emitFinishedEvent(this.eventListeners);
+                this.emitEvent('xwd-finished', null);
                 return;
             }
         } else {
@@ -70,7 +70,7 @@ adventGridProto.selectCell = function(cell, toggle) {
 adventGridProto.unfinish = function(ctx) {
     this.correctlyClicked = 0;
     this.highlight = true;
-    xwd.emitSelectedEvent(this.eventListeners, null, null);
+    this.emitEvent('clue-selected', null);
     this.draw(ctx);
 }
 
@@ -87,7 +87,7 @@ var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 adventCrosswordProto.onComplete = function() {
     self.grid.highlight = false;
     self.grid.draw(self.ctx);
-    emitSelectedEvent(self.grid.eventListeners, null, 'Now highlight the hidden message.');
+    emitEvent('clue-selected', {'message': 'Now highlight the hidden message.'});
 }
 adventCrosswordProto.finished = function() {
     console.log(`finished ${self}`);
