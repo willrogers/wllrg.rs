@@ -9,15 +9,14 @@ extra_css:
 ---
 <h1 id="title">The Advent Crossword 2018</h1>
 <div id="crossword-content">
-  <div><p>Find the hidden message and its sender.</p></div>
+  <div id="preamble"><p>Find the hidden message and its sender.</p></div>
   <div style="height:0;width:0;overflow:hidden"><input type="password" onfocus="this.removeAttribute('readonly');" id="hidden-input" autocomplete="off" readonly /></div>
   <div id="selected-clue"><span id="selected-clue-text">No clue selected</span></div>
   <div id="crossword-left-part">
     <canvas id="xwd" key="2018"></canvas>
-    <a id="check-button">Check</a>
+    <a id="check-button">Check solution</a>
   </div>
   <div id="all-clues"></div>
-  <a id="check-button" class="hidden">check</a>
 </div>
 <script>
 window.onload = function(){ adventXwd.main(); };

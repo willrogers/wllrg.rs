@@ -32,9 +32,11 @@ adventGridProto.draw = function(ctx) {
         this.highlightCell(ctx);
     } else {
         for (var i = 0; i < this.correctlyClicked; i++) {
-            var messageSquare = this.messageSquares[i];
-            var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
-            xwd.fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
+            if (i < this.messageSquares.length) {
+                var messageSquare = this.messageSquares[i];
+                var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
+                xwd.fillSquare(ctx, this.cellSize, msgSqCoord, 'red');
+            }
         }
     }
     this.drawNumbers(ctx);
@@ -70,6 +72,7 @@ adventGridProto.selectCell = function(cell, toggle) {
 adventGridProto.unfinish = function(ctx) {
     this.correctlyClicked = 0;
     this.highlight = true;
+    this.removeHighlight();
     this.emitEvent('clue-selected', null);
     this.draw(ctx);
 }
@@ -84,11 +87,18 @@ function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenI
 /* Customised crossword able to withhold clues and highlight today's. */
 var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 
-adventCrosswordProto.onComplete = function() {
-    self.grid.highlight = false;
-    self.grid.draw(self.ctx);
-    emitEvent('clue-selected', {'message': 'Now highlight the hidden message.'});
+adventCrosswordProto.onCorrect = function() {
+    console.log('onCorrect');
+    this.grid.highlight = false;
+    this.grid.draw(this.ctx);
+    this.grid.emitEvent('clue-selected', null);
+    this.grid.emitEvent('message', {'detail': 'Now highlight the hidden message.'});
+};
+
+adventCrosswordProto.unfinish = function() {
+    this.grid.emitEvent('clue-selected', null);
 }
+
 adventCrosswordProto.finished = function() {
     console.log(`finished ${self}`);
     console.log(self);
@@ -114,7 +124,7 @@ adventCrosswordProto.finished = function() {
     msg.textContent = 'Happy Christmas!';
     self.finalDiv.appendChild(msg);
     self.finalDiv.appendChild(backButton);
-    xwd.scrollToTop();
+    scrollToTop();
 }
 
 adventCrosswordProto.createGrid = function() {
@@ -180,16 +190,11 @@ adventCrosswordProto.loadClues = function() {
     this.grid.setCluesForToday(cluesForToday);
     if (complete) {
         console.log('complete');
-        this.onComplete();
     } else {
         console.log('incomplete');
         this.checkButton.classList.add('hidden');
     }
 };
-
-adventCrosswordProto.onComplete = function() {
-    this.checkButton.classList.remove('hidden');
-}
 
 adventCrosswordProto.clueToString = function(clue) {
     // Use template literals
@@ -234,7 +239,7 @@ function loadData(dataFile, xwdObj) {
         xwdObj.grid.draw(xwdObj.ctx);
     });
     /* Reload every minute to update without a page refresh. */
-    setTimeout(loadData, 5 * 1000, dataFile, xwd, xwd);
+    setTimeout(loadData, 5 * 1000, dataFile, xwdObj);
 }
 
 function loadAll(dataFile) {

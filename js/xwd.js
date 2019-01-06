@@ -339,6 +339,11 @@ Grid.prototype.draw = function(ctx) {
     this.drawLetters(ctx);
 };
 
+Grid.prototype.removeHighlight = function() {
+    this.highlighted = null;
+    this.selectedCell = null;
+}
+
 Grid.prototype.selectCell = function(cell, toggle) {
     this.selectedCell = cell;
     this.highlightClueFromCell(cell, toggle);
@@ -549,9 +554,9 @@ var Crossword = function(
         console.log('clicked');
         console.log('correct? ' + self.grid.isCorrect());
         if (self.grid.isCorrect()) {
-            self.onComplete();
+            self.onCorrect();
         } else {
-            self.emitEvent('clue-selected', {'detail': {'message': 'Grid is not correct.'}});
+            self.grid.emitEvent('message', {'detail': 'Grid is not correct.'});
         }
         scrollToTop();
     }
@@ -565,8 +570,7 @@ var Crossword = function(
     });
     selectedClueDiv.addEventListener('clue-selected', function(event) {
         console.log(event.detail);
-        console.log(event.detail.direction);
-        if ('direction' in event.detail) {
+        if (event.detail != null && 'direction' in event.detail) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
                 var clueString = self.clueToString(clueJson[event.detail.direction][event.detail.clueNumber]);
@@ -577,13 +581,14 @@ var Crossword = function(
                 selectedClueDiv.textContent = 'No clue data';
                 selectedClueDiv.classList.remove('highlighted');
             }
-        } else if ('message' in event.detail) {
-            selectedClueDiv.textContent = event.detail.message;
-            selectedClueDiv.classList.add('highlighted');
         } else {
             selectedClueDiv.textContent = 'No clue selected';
             selectedClueDiv.classList.remove('highlighted');
         }
+    });
+    selectedClueDiv.addEventListener('message', function(event) {
+        selectedClueDiv.textContent = event.detail;
+        selectedClueDiv.classList.add('highlighted');
     });
     /* Create header divs for the clue columns. */
     for (var direction of DIRECTION_NAMES) {
@@ -599,8 +604,11 @@ var Crossword = function(
     this.allCluesDiv.addEventListener('letter-entered', this.loadClues);
 }
 
-Crossword.prototype.onComplete = function() {
-    console.log('congratulations');
+Crossword.prototype.onCorrect = function() {
+    console.log('parent onCorrect');
+    this.grid.removeHighlight();
+    this.grid.emitEvent('clue-selected', null);
+    this.grid.emitEvent('message', {'detail': 'Congratulations!'});
 }
 
 Crossword.prototype.clueToString = function(clue) {
@@ -630,12 +638,12 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
     clueDiv.setAttribute("clueNum", clueNum);
     clueDiv.setAttribute("direction", direction);
     clueDiv.addEventListener('clue-selected', function(event) {
-        if (event.detail.direction !== null) {
+        if (event.detail != null && event.detail.direction !== null) {
             if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
                 this.classList.add('highlighted');
-            } else {
-                this.classList.remove('highlighted');
             }
+        } else {
+            this.classList.remove('highlighted');
         }
         self.grid.draw(self.ctx);
     });
@@ -814,6 +822,7 @@ xwd.loadJson = loadJson;
 xwd.Grid = Grid;
 xwd.Crossword = Crossword;
 global.xwd = xwd;
+global.scrollToTop = scrollToTop;
 
 /* Only support browsers. */
 }(window));

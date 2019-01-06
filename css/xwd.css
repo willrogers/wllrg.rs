@@ -30,6 +30,10 @@
     float: left;
 }
 
+#preamble {
+    padding-left: 10px;
+}
+
 #xwd {
   margin: 10px;
   height: 400px;
@@ -48,10 +52,6 @@
 #check-button:hover{
     background-color: var(--unreleased-color);
     color: black;
-}
-
-#check-button.hidden {
-    visibility: hidden;
 }
 
 #hidden-input {
