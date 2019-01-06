@@ -84,6 +84,11 @@ function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenI
 /* Customised crossword able to withhold clues and highlight today's. */
 var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 
+adventCrosswordProto.onComplete = function() {
+    self.grid.highlight = false;
+    self.grid.draw(self.ctx);
+    emitSelectedEvent(self.grid.eventListeners, null, 'Now highlight the hidden message.');
+}
 adventCrosswordProto.finished = function() {
     console.log(`finished ${self}`);
     console.log(self);

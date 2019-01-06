@@ -540,8 +540,8 @@ Grid.prototype.highlightCell = function(ctx) {
 
 Grid.prototype.isCorrect = function() {
     console.log(`${this.lettersToString()}`);
-    console.log(`${this.lettersToString().hashCode()}`);
-    console.log(`${this.correctAnswer}`);
+    console.log(`Hashcode is ${this.lettersToString().hashCode()}`);
+    console.log(`Correct answer ${this.correctAnswer}`);
     return this.lettersToString().hashCode() === this.correctAnswer;
 }
 
@@ -571,9 +571,7 @@ var Crossword = function(
         console.log('clicked');
         console.log('correct? ' + self.grid.isCorrect());
         if (self.grid.isCorrect()) {
-            self.grid.highlight = false;
-            self.grid.draw(self.ctx);
-            emitSelectedEvent(self.grid.eventListeners, null, 'Now highlight the hidden message.');
+            self.onComplete();
         } else {
             emitSelectedEvent(self.grid.eventListeners, null, 'Grid is not correct.');
         }
@@ -621,6 +619,10 @@ var Crossword = function(
         dirDiv.appendChild(titleDiv);
     }
     this.allCluesDiv.addEventListener('letter-entered', this.loadClues);
+}
+
+Crossword.prototype.onComplete = function() {
+    console.log('congratulations');
 }
 
 Crossword.prototype.clueToString = function(clue) {
