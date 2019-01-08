@@ -639,10 +639,11 @@ Crossword.prototype.createClueDiv = function(clueNum, direction, clue) {
     clueDiv.setAttribute("clueNum", clueNum);
     clueDiv.setAttribute("direction", direction);
     clueDiv.addEventListener('clue-selected', function(event) {
-        if (event.detail != null && event.detail.direction !== null) {
-            if (event.detail.direction === this.getAttribute("direction") && event.detail.clueNumber === this.getAttribute("clueNum")) {
-                this.classList.add('highlighted');
-            }
+        if (event.detail != null &&
+            event.detail.direction !== null &&
+            event.detail.direction === this.getAttribute("direction") &&
+            event.detail.clueNumber === this.getAttribute("clueNum")) {
+            this.classList.add('highlighted');
         } else {
             this.classList.remove('highlighted');
         }
