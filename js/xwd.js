@@ -614,7 +614,7 @@ Crossword.prototype.onCorrect = function() {
 
 Crossword.prototype.clueToString = function(clue) {
     // Use template literals
-    return `${clue[1]}\u00a0(${clue[2]})`;
+    return `${clue[0]}\u00a0(${clue[1]})`;
 }
 
 /* Run through all clue divs and make sure none are highlighted. */

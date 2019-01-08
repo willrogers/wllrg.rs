@@ -19,33 +19,33 @@
     "clues": {
         "ac" :
         {
-            "7": [12, "Bother - Southern Shale collapses", 6],
-            "8": [9, "Country loses first lady", 6],
-            "9": [19, "Reviewing material and making changes", 8],
-            "10": [3, "Brief time on satellite", 4],
-            "11": [15, "Stones bruise badly", 6],
-            "12": [7, "Comment on money no longer valid", 6],
-            "14": [16, "Rodney's broken down over there", 6],
-            "17": [4, "Clouds with funny traits", 6],
-            "19": [21, "Annoy rabbit, trimming its tail", 4],
-            "21": [23, "What Mario sometimes takes? Be quiet!", "4,4"],
-            "22": [6, "Brief swim, not quite yet? Concentrate!", 6],
-            "23": [11, "Computers cut woman from particular type of script", 6]
+            "7": ["Bother - Southern Shale collapses", 6, 12],
+            "8": ["Country loses first lady", 6, 9],
+            "9": ["Reviewing material and making changes", 8, 19],
+            "10": ["Brief time on satellite", 4, 3],
+            "11": ["Stones bruise badly", 6, 15],
+            "12": ["Comment on money no longer valid", 6, 7],
+            "14": ["Rodney's broken down over there", 6, 16],
+            "17": ["Clouds with funny traits", 6, 4],
+            "19": ["Annoy rabbit, trimming its tail", 4, 21],
+            "21": ["What Mario sometimes takes? Be quiet!", "4,4", 23],
+            "22": ["Brief swim, not quite yet? Concentrate!", 6, 6],
+            "23": ["Computers cut woman from particular type of script", 6, 11]
         },
         "dn":
         {
-            "1": [13, "Entrance with Australian confection", 6],
-            "3": [14, "Charges for drug stashed in jeans", 6],
-            "4": [8, "Wonder about depressing experience", 6],
-            "6": [17, "Set up our high standard", 6],
-            "2": [5, "Became inflexible boss if I edged round this", 8],
-            "5": [2, "Solid company", 4],
-            "13": [10, "Average scientists contained in large circle", 8],
-            "15": [22, "Source of old machinery - new one first", 6],
-            "16": [20, "Tear into second half of race and make waves", 6],
-            "17": [1, "Sibling born in autumn with bad infection?", 6],
-            "18": [24, "Connection about private urbanite", 6],
-            "20": [18, "Purloined from buffet, artisan cheese", 4]
+            "1": ["Entrance with Australian confection", 6, 13],
+            "3": ["Charges for drug stashed in jeans", 6, 14],
+            "4": ["Wonder about depressing experience", 6, 8],
+            "6": ["Set up our high standard", 6, 17],
+            "2": ["Became inflexible boss if I edged round this", 8, 5],
+            "5": ["Solid company", 4, 2],
+            "13": ["Average scientists contained in large circle", 8, 10],
+            "15": ["Source of old machinery - new one first", 6, 22],
+            "16": ["Tear into second half of race and make waves", 6, 20],
+            "17": ["Sibling born in autumn with bad infection?", 6, 1],
+            "18": ["Connection about private urbanite", 6, 24],
+            "20": ["Purloined from buffet, artisan cheese", 4, 18]
         }
     }
 }

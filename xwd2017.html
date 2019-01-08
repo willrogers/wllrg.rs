@@ -11,7 +11,10 @@ extra_css:
   <div><p>Don't miss the hidden message ...</p></div>
   <div style="height:0;width:0;overflow:hidden"><input type="password" onfocus="this.removeAttribute('readonly');" id="hidden-input" autocomplete="off" readonly /></div>
   <div id="selected-clue"><span id="selected-clue-text">No clue selected</span></div>
-  <canvas id="xwd" key="2017"></canvas>
+  <div id="crossword-left-part">
+    <canvas id="xwd" key="2017"></canvas>
+    <a id="check-button">Check solution</a>
+  </div>
   <div id="all-clues"></div>
 </div>
 <script>

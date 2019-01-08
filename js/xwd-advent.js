@@ -200,12 +200,12 @@ adventCrosswordProto.clueToString = function(clue) {
     // Use template literals
     var clueString = '';
     if (isClueActive(clue, YEAR)) {
-        clueString = `${clue[1]}\u00a0(${clue[2]})`;
+        clueString = `${clue[0]}\u00a0(${clue[1]})`;
         if (isClueForToday(clue, YEAR)) {
             clueString = `(New) ${clueString}`;
         }
     } else {
-        clueString = `Released on ${clue[0]} December`;
+        clueString = `Released on ${clue[2]} December`;
     }
     return clueString;
 }
@@ -216,14 +216,14 @@ function isClueActive(clue) {
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear > YEAR || (currentMonth === 11 && dayOfMonth >= clue[0]));
+    return (currentYear > YEAR || (currentMonth === 11 && dayOfMonth >= clue[2]));
 }
 
 function isClueForToday(clue) {
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[0]));
+    return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[2]));
 }
 
 
