@@ -11,14 +11,12 @@ var UNRELEASED;
 
 
 /* Customised grid with extra highlighting for today's clues. */
-function AdventGrid(width, height, cellSize, blackSquares, correctAnswer) {
+function AdventGrid(width, height, cellSize, blackSquares, correctAnswer, messageSquares) {
     xwd.Grid.call(this, width, height, cellSize, blackSquares, correctAnswer);
     this.cluesForToday = [];
     this.highlight = true;
-    this.messageSquares = [[0, 1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
-                           [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]];
     this.correctlyClicked = 0;
-    this.messageSquares = [[0, 1]];
+    this.messageSquares = messageSquares;
 }
 var adventGridProto = Object.create(xwd.Grid.prototype);
 
@@ -80,8 +78,9 @@ adventGridProto.unfinish = function(ctx) {
 AdventGrid.prototype = adventGridProto;
 
 
-function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer) {
+function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer, messageSquares) {
     xwd.Crossword.call(this, canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
+    this.messageSquares = messageSquares;
 }
 
 /* Customised crossword able to withhold clues and highlight today's. */
@@ -128,7 +127,14 @@ adventCrosswordProto.finished = function() {
 }
 
 adventCrosswordProto.createGrid = function() {
-    this.grid = new AdventGrid(this.gridWidth, this.gridHeight, this.cellSize, BLACK_SQUARES, this.correctAnswer);
+    this.grid = new AdventGrid(
+        this.gridWidth,
+        this.gridHeight,
+        this.cellSize,
+        BLACK_SQUARES,
+        this.correctAnswer,
+        this.messageSquares
+    );
     this.grid.draw(this.ctx);
     this.grid.addListener(this.checkButton);
 }
@@ -256,7 +262,18 @@ function loadAll(dataFile) {
         var checkButton = document.getElementById('check-button');
         var allContent = document.getElementById('crossword-content');
         var correctAnswer = dataJson["correct-answer"];
-        var xwdObj = new AdventCrossword(canvas, clueText, allClues, clueJson, hiddenInput, checkButton, allContent, correctAnswer);
+        var messageSquares = dataJson["message-squares"];
+        var xwdObj = new AdventCrossword(
+            canvas,
+            clueText,
+            allClues,
+            clueJson,
+            hiddenInput,
+            checkButton,
+            allContent,
+            correctAnswer,
+            messageSquares
+        );
         xwdObj.setupCanvas();
         xwdObj.createGrid();
         xwdObj.setupGrid();

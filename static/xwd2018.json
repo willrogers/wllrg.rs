@@ -52,5 +52,7 @@
             "20": ["Ill-gotten gains from cruel disruption", 5, 11]
         }
     },
-    "correct-answer": 975657021
+    "correct-answer": 975657021,
+    "message-squares": [[0,1], [2, 1], [4, 1], [6, 1], [8, 1], [10, 1], [12, 1],
+        [12, 11], [10, 11], [8, 11], [6, 11], [4, 11], [2, 11], [0, 11]]
 }
