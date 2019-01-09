@@ -48,6 +48,7 @@
     padding-right: 8px;
     cursor: pointer;
     text-decoration: none;
+    margin: 4px;
 }
 #check-button:hover{
     background-color: var(--unreleased-color);
@@ -175,9 +176,9 @@
   }
   #xwd {
     margin: 0;
-    width: 90vw;
-    height: 90vw;
-    padding-left:5vw;
+    width: 96vw;
+    height: 96vw;
+    margin-left:2vw;
   }
   #all-clues {
     width: 90vw;
