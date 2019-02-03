@@ -55,6 +55,7 @@ adventGridProto.selectCell = function(cell, toggle) {
         if (msgSqCoord.equals(cell)) {
             console.log('Matched! ' + messageSquare);
             this.correctlyClicked += 1;
+            this.emitEvent('message', {'detail': 'Highlighting the message...'});
             if (this.correctlyClicked === this.messageSquares.length) {
                 console.log('correct!');
                 this.emitEvent('xwd-finished', null);
@@ -62,6 +63,7 @@ adventGridProto.selectCell = function(cell, toggle) {
             }
         } else {
             this.correctlyClicked = 0;
+            this.emitEvent('message', {'detail': 'Hidden message incorrect! Try again.'});
         }
     }
 
