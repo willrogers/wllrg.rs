@@ -61,10 +61,11 @@ ul.nav-items {
   list-style-type: none;
   margin-top: 0px;
   margin-bottom: 0px;
+  display: flex;
+  flex-direction: row;
 }
 
 li.header-nav-item {
-  float: left;
   padding-right: 10px;
   padding-left: 10px;
   font-size: 1.2em;
@@ -85,8 +86,7 @@ li.header-nav-item {
 
 #monkey img {
     height: 70px;
-    float: left;
-    padding-top: 35px;
+    padding-top: 50px;
 }
 
 #content {
@@ -178,11 +178,11 @@ li.header-nav-item {
 
   ul.nav-items {
     padding: 0 0 0 0;
+    flex-direction: column;
   }
 
   li.header-nav-item {
     padding: 0 0 0 0;
-    float: none;
     height: 40px;
     font-size: 1.2em;
     line-height: 2.1;
