@@ -84,9 +84,13 @@ li.header-nav-item {
   margin-left: -18px;
 }
 
+#monkey {
+    height: 70px;
+}
+
 #monkey img {
     height: 70px;
-    padding-top: 50px;
+    padding-top: 15px;
 }
 
 #content {
