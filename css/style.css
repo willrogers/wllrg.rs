@@ -1,10 +1,7 @@
 
-* {
-  font-family: 'Mukta Mahee', sans-serif;
-}
-
 html {
   height: 100%;
+  font-family: 'Mukta Mahee', sans-serif;
 }
 
 body {
@@ -80,7 +77,6 @@ li.header-nav-item {
 }
 
 #name-logo {
-  font-family: 'Raleway', sans-serif;;
   /* Push up against the monkey */
   margin-left: -18px;
 }
