@@ -51,6 +51,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 85px;
 }
 
 #menu-header {
@@ -75,10 +76,10 @@ li.header-nav-item {
   font-family: 'Raleway', sans-serif;;
   display: flex;
   align-items: center;
-  font-size: 3.5em;
+  font-size: 3em;
 }
 
-#name-logo a {
+#name-logo {
   font-family: 'Raleway', sans-serif;;
   /* Push up against the monkey */
   margin-left: -18px;
