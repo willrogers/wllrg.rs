@@ -1,4 +1,4 @@
-
+  /* This now requires an API key backed by a credit card. */
   function initialize() {
     var mapOptions = {
       center: { lat: 51.574, lng: -1.313},
