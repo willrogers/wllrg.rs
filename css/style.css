@@ -61,12 +61,28 @@ ul.nav-items {
   margin-bottom: 0px;
   display: flex;
   flex-direction: row;
+  align-items: center;
+}
+
+ul.nav-items a img {
+  display: block;
 }
 
 li.header-nav-item {
   padding-right: 10px;
   padding-left: 10px;
   font-size: 1.2em;
+  display: inline-flex;
+}
+
+.header-nav-github {
+  width: 25px;
+  height: 25px;
+}
+
+.header-nav-twitter {
+  width: 42px;
+  height: 42px;
 }
 
 #logo {
@@ -80,6 +96,7 @@ li.header-nav-item {
   /* Push up against the monkey */
   margin-left: -18px;
 }
+
 
 #monkey {
     height: 70px;
