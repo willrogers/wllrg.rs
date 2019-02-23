@@ -155,7 +155,17 @@ li.header-nav-item {
 
 /* Probably a phone or tablet. Use the hamburger menu. */
 @media (max-width: 650px) {
- nav {
+
+  #header {
+    position: fixed;
+    background-color: white;
+  }
+
+  #main {
+    /* This should match the header height */
+    padding-top: 80px;
+  }
+  nav {
     transform: translateY(0);
     box-shadow: 0 0 5px rgba(0,0,0, .7);
     transition: all .5s;
@@ -173,7 +183,7 @@ li.header-nav-item {
     z-index: 1000;
   }
 
-  nav img {
+  #sidebar-monkey {
     display: block;
     max-width: 30%;
     position: absolute;
@@ -204,7 +214,16 @@ li.header-nav-item {
     height: 40px;
     font-size: 1.2em;
     line-height: 2.1;
+    width: 100%;
+  }
+
+  li.header-nav-item a {
+    width: 100%;
     border-bottom: 1px solid #E5E5E5;
+  }
+
+  li.header-nav-item a img {
+    display: inline-flex;
   }
 
   #toggle-label {
