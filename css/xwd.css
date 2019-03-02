@@ -5,10 +5,6 @@
     --highlight-color: #d6f0ff;
 }
 
-#content {
-  width: 1100px;
-}
-
 #crossword-content.removed {
     visibility: hidden;
 }
