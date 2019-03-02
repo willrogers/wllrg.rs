@@ -72,7 +72,6 @@ li.header-nav-item {
   padding-right: 10px;
   padding-left: 10px;
   font-size: 1.2em;
-  display: inline-flex;
 }
 
 .header-nav-github {
@@ -116,14 +115,6 @@ li.header-nav-item {
 
 .post-date {
   color: darkgray;
-}
-
-#map-canvas {
-  padding: 0;
-  height: 400px;
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 #toggle-menu {
@@ -192,7 +183,6 @@ li.header-nav-item {
   }
 
   #menu-header  {
-    height: 60px;
     padding-right: 40px;
     display: block;
     border-bottom: 1px solid #E5E5E5;
@@ -205,25 +195,24 @@ li.header-nav-item {
   }
 
   ul.nav-items {
-    padding: 0 0 0 0;
+    padding: 0;
     flex-direction: column;
   }
 
   li.header-nav-item {
-    padding: 0 0 0 0;
     height: 40px;
-    font-size: 1.2em;
-    line-height: 2.1;
     width: 100%;
   }
 
   li.header-nav-item a {
     width: 100%;
+    height: 100%;
     border-bottom: 1px solid #E5E5E5;
-  }
-
-  li.header-nav-item a img {
-    display: inline-flex;
+    /* Overkill: flexbox for every list item? This is to centre the
+       image inside the a tag. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #toggle-label {
