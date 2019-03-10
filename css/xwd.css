@@ -145,7 +145,17 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 650px) {
+
+  #header {
+    /* Don't fix the header when showing a crossword. */
+    position: relative;
+  }
+
+  #main {
+    /* Don't add padding for the fixed header. */
+    padding-top: 0;
+  }
   #title {
     width: 100vw;
     font-size: 25px;
