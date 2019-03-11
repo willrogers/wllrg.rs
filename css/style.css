@@ -202,6 +202,7 @@ li.header-nav-item {
   li.header-nav-item {
     height: 40px;
     width: 100%;
+    padding: 0;
   }
 
   li.header-nav-item a {
