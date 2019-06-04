@@ -32,6 +32,11 @@ a:hover {
   color: blue;
 }
 
+#main {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 #header {
   width: 100%;
   box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
@@ -123,6 +128,18 @@ li.header-nav-item {
 
 #toggle-label {
   display: none;
+}
+
+.blog-img {
+  display: block;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.blog-img-caption {
+  display: block;
+  text-align: center;
+  font-weight: bold;
 }
 
 
@@ -222,6 +239,10 @@ li.header-nav-item {
     background-size: contain;
     height: 40px;
     width: 40px;
+  }
+
+  .blog-img {
+      width: 100%;
   }
 
  input[type="checkbox"]:checked + nav {
