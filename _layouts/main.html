@@ -14,7 +14,11 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@wrgrs" />
     <meta name="twitter:title" content="Will Rogers" />
+    {% if page.title %}
+    <meta name="twitter:description" content="{{ page.title }}" />
+    {% else %}
     <meta name="twitter:description" content="A personal site" />
+    {% endif %}
     <meta name="twitter:image" content="{{ site.url }}/favicon-96x96.png" />
     {% for css_name in page.extra_css %}
       <link type="text/css" rel="stylesheet" href="{{ css_name }}"/>
