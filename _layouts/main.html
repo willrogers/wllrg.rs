@@ -19,7 +19,11 @@
     {% else %}
     <meta name="twitter:description" content="A personal site" />
     {% endif %}
-    <meta name="twitter:image" content="{{ site.url }}/favicon-96x96.png" />
+    {% if page.image %}
+    <meta name="twitter:image" content="{{ page.image }}" />
+    {% else %}
+    <meta name="twitter:image" content="{{ base.url }}/favicon-96x96.png" />
+    {% endif %}
     {% for css_name in page.extra_css %}
       <link type="text/css" rel="stylesheet" href="{{ css_name }}"/>
     {% endfor %}
