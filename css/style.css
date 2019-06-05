@@ -136,6 +136,18 @@ li.header-nav-item {
   margin: 0 auto;
 }
 
+.blog-img-small {
+  display: block;
+  width: 30%;
+  margin: 0 auto;
+}
+
+.blog-img-large {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .blog-img-caption {
   display: block;
   text-align: center;
@@ -242,6 +254,14 @@ li.header-nav-item {
   }
 
   .blog-img {
+      width: 100%;
+  }
+
+  .blog-img-small {
+      width: 100%;
+  }
+
+  .blog-img-large {
       width: 100%;
   }
 

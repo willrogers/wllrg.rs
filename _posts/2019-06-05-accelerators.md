@@ -23,7 +23,7 @@ scientific experiments.
 
 <img src="https://www.diamond.ac.uk/Home/About/How-Diamond-Works/base/0/text_files/file/document/synchrotron.jpg"
      alt="diamond accelerators"
-     class="blog-img"/>
+     class="blog-img-small"/>
 <p class="blog-img-caption">
 A simplified view of the Diamond Light Source accelerators
 </p>
