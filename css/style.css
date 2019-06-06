@@ -154,6 +154,14 @@ li.header-nav-item {
   font-weight: bold;
 }
 
+/* Jekyll gives blog code blocks this class */
+pre.highlight {
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 1px solid lightgray;
+}
+
 
 /* Less wide than the default width of the content */
 @media (max-width: 800px) {
