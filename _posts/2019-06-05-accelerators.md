@@ -51,7 +51,9 @@ possible energies in opposite directions, then smash them together to
 look at what comes out.  This was the process that finally revealed the
 Higgs Boson in 2012.
 
-Diamond is different. The electrons travel in only one direction, and we
+Diamond is different. It's much smaller than the LHC, although it's still
+quite large with an accelerator circumference of 561.6 m.
+The electrons travel in only one direction, and we
 keep them going as long as we can. As they circulate, they continuously
 generate the electromagnetic radiation (loosely X-rays) that we need for
 scientific research.
@@ -101,21 +103,22 @@ The particles circulate indefinitely, gaining a small amount of energy
 each time, until they reach the target energy for the accelerator.
 
 At Diamond, the electrons are guided from the linac into the booster synchrotron,
-where they are  quickly accelerated from 100 MeV to the Diamond design energy of
-3 GeV. The synchronisation implied by the name 'synchrotron' comes from the fact
-that the strength of the magnets in the booster synchrotron must increase at the
+where they are accelerated from 100 MeV to the Diamond design energy of
+3 GeV in a tenth of a second. The synchronisation implied by the name
+'synchrotron' comes from the fact that the strength of the magnets in
+the booster synchrotron must increase at the
 same rate that the electrons gain energy.
 
 ## The Storage Ring
 
-Once the electrons have reached 3 MeV, they are guided from the booster ring into
+Once the electrons have reached 3 GeV, they are guided from the booster ring into
 the storage ring, so-called because the elctrons are kept there for as long as
-possible. As they travel around the storage ring, guided by magnets, they 
-naturally emit the light used for the experiments at Diamond. As they do so, 
-they lose some of their energy; this is restored by more of the oscillating 
-electric fields in certain locations around the ring.  These oscillations 
-are at a frequency of about 500 MHz, and since this is a similar frequency 
-to that used in radio, these devices are known as radio frequency or 
+possible. As they travel around the storage ring, guided by magnets, they
+naturally emit the light used for the experiments at Diamond. As they do so,
+they lose some of their energy; this is restored by more of the oscillating
+electric fields in certain locations around the ring.  These oscillations
+are at a frequency of about 500 MHz, and since this is a similar frequency
+to that used in radio, these devices are known as radio frequency or
 (more commonly) RF Cavities.
 
 ## Insertion Devices
@@ -126,18 +129,18 @@ It was subsequently discovered that you could produce more tightly-controlled
 and hiegher-energy photons by placing special gadgets in the straight sections
 of the accelerator. These are called **insertion devices** (I would have thought
 that an insertion device inserted something, but apparently they are called
-insertion devices because they themselves are inserted into the ring), and 
-are arrays of magnets designed to cause the electrons to deviate from their 
-straight path in carefully-controlled ways, emitting the desired radiation 
+insertion devices because they themselves are inserted into the ring), and
+are arrays of magnets designed to cause the electrons to deviate from their
+straight path in carefully-controlled ways, emitting the desired radiation
 as they do so.
 
 ## Science
 
 The role of the accelerators at Diamond is simply to produce the photons for
 science. Once those photons pass through the wall to the beamlines, the
-work of the accelerators is done. In many ways, this part is less cutting-edge 
-than what the scientists do with those photons, which covers a huge range of 
-science and engineering. However, if the accelerator stops none of that 
+work of the accelerators is done. In many ways, this part is less cutting-edge
+than what the scientists do with those photons, which covers a huge range of
+science and engineering. However, if the accelerator stops none of that
 science can take place.
 
 Hidden behind the few paragraphs above are a huge amount of details and the
