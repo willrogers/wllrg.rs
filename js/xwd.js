@@ -820,6 +820,7 @@ xwd.main = function() {
 /* Exports */
 xwd.coord = coord;
 xwd.fillSquare = fillSquare;
+xwd.clueName = clueName;
 xwd.loadJson = loadJson;
 xwd.Grid = Grid;
 xwd.Crossword = Crossword;
