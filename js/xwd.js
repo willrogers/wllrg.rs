@@ -148,14 +148,12 @@ var Grid = function(width, height, cellSize, blackSquares, correctAnswer) {
     this.whiteSquares = [];
     this.cellSize = cellSize;
     this.correctAnswer = correctAnswer;
-    console.log(`grid constructor: ${this.correctAnswer}`);
     this.eventListeners = [];
     /* each is a clueSeq */
     this.clues = {
         'ac': {},
         'dn': {}
     };
-    console.log(`cookie key ${COOKIE_KEY}`);
     if (typeof Cookies.get(COOKIE_KEY) === 'undefined') {
         this.letters = {};
     } else {
@@ -523,9 +521,7 @@ Grid.prototype.highlightCell = function(ctx) {
 };
 
 Grid.prototype.isCorrect = function() {
-    console.log(`${this.lettersToString()}`);
     console.log(`Hashcode is ${this.lettersToString().hashCode()}`);
-    console.log(`Correct answer ${this.correctAnswer}`);
     return this.lettersToString().hashCode() === this.correctAnswer;
 }
 
@@ -549,10 +545,8 @@ var Crossword = function(
     this.checkButton = checkButton;
     this.allContent = allContent;
     this.correctAnswer = correctAnswer;
-    console.log(`correct answer ${this.correctAnswer}`);
     self = this;
     checkButton.onclick = function() {
-        console.log('clicked');
         console.log('correct? ' + self.grid.isCorrect());
         if (self.grid.isCorrect()) {
             self.onCorrect();
@@ -563,14 +557,12 @@ var Crossword = function(
     }
 
     checkButton.addEventListener('xwd-finished', function(event) {
-        console.log('xwd selected');
         if (self.grid.isCorrect()) {
             self.allContent.classList.add('completed');
             setTimeout(self.finished, 2000);
         }
     });
     selectedClueDiv.addEventListener('clue-selected', function(event) {
-        console.log(event.detail);
         if (event.detail != null && 'direction' in event.detail) {
             if (clueJson[event.detail.direction].hasOwnProperty(event.detail.clueNumber)) {
                 var direction = event.detail.direction === 'ac' ? 'across' : 'down';
@@ -606,7 +598,6 @@ var Crossword = function(
 }
 
 Crossword.prototype.onCorrect = function() {
-    console.log('parent onCorrect');
     this.grid.removeHighlight();
     this.grid.emitEvent('clue-selected', null);
     this.grid.emitEvent('message', {'detail': 'Congratulations!'});
@@ -810,7 +801,6 @@ xwd.main = function() {
     var canvas = document.getElementById('xwd');
     KEY = canvas.getAttribute('key');
     COOKIE_KEY = `grid-state-${KEY}`;
-    console.log(`cookie key ${COOKIE_KEY}`);
     var style = getComputedStyle(document.body);
     HIGHLIGHT = style.getPropertyValue('--highlight-color');
     var dataFile = `/static/xwd${KEY}.json`;

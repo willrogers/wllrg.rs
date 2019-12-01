@@ -91,7 +91,6 @@ function AdventCrossword(canvas, selectedClueDiv, allCluesDiv, clueJson, hiddenI
 var adventCrosswordProto = Object.create(xwd.Crossword.prototype);
 
 adventCrosswordProto.onCorrect = function() {
-    console.log('onCorrect');
     this.grid.highlight = false;
     this.grid.draw(this.ctx);
     this.grid.emitEvent('clue-selected', null);
@@ -107,8 +106,6 @@ adventCrosswordProto.unfinish = function() {
 }
 
 adventCrosswordProto.finished = function() {
-    console.log(`finished ${self}`);
-    console.log(self);
     var parent = self.allContent.parentElement;
     //self.allContent.classList.add('removed');
     self.finalDiv = document.createElement('div');
@@ -124,8 +121,6 @@ adventCrosswordProto.finished = function() {
         self.allContent.classList.remove('completed');
         self.grid.unfinish(self.ctx);
         parent.appendChild(self.allContent);
-        console.log(parent);
-        console.log(self.finalDiv);
     }
     var msg = document.createElement('p');
     msg.textContent = 'Happy Christmas!';
