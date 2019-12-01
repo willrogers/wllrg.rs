@@ -50,20 +50,22 @@ adventGridProto.selectCell = function(cell, toggle) {
     if (this.highlight === true) {
         xwd.Grid.prototype.selectCell.call(this, cell, toggle);
     } else {
-        var messageSquare = this.messageSquares[this.correctlyClicked];
-        var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
-        if (msgSqCoord.equals(cell)) {
-            console.log('Matched! ' + messageSquare);
-            this.correctlyClicked += 1;
-            this.emitEvent('message', {'detail': 'Highlighting the message...'});
-            if (this.correctlyClicked === this.messageSquares.length) {
-                console.log('correct!');
-                this.emitEvent('xwd-finished', null);
-                return;
+        if (this.messageSquares.length > 0) {
+            var messageSquare = this.messageSquares[this.correctlyClicked];
+            var msgSqCoord = xwd.coord(messageSquare[0], messageSquare[1]);
+            if (msgSqCoord.equals(cell)) {
+                console.log('Matched! ' + messageSquare);
+                this.correctlyClicked += 1;
+                this.emitEvent('message', {'detail': 'Highlighting the message...'});
+                if (this.correctlyClicked === this.messageSquares.length) {
+                    console.log('correct!');
+                    this.emitEvent('xwd-finished', null);
+                    return;
+                }
+            } else {
+                this.correctlyClicked = 0;
+                this.emitEvent('message', {'detail': 'Hidden message incorrect! Try again.'});
             }
-        } else {
-            this.correctlyClicked = 0;
-            this.emitEvent('message', {'detail': 'Hidden message incorrect! Try again.'});
         }
     }
 
@@ -93,7 +95,11 @@ adventCrosswordProto.onCorrect = function() {
     this.grid.highlight = false;
     this.grid.draw(this.ctx);
     this.grid.emitEvent('clue-selected', null);
-    this.grid.emitEvent('message', {'detail': 'Now highlight the hidden message.'});
+    if (this.messageSquares.length > 0) {
+        this.grid.emitEvent('message', {'detail': 'Now highlight the hidden message.'});
+    } else {
+        this.grid.emitEvent('xwd-finished', null);
+    }
 };
 
 adventCrosswordProto.unfinish = function() {
