@@ -210,7 +210,7 @@ adventCrosswordProto.clueToString = function(clue) {
     if (isClueActive(clue, YEAR)) {
         clueString = `${clue[0]}\u00a0(${clue[1]})`;
         if (isClueForToday(clue, YEAR)) {
-            clueString = `(New) ${clueString}`;
+            clueString = `${clueString}\u00a0[new]`;
         }
     } else {
         clueString = `Released on ${clue[2]} December`;
