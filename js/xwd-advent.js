@@ -199,6 +199,7 @@ adventCrosswordProto.loadClues = function() {
     this.grid.setCluesForToday(cluesForToday);
     if (complete) {
         console.log('complete');
+        this.checkButton.classList.remove('hidden');
     } else {
         console.log('incomplete');
         this.checkButton.classList.add('hidden');

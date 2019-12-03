@@ -50,6 +50,9 @@
     background-color: var(--unreleased-color);
     color: black;
 }
+#check-button.hidden {
+    visibility: hidden;
+}
 
 #hidden-input {
     height: 1px;
