@@ -1,3 +1,4 @@
 [submodule "xwds"]
 	path = xwds
 	url = https://github.com/willrogers/xwds
+	branch = gh-pages

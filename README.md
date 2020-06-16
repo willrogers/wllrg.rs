@@ -9,3 +9,7 @@ To run locally:
 * bundle exec jekyll serve
 
 Then visit localhost:4000.
+
+## Crosswords
+
+The crosswords use https://github.com/willrogers/xwds as a submodule. To update, pull from the gh-pages branch.
