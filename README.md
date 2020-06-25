@@ -12,4 +12,6 @@ Then visit localhost:4000.
 
 ## Crosswords
 
-The crosswords use https://github.com/willrogers/xwds as a submodule. To update, pull from the gh-pages branch.
+The crosswords use https://github.com/willrogers/xwds as a submodule.
+To update, pull from the gh-pages branch inside the submodule, then
+commit and push the changes from this repo.
