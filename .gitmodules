@@ -1,3 +1,6 @@
 [submodule "xwds"]
 	path = xwds
 	url = https://github.com/willrogers/xwds
+[submodule "doctimer"]
+	path = doctimer
+	url = https://github.com/willrogers/doctimer
