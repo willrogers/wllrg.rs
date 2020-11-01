@@ -164,6 +164,35 @@ pre.highlight {
     border: 1px solid lightgray;
 }
 
+/* Flashcards page. */
+#card {
+  width: 80%;
+  margin: 0 auto;
+  background-color: lightgrey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#cardtext {
+  font-size: 150px;
+  min-height: 275px;
+  margin: 0 auto;
+}
+
+#cardinput {
+  margin: 10px auto;
+}
+
+#colourchooser {
+  margin: 10px auto;
+  cursor: default;
+}
+
+#colourchooser label,input {
+  cursor: default;
+}
+
 
 /* Less wide than the default width of the content */
 @media (max-width: 800px) {
