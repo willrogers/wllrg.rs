@@ -36,7 +36,7 @@
     "dn": {
       "1": ["Rocks King maybe during disrupted sleep", 7, 21],
       "2": ["Dull glow coming from single amethyst", 5, 7],
-      "3": ["Oh no I haven't written this clue yet", 7, 24],
+      "3": ["Smashed it, speed notwithstanding", 7, 24],
       "5": ["Go carefully, flipping last bit of pancake", 5, 6],
       "6": ["Infectious disease discombobulating Oscar and Rachel", 7, 18],
       "7": ["Tasty crust on Dad's snack", 5, 16],
@@ -50,6 +50,6 @@
       "21": ["I'm sad, left out, diffuse", 5, 22]
     }
   },
-  "correct-answer": -163462929,
+  "correct-answer": -1560170391,
   "message-squares": []
 }
