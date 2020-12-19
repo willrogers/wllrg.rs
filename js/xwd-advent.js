@@ -122,9 +122,12 @@ adventCrosswordProto.finished = function() {
         self.grid.unfinish(self.ctx);
         parent.appendChild(self.allContent);
     }
-    var msg = document.createElement('p');
-    msg.textContent = 'Happy Christmas!';
-    self.finalDiv.appendChild(msg);
+    var msg1 = document.createElement('p');
+    msg1.textContent = 'The grid is correct, but what is the hidden message?';
+    var msg2 = document.createElement('p');
+    msg2.textContent += 'Happy Christmas!';
+    self.finalDiv.appendChild(msg1);
+    self.finalDiv.appendChild(msg2);
     self.finalDiv.appendChild(backButton);
     scrollToTop();
 }
