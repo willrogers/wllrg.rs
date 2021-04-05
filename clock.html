@@ -1,0 +1,178 @@
+---
+layout: main
+extra_js:
+  - https://cdn.plot.ly/plotly-latest.min.js
+---
+
+<h1 id="title">A clock for Joseph</h1>
+<div id="clock">
+  <svg id="clock-svg" viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="100" height="100" fill="none" />
+    <circle
+      cx="52"
+      cy="52"
+      r="50"
+      fill="none"
+      stroke-width="2"
+      stroke="black"
+    />
+    <text
+      x="48.0"
+      y="16.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      12
+    </text>
+    <text
+      x="68.0"
+      y="21.36"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      1
+    </text>
+    <text
+      x="82.6"
+      y="36.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      2
+    </text>
+    <text
+      x="88.0"
+      y="56.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      3
+    </text>
+    <text
+      x="82.6"
+      y="76.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      4
+    </text>
+    <text
+      x="68.0"
+      y="90.64"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      5
+    </text>
+    <text
+      x="48.0"
+      y="96.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      6
+    </text>
+    <text
+      x="28.0"
+      y="90.64"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      7
+    </text>
+    <text
+      x="13.4"
+      y="76.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      8
+    </text>
+    <text
+      x="8.0"
+      y="56.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      9
+    </text>
+    <text
+      x="13.4"
+      y="36.00"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      10
+    </text>
+    <text
+      x="28.0"
+      y="21.36"
+      width="8"
+      height="8"
+      class="small"
+      textanchor="middle"
+    >
+      11
+    </text>
+  </svg>
+</div>
+<script>
+  function drawHands() {
+    const now = new Date();
+    const hours = now.getHours() + now.getMinutes() / 60;
+    const minutes = now.getMinutes() + now.getSeconds() / 60;
+    const seconds = now.getSeconds();
+    const hourLength = 30;
+    const minuteLength = 40;
+    const secondLength = 45;
+    const clockSvg = document.getElementById("clock-svg");
+
+    function drawHand(clockSvg, id, length, angle, colour) {
+      const old = document.getElementById(id);
+      if (old !== null) {
+        old.remove();
+      }
+      const hand = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+      );
+      const endX = 52 + length * Math.sin((angle / 180) * Math.PI);
+      const endY = 52 + length * -Math.cos((angle / 180) * Math.PI);
+      hand.setAttribute("id", id);
+      hand.setAttribute("x1", "52");
+      hand.setAttribute("y1", "52");
+      hand.setAttribute("x2", endX);
+      hand.setAttribute("y2", endY);
+      hand.setAttribute("stroke", colour);
+      clockSvg.appendChild(hand);
+    }
+
+    drawHand(clockSvg, "hourhand", hourLength, hours * 30, "black");
+    drawHand(clockSvg, "minutehand", minuteLength, minutes * 6, "gray");
+    drawHand(clockSvg, "secondhand", secondLength, seconds * 6, "red");
+    setTimeout(drawHands, 1000);
+  }
+  drawHands();
+</script>
