@@ -7,7 +7,6 @@ extra_js:
 <h1 id="title">A clock for Joseph</h1>
 <div id="clock">
   <svg id="clock-svg" viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="100" height="100" fill="none" />
     <circle
       cx="52"
       cy="52"
@@ -16,130 +15,36 @@ extra_js:
       stroke-width="2"
       stroke="black"
     />
-    <text
-      x="47.0"
-      y="17.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      12
-    </text>
-    <text
-      x="67.0"
-      y="22.4"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      1
-    </text>
-    <text
-      x="81.6"
-      y="37.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      2
-    </text>
-    <text
-      x="87.0"
-      y="57.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      3
-    </text>
-    <text
-      x="81.6"
-      y="77.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      4
-    </text>
-    <text
-      x="67.0"
-      y="91.6"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      5
-    </text>
-    <text
-      x="47.0"
-      y="97.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      6
-    </text>
-    <text
-      x="27.0"
-      y="91.6"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      7
-    </text>
-    <text
-      x="12.4"
-      y="77.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      8
-    </text>
-    <text
-      x="7.0"
-      y="57.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      9
-    </text>
-    <text
-      x="12.4"
-      y="37.0"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      10
-    </text>
-    <text
-      x="27.0"
-      y="22.4"
-      width="10"
-      height="10"
-      class="small"
-      textanchor="middle"
-    >
-      11
-    </text>
   </svg>
 </div>
 <script>
-  function drawHands() {
+  const dimension = 104;
+  const centre = dimension / 2;
+  const distance = 40;
+  const textSize = 10;
+  const clockSvg = document.getElementById("clock-svg");
+  function drawNumbers(clockSvg) {
+    for (let i = 0; i < 12; i++) {
+      const angle = (30 * i * Math.PI) / 180;
+      const number = i === 0 ? 12 : i;
+      const s = centre + Math.sin(angle) * distance;
+      const c = centre + -Math.cos(angle) * distance;
+      const element = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+      console.log();
+      element.setAttribute("x", s - textSize / 2);
+      element.setAttribute("y", c + textSize / 2);
+      element.setAttribute("width", textSize);
+      element.setAttribute("height", textSize);
+      element.setAttribute("class", "small");
+      element.setAttribute("textanchor", "middle");
+      element.textContent = number;
+      clockSvg.appendChild(element);
+    }
+  }
+  function drawHands(clockSvg) {
     const now = new Date();
     const hours = now.getHours() + now.getMinutes() / 60;
     const minutes = now.getMinutes() + now.getSeconds() / 60;
@@ -147,9 +52,8 @@ extra_js:
     const hourLength = 30;
     const minuteLength = 40;
     const secondLength = 45;
-    const clockSvg = document.getElementById("clock-svg");
 
-    function drawHand(clockSvg, id, length, angle, colour) {
+    function drawHand(clockSvg, id, length, angle, colour, width) {
       const old = document.getElementById(id);
       if (old !== null) {
         old.remove();
@@ -166,13 +70,25 @@ extra_js:
       hand.setAttribute("x2", endX);
       hand.setAttribute("y2", endY);
       hand.setAttribute("stroke", colour);
+      hand.setAttribute("stroke-width", width);
       clockSvg.appendChild(hand);
     }
 
-    drawHand(clockSvg, "hourhand", hourLength, hours * 30, "black");
-    drawHand(clockSvg, "minutehand", minuteLength, minutes * 6, "gray");
-    drawHand(clockSvg, "secondhand", secondLength, seconds * 6, "red");
-    setTimeout(drawHands, 1000);
+    drawHand(clockSvg, "hourhand", hourLength, hours * 30, "black", 2);
+    drawHand(clockSvg, "minutehand", minuteLength, minutes * 6, "gray", 1.5);
+    drawHand(clockSvg, "secondhand", secondLength, seconds * 6, "red", 1);
+    const centre = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
+    centre.setAttribute("cx", "52");
+    centre.setAttribute("cy", "52");
+    centre.setAttribute("r", "2");
+    centre.setAttribute("stroke", "black");
+    centre.setAttribute("fill", "black");
+    clockSvg.appendChild(centre);
   }
-  drawHands();
+  drawNumbers(clockSvg);
+  drawHands(clockSvg);
+  setInterval(() => drawHands(clockSvg), 1000);
 </script>
