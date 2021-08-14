@@ -164,6 +164,7 @@ pre.highlight {
 
 /* Flashcards page. */
 #card {
+  font-family: "Poppins", sans-serif;
   width: 80%;
   margin: 0 auto;
   background-color: lightgrey;
