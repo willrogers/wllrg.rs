@@ -22,6 +22,8 @@ extra_js:
   const centre = dimension / 2;
   const distance = 40;
   const textSize = 10;
+  // Temporarily disable second hand.
+  const drawSecondHand = false;
   const clockSvg = document.getElementById("clock-svg");
   function drawNumbers(clockSvg) {
     for (let i = 0; i < 12; i++) {
@@ -44,7 +46,7 @@ extra_js:
       clockSvg.appendChild(element);
     }
   }
-  function drawHands(clockSvg) {
+  function drawHands(clockSvg, drawSecondHand) {
     const now = new Date();
     const hours = now.getHours() + now.getMinutes() / 60;
     const minutes = now.getMinutes() + now.getSeconds() / 60;
@@ -76,7 +78,9 @@ extra_js:
 
     drawHand(clockSvg, "hourhand", hourLength, hours * 30, "black", 2);
     drawHand(clockSvg, "minutehand", minuteLength, minutes * 6, "gray", 1.5);
-    drawHand(clockSvg, "secondhand", secondLength, seconds * 6, "red", 1);
+    if (drawSecondHand) {
+      drawHand(clockSvg, "secondhand", secondLength, seconds * 6, "red", 1);
+    }
     const centre = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
@@ -89,6 +93,6 @@ extra_js:
     clockSvg.appendChild(centre);
   }
   drawNumbers(clockSvg);
-  drawHands(clockSvg);
-  setInterval(() => drawHands(clockSvg), 1000);
+  drawHands(clockSvg, drawSecondHand);
+  setInterval(() => drawHands(clockSvg, drawSecondHand), 1000);
 </script>
