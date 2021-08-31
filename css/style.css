@@ -164,7 +164,7 @@ pre.highlight {
 
 /* Flashcards page. */
 #card {
-  font-family: "Poppins", sans-serif;
+  font-family: "Quicksand", sans-serif;
   width: 80%;
   margin: 0 auto;
   background-color: lightgrey;
@@ -174,7 +174,7 @@ pre.highlight {
 }
 
 #cardtext {
-  font-size: 150px;
+  font-size: 20vw;
   min-height: 275px;
   margin: 0 auto;
 }
