@@ -175,7 +175,7 @@ pre.highlight {
 
 #cardtext {
   font-size: 20vw;
-  min-height: 275px;
+  min-height: 40vw;
   margin: 0 auto;
 }
 
@@ -184,6 +184,9 @@ pre.highlight {
 }
 
 #colourchooser {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 10px auto;
   cursor: default;
 }
