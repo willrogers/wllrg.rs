@@ -38,7 +38,7 @@
   float: left;
 }
 
-#check-button {
+.xwd-button {
     background-color: var(--highlight-color);
     padding-left: 8px;
     padding-right: 8px;
@@ -46,11 +46,11 @@
     text-decoration: none;
     margin: 4px;
 }
-#check-button:hover{
+.xwd-button:hover{
     background-color: var(--unreleased-color);
     color: black;
 }
-#check-button.hidden {
+.xwd-button.hidden {
     visibility: hidden;
 }
 
@@ -130,16 +130,15 @@
 }
 
 #final-div {
-    text-align: center;
-    font-size: 25px;
-    padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
 }
 
-#final-back {
-    cursor: pointer;
-}
-#final-back:hover {
-    color: black;
+#final-div > p {
+  font-size: 25px;
 }
 
 @media (max-width: 1100px) {
