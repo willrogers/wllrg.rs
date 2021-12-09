@@ -295,7 +295,7 @@ function loadAll(dataFile) {
 /* The main entry point. */
 function main() {
     var canvas = document.getElementById('xwd');
-    YEAR = parseInt(canvas.getAttribute('key'));
+    YEAR = canvas.getAttribute('key');
     COOKIE_KEY = `grid-state-${YEAR}`;
     var style = getComputedStyle(document.body);
     xwd.HIGHLIGHT = style.getPropertyValue('--highlight-color');
