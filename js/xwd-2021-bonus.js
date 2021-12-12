@@ -50,7 +50,10 @@ adventXwd.AdventCrossword.prototype.finished = function() {
         if ((stripped === 'goodbyetotwentytwentyone') ||
             (stripped === 'goodbyeto2021')) {
             Cookies.set("2021-complete", "true", { expires: new Date(9999, 11, 31) });
-            window.location.href = PART2;
+            self.finalDiv.classList.add("completed")
+            setTimeout(() =>{
+                window.location.href = PART2;
+            }, 1500);
         } else {
             response.textContent = 'nope';
         }

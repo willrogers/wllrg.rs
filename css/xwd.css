@@ -14,6 +14,11 @@
   animation-fill-mode: forwards;
 }
 
+#final-div.completed {
+  animation:fade-in 1.5s ease;
+  animation-fill-mode: forwards;
+}
+
 @keyframes fade-in {
     0% {opacity: 1;}
     100% {opacity: 0;}
