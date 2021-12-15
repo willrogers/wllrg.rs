@@ -142,8 +142,21 @@
   text-align: center;
 }
 
-#final-div > p {
+.final-msg {
   font-size: 25px;
+}
+
+#final-msg-1 {
+  font-size: 60px;
+  color: gray;
+  padding-top: 70px;
+}
+#final-msg-2 {
+  font-size: 30px;
+  padding-top: 20px;
+}
+#final-msg-3 {
+  font-size: 15px;
 }
 
 @media (max-width: 1100px) {
