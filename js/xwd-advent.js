@@ -212,9 +212,9 @@ adventCrosswordProto.loadClues = function() {
 adventCrosswordProto.clueToString = function(clue) {
     // Use template literals
     var clueString = '';
-    if (isClueActive(clue, YEAR)) {
+    if (isClueActive(clue)) {
         clueString = `${clue[0]}\u00a0(${clue[1]})`;
-        if (isClueForToday(clue, YEAR)) {
+        if (isClueForToday(clue)) {
             clueString = `${clueString}\u00a0[new]`;
         }
     } else {
@@ -226,17 +226,19 @@ adventCrosswordProto.clueToString = function(clue) {
 AdventCrossword.prototype = adventCrosswordProto;
 
 function isClueActive(clue) {
+    const intYear = parseInt(YEAR);
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear > YEAR || (currentMonth === 11 && dayOfMonth >= clue[2]));
+    return (currentYear > intYear || (currentMonth === 11 && dayOfMonth >= clue[2]));
 }
 
 function isClueForToday(clue) {
+    const intYear = parseInt(YEAR);
     var dayOfMonth = new Date().getDate();
     var currentMonth = new Date().getMonth();
     var currentYear = new Date().getFullYear();
-    return (currentYear === YEAR && (currentMonth === 11 && dayOfMonth === clue[2]));
+    return currentYear === intYear && currentMonth === 11 && dayOfMonth === clue[2];
 }
 
 
