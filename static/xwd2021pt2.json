@@ -20,8 +20,8 @@
     "ac": {
       "7": ["Color gamut off to begin with - at first", 6, 25],
       "8": ["", "6", 31],
-      "9": ["", 3, 30],
-      "10": ["", 9, 29],
+      "9": ["Lose direction temporarily, returning from path", 3, 30],
+      "10": ["", "3,6", 29],
       "11": ["", 7, 28],
       "13": ["Toy boy returns twice, blacks out", "2-2", 3],
       "15": ["Go back a year to start system of exercise", 4, 27],
@@ -34,18 +34,18 @@
     "dn": {
       "1": ["", 6, 31],
       "2": ["", 3, 29],
-      "3": ["", 7, 26],
-      "4": ["", 5, 30],
-      "5": ["", "4-4", 24],
+      "3": ["Juvenile animal permitted outside at any time", 7, 26],
+      "4": ["Recognise cold part of canal", 5, 30],
+      "5": ["", 8, 24],
       "6": ["", 6, 25],
       "12": ["Moving performance of Howards End to go on tour", 8, 22],
       "14": ["I'm surprised about a joke from a regal estate", 7, 11],
       "16": ["Just a second, that is a garment that stands by itself", 6, 5],
       "18": ["Raise amendments including foreign travellers", 6, 13],
-      "19": ["Two men with 14", 5, 21],
+      "19": ["Questionable character right on board?", 5, 21],
       "22": ["A foot behind", 3, 19]
     }
   },
-  "correct-answer": -998662924,
+  "correct-answer": -725138523,
   "message-squares": []
 }
