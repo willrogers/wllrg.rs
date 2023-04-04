@@ -1,7 +1,7 @@
 willrogers.github.io
 ====================
 
-Experimental webpage, using Jekyll site generation.
+This site is now archived, replaced by https://github.com/willrogers/wllrg.rs11.
 
 To run locally:
 
